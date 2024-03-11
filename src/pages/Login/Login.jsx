@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
@@ -10,23 +11,21 @@ const Login = ({ setIsLoggedIn }) => {
   const handleLogin = async (event) => {
     event.preventDefault();
 
-   // try {
-      //const response = await axios.post('https://gerenciadoresportivo.azurewebsites.net/logins/login', {
-       // username: username,
-       // password: password
-     // });
-      // AQUI TENHO QUE PEGAR O TOKEN DO BACKEND E SALVAR NO STORAGE
-      //const token = response.data.token;
-      const token = "AS1DF56A1F65DAS1F31DFA";
+   try {
+      const response = await axios.put('https://gerenciadoresportivo.azurewebsites.net/logins/login', {
+       email: username,
+       senha: password
+     });
+      const token = response.data;
       window.localStorage.setItem('token', token);
 
       // Redirecione o usuário para a página inicial
       navigate('/home');
       setIsLoggedIn(true);
-    // } catch (error) {
-    //   console.error('Erro ao fazer login', error);
-    //   // Trate o erro aqui
-    // }
+    } catch (error) {
+      // colocar um retorno na tela se der erro 
+      console.error('Erro ao fazer login', error);
+    }
   };
 
   const handleRecuperacaoSenha = (event) => {
@@ -44,14 +43,14 @@ const Login = ({ setIsLoggedIn }) => {
         <input
           className="username"
           type="text"
-          placeholder="Username"
+          placeholder="E-mail"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
           className="password"
           type="password"
-          placeholder="Password"
+          placeholder="Senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

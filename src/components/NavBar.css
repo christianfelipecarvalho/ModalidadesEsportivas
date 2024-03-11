@@ -1,4 +1,4 @@
-.sidebar {
+.sidebar  {
   position: absolute;
   top: 0;
   left: 0;
@@ -32,8 +32,6 @@
 }
 .active{
   color: #000;
-  height: 10%;
-  width: 95%;
   border-radius: 10px;
   padding: 10px;
 }
@@ -42,11 +40,11 @@
   margin-top: 18px;
   color: #ffffff; 
 }
+
 /* Cor das letras quando o link está ativo */
 .nav-link.active {
   color: #000000; 
   background-color: #fff;
-  width: 80%;
 }
 
 .sidebar.collapsed .nav-text {
@@ -59,18 +57,22 @@
 
 
 /* dark mode e light mode*/
-#dark .nav-link {
-  background-color: hsla(0, 2%, 10%, 0.941)!important;
+#dark.sidebar {
+  background-color: hsla(0, 0%, 13%, 0.941)!important;
 }
 
-#light .nav-link {
+#light.sidebar {
   background-color: #fff!important;
 }
 
-#light .nav-cab {
+#light.nav-cab {
   color: #1d1d1e!important;
 }
 
-#dark .nav-cab {
+#dark.nav-cab {
   color: #ffffff !important;
+}
+#dark.nav-link {
+  color: #ffffff !important;
+  background-color: red;
 }

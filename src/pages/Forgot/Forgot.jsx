@@ -24,7 +24,7 @@ const Forgot = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <button type="submit" className="submit">
+        <button type="submit" className="submit" onClick={handleRecuperarSenha}>
           Enviar
         </button>
       </form>
