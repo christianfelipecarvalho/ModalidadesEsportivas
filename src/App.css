@@ -1,0 +1,119 @@
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+} */
+/* comentando a partir daqui para testar*/
+.App {
+  font-family: "Ubuntu", sans-serif;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#light {
+  background-color: #ebf6ee;
+}
+
+#dark {
+  background-color: rgb(49, 49, 49);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body .main {
+  width: 400px;
+  height: 400px;
+
+  border-radius: 1.5em;
+  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+}
+
+#light .main {
+  background-color: #fff;
+}
+
+#dark .main {
+  background-color: hsla(0, 2%, 10%, 0.941);
+}
+
+#light .sidebar{
+  color: red;
+}
+form.form1 {
+  padding-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .main {
+    border-radius: 0px;
+  } 
+}
+.switch {
+  display: flex;
+}
+
+.switch label {
+  margin: 10px;
+}
+
+#light .switch label {
+  color: black;
+}
+
+#dark .switch label {
+  color: white;
+}
+.switch {
+  display: flex;
+  position: fixed; 
+  bottom: 0; 
+  right: 0; 
+  height: 100px;
+  align-items: center;
+  justify-content: flex-end; 
+  padding-right: 10px; 
+}
