@@ -7,6 +7,8 @@ import ThemeToggle from "./components/ThemeToggle";
 import Agendamentos from "./pages/Agendamentos/Agendamentos";
 import Atleta from "./pages/Atleta/Atleta";
 import Consultas from "./pages/Consultas/Consultas";
+import Confirmacao from "./pages/Forgot/Confirmacao";
+import Forgot from "./pages/Forgot/Forgot";
 import Login from "./pages/Login/Login";
 
 export const ThemeContext = createContext(null);
@@ -34,6 +36,8 @@ function App() {
             <Route path='/atleta' element={isLoggedIn ? <Atleta /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
             <Route path='/consultas' element={isLoggedIn ? <Consultas /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
             <Route path='/agendamentos' element={isLoggedIn ? <Agendamentos /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
+            <Route path='/forgot' element={ <Forgot />} />
+            <Route path='/confirmacao' element={ <Confirmacao />} />
           </Routes>
           <ThemeToggle />
         </div>

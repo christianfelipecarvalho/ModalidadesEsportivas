@@ -29,6 +29,12 @@ const Login = ({ setIsLoggedIn }) => {
     // }
   };
 
+  const handleRecuperacaoSenha = (event) => {
+    event.preventDefault();
+    navigate('/forgot');
+  }
+  
+
   return (
     <div className="main">
       <p className="entrar" align="center">
@@ -52,7 +58,7 @@ const Login = ({ setIsLoggedIn }) => {
         <button type="submit" className="submit">
           Entrar
         </button>
-        <p className="forgot" align="center">
+        <p className="forgot" align="center"onClick={handleRecuperacaoSenha}>
           <a href="#">Esqueceu a senha? </a>
         </p>
       </form>

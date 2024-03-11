@@ -80,12 +80,10 @@ body .main {
   background-color: hsla(0, 2%, 10%, 0.941);
 }
 
-#light .sidebar{
-  color: red;
-}
-form.form1 {
-  padding-top: 40px;
-}
+
+/* form.form1 {
+  padding-top: 25px;
+} */
 
 @media (max-width: 600px) {
   .main {
