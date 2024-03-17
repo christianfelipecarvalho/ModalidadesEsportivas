@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   height: 100%;
-  width: 20%;
+  width: 18%;
   transition: width 0.3s ease;  
 }
 #dark .sidebarcollapsed, #light .sidebarcollapsed{
@@ -100,3 +100,24 @@
 }
 
 /*810x530*/
+
+@media (max-width: 810px) {
+  .sidebar {
+    width: 50px!important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #000;
+    position: absolute;
+  }
+  .nav-link span {
+    display: none;
+  }
+  .toggle-button {
+    display: none;
+  }
+  .aside-button {
+    display: none;
+  }
+}
+
