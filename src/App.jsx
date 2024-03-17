@@ -1,3 +1,4 @@
+//import React, { createContext, useEffect, useState } from "react";
 import React, { createContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../src/pages/Home/Home";
@@ -28,7 +29,7 @@ function App() {
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <BrowserRouter>
-        {isLoggedIn && <NavBar id={theme} />} {/* Renderizado condicionalmente */}
+        {isLoggedIn && <NavBar  />} {/* Renderizado condicionalmente */}
         <div className="App" id={theme}>
           <Routes>
             <Route path='/' element={isLoggedIn ? <Home /> : <Login setIsLoggedIn={setIsLoggedIn} />} />

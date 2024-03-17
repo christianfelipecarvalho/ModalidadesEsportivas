@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FaBackward, FaCalendarAlt, FaCog, FaForward, FaHome, FaSignInAlt, FaUser } from 'react-icons/fa'; // Importe os ícones que você quer usar
 import { NavLink } from 'react-router-dom';
+import { ThemeContext } from '../App';
 import './NavBar.css';
-
 
 const NavBar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const { theme } = useContext(ThemeContext);
 
   const toggle = () => {
     setCollapsed(!collapsed);
   };
+
   return (
-    <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-      <nav className='nav-cab'>
+    <div id={theme}>
+    <div className={`sidebar${collapsed ? 'collapsed' : ''}`} >
+      <nav  className={`nav-cab${collapsed ? 'collapsed' : ''}`}>
         {!collapsed && (
-          <button onClick={toggle} className="toggle-button">
+          <button onClick={toggle} className="aside-button">
              {/* Ícone de fechar */}
             <FaBackward />
             
@@ -31,6 +34,7 @@ const NavBar = () => {
           <FaForward /> {/* Ícone de menu */}
         </button>
       )}
+    </div>
     </div>
   );
   

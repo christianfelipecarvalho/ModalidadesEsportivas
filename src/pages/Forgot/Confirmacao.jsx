@@ -67,10 +67,11 @@ const Confirmacao = () => {
                     maxLength={1}
                 />
                 
-                <button type="submit" className="submit">
+                
+            </form>
+            <button type="submit" className="confirmar-confirmacao">
                     Confirmar
                 </button>
-            </form>
         </div>
     )
 }

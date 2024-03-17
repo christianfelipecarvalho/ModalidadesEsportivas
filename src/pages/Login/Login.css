@@ -31,7 +31,7 @@
     font-family: "Ubuntu", sans-serif;
   }
   
-  .password {
+  .senha-atual {
     width: 76%;
     font-weight: 700;
     font-size: 14px;
@@ -50,19 +50,19 @@
   }
   
   #light .username,
-  #light .password {
+  #light .senha-atual {
     color: rgb(63, 63, 63);
     background: rgba(42, 42, 42, 0.04);
   }
   
   #dark .username,
-  #dark .password {
+  #dark .senha-atual {
     color: rgb(254, 255, 255);
     background: rgba(44, 44, 44, 0.299);
   }
   
   .username:focus,
-  .password:focus {
+  .senha-atual:focus {
     border: 2px solid rgba(0, 0, 0, 0.18) !important;
   }
   #dark .main {
@@ -140,4 +140,24 @@
   .main {
     border-radius: 0px;
   } 
+}
+.error-login {
+  color: white!important;
+  background-color: rgba(255, 0, 0, 0.5)!important; 
+  padding: 10px;
+  margin-top: 10px;
+  width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s ease; 
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.success-login {
+  background-color: green;
+  color: white;
 }

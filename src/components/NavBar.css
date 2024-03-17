@@ -1,41 +1,64 @@
-.sidebar  {
+.sidebar {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 20%;
-  transition: width 0.3s ease;
-  background-color: black;
+  transition: width 0.3s ease;  
 }
-
-.sidebar.collapsed {
-  width: 50px;
+#dark .sidebarcollapsed, #light .sidebarcollapsed{
+  width: 50px!important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #000;
+  position: absolute;
 }
-
-.sidebar nav {
+#dark .nav-cabcollapsed, #light .nav-cabcollapsed{
+  margin-top: 10%;
+  margin-left: 5px;
+  flex-direction: column;
+  display: flex;
+}
+#dark .toggle-button, #light .toggle-button{
+  position: absolute;
+  left: 70%;
+  bottom: 10px;
+  width: 65px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.sidebarcollapsed nav{
   width: 100%;
-  padding: 1em;
+  padding: 1em; /* se remover aqui tira os active  que fica pra fora*/
   transition: opacity 0.3s ease;
   flex-direction: column; /* Adicionado */
   display: flex;
 }
 
-.toggle-button {
+.sidebar nav {
+  width: 100%;
+  padding: 1em; /* se remover aqui tira os active  que fica pra fora*/
+  transition: opacity 0.3s ease;
+  flex-direction: column; /* Adicionado */
+  display: flex;
+}
+
+.aside-button, #light .aside-button {
   position: absolute;
   left: 70%;
   bottom: 10px;
-  width: 45px;
+  width: 65px;
   align-items: center;
   justify-content: center;
   display: flex;
-  
 }
-.active{
-  color: #000;
-  border-radius: 10px;
-  padding: 10px;
+
+#light .aside-button,  #light .toggle-button {
+  background-color: #41a56d;
 }
-/* Cor das letras */
+
 .nav-link {
   margin-top: 18px;
   color: #ffffff; 
@@ -45,34 +68,35 @@
 .nav-link.active {
   color: #000000; 
   background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
 }
 
-.sidebar.collapsed .nav-text {
-  display: none;
-}
-.nav-link {
-  margin-top: 18px;
+ #dark .sidebar {
+  background-color: hsla(0, 0%, 0%, 0.941)!important;
 }
 
-
-
-/* dark mode e light mode*/
-#dark.sidebar {
-  background-color: hsla(0, 0%, 13%, 0.941)!important;
+#light .sidebar, #light .sidebarcollapsed {
+  background: linear-gradient(to bottom, #41a56d, #87c396, #b8dcb1);
+  color: #000;
+}
+#light .aside-button:hover,  #light .toggle-button:hover {
+  background-color: #87c396; /* Cor de fundo ao passar o mouse */
+  border-color: #003501; /* Cor da borda ao passar o mouse */
+}
+#light a.nav-link:hover{
+  color: #000000; /* Cor de fundo ao passar o mouse */
+  border-color: #003501; 
+}
+#dark a.nav-link:hover{
+  color: #003501;
+}
+#light a.nav-link{
+  color: #ffffff;
 }
 
-#light.sidebar {
-  background-color: #fff!important;
+#light .active{
+  background-color: #259b2737;
 }
 
-#light.nav-cab {
-  color: #1d1d1e!important;
-}
-
-#dark.nav-cab {
-  color: #ffffff !important;
-}
-#dark.nav-link {
-  color: #ffffff !important;
-  background-color: red;
-}
+/*810x530*/
