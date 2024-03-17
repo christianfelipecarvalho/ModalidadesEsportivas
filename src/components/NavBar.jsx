@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react';
+import { default as React, useContext } from 'react';
 import { FaBackward, FaCalendarAlt, FaCog, FaForward, FaHome, FaSignInAlt, FaUser } from 'react-icons/fa'; // Importe os ícones que você quer usar
 import { NavLink } from 'react-router-dom';
 import { ThemeContext } from '../App';
+import { CollapsedContext } from '../contexts/CollapsedContext';
 import './NavBar.css';
 
 const NavBar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, setCollapsed } = useContext(CollapsedContext);
   const { theme } = useContext(ThemeContext);
 
   const toggle = () => {

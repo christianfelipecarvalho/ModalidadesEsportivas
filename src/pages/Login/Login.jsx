@@ -61,7 +61,7 @@ const Login = ({ setIsLoggedIn }) => {
 
   const handleRecuperacaoSenha = (event) => {
     event.preventDefault();
-    navigate('/forgot');
+      navigate('/forgot');
   }
 
   return (
