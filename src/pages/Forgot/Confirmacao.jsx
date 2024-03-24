@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Confirmacao.css';
-
 const Confirmacao = () => {
     const [codigo1, setCodigo1] = useState('');
     const [codigo2, setCodigo2] = useState('');
     const [codigo3, setCodigo3] = useState('');
     const [codigo4, setCodigo4] = useState('');
-
+    const navigate = useNavigate(); 
     const input2 = useRef();
     const input3 = useRef();
     const input4 = useRef();
@@ -19,11 +19,19 @@ const Confirmacao = () => {
     }
 
     const handleConfirmaCodigo = (event) => {
+        console.log("entrei aqui")
         event.preventDefault();
         const codigo = codigo1 + codigo2 + codigo3 + codigo4;
-        // aqui vai verificar o codigo do backend
-        console.log(codigo); 
-    }
+      
+        // Verifica se o código do usuário corresponde ao código de recuperação
+        const codeRecover = localStorage.getItem('codeRecover');
+        if (codigo === codeRecover) {
+          // Se o código estiver correto, navega para a página de redefinição de senha
+          navigate('/redefinirsenha');
+        } else {
+          console.log('Código incorreto');
+        }
+      }
 
     return (
         <div className="main">
@@ -69,7 +77,7 @@ const Confirmacao = () => {
                 
                 
             </form>
-            <button type="submit" className="confirmar-confirmacao">
+            <button onClick={handleConfirmaCodigo} type="submit" className="confirmar-confirmacao">
                     Confirmar
                 </button>
         </div>

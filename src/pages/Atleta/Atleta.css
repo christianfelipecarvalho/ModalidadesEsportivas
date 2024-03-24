@@ -1,77 +1,204 @@
 .cardContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-  
-  #light .card {
-    margin: 20px;
-    width: 200px;
-    transition: transform 0.3s;
-    background: linear-gradient(to bottom, #41a56d, #87c396, #b8dcb1);
-    color: #000;
-  }
-  #dark .card {
-    margin: 20px;
-    width: 200px;
-    transition: transform 0.3s;
-    background: rgb(0, 33, 8);
-    color: rgb(255, 255, 255);
-    border: 2px solid #393939; /* Adiciona uma borda verde ao cartão */
-  }
-  .card:hover {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly; /* arruma o espaçamento entre os cards*/
+  margin-top: 50px;
+}
+
+#light .card {
+  margin: 20px;
+  width: 300px; /*muda o tamanho dos cards*/
+  /* transition: transform 0.1s ease-in-out; aqui faz o card vir para frente quando passa o mouse por cima  */
+  background: #fff;
+  color: #000;
+  border-radius: 8%;
+}
+
+#light .card:hover {
+  background-color: #ccc; 
+}
+#dark .card:hover {
+  background-color: #41a56d; 
+}
+#dark .card {
+  margin: 20px;
+  width: 300px;
+  transition: transform 0.1s ease-in-out;
+  background: #393939;
+  color: rgb(255, 255, 255);
+  border: 2px solid #393939; /* Adiciona uma borda verde ao cartão */
+  border-radius: 8%;
+}
+@keyframes minhaAnimacao {
+  50% {
     transform: scale(1.1);
   }
-
- 
-
-  .atletaPage {
-    transition: margin-left 0.3s ease;
+  80% {
+    transform: scale(1.1);
   }
+  40% {
+    transform: scale(1.1);
+  }
+}
+ .card:hover {
+  animation: minhaAnimacao 0.6s ease-in-out;
+} 
 
- #light .searchField {
-    position: fixed !important;
-    top: 12px !important;
-    right: 18px !important;
-    width: 20%;
-  }
- #dark .searchField {
-    position: fixed !important;
-    top: 12px !important;
-    right: 18px !important;
-    width: 20%;
-  }
- 
+.atletaPage {
+  transition: margin-left 0.3s ease;
+  height: 100%; 
+  overflow-y: auto;
+}
+
+#light .searchField {
+  width: 40%;
+}
+#light .pesquisar {
+  display: flex;
+  position: relative;
+  top: 12px;
+  justify-content: center!important;
+  width: 100%;
+}
+#dark .searchField {
+  width: 40%;
+  color: #fff!important;
+  
+}
+#dark .pesquisar {
+  display: flex;
+  position: relative;
+  top: 12px;
+  justify-content: center!important;
+  width: 100%;
+}
+
 
 #light .botao-novo{
-    display: flex!important;
-    background: linear-gradient(to bottom, #41a56d, #87c396, #b8dcb1)!important;
-    color: rgb(0, 0, 0)!important;
-    font-weight: bold;
-    position:fixed!important;
-    top: 100px !important;
-    right: 18px !important;
+  display: flex!important;
+  background: #41a56d!important;
+  color: rgb(255, 255, 255)!important;
+  font-weight: bold;
+  position:fixed!important;
+  top: 100px !important;
+  right: 18px !important;
 }
 #dark .botao-novo{
-    display: flex!important;
-    background: rgb(0, 33, 8);
-    font-weight: bold;
-    color: white!important;
-    position:fixed!important;
-    top: 100px !important;
-    right: 18px !important;
+  display: flex!important;
+  background: #41a56d;
+  font-weight: bold;
+  color: white!important;
+  position:fixed!important;
+  top: 100px !important;
+  right: 18px !important;
+}
+.nome-imagem{
+display: flex!important;
+align-items: center;
+margin-left: 10px ;
+}
+#light div.botoes-modal{
+background: #41a56d; 
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+display: flex; 
+justify-Content: end;
+z-index: 1;
+}
+#dark div.botoes-modal{
+background: #41a56d!important; 
+/* border-Radius: 10px;  */
+align-Items: right; 
+display: flex; 
+justify-Content: end;
+z-index: 1;
+}
+#light .icone-fechar{
+margin-left: 5px;
+margin-right: 1px;
+}
+#dark .icone-fechar{
+margin-left: 5px;
+margin-right: 1px;
+}
+
+#light .formulario-modal{
+background: white;
+width: 100%; 
+height: 100%;
+border-bottom-left-radius: 10px; 
+border-bottom-right-radius: 10px;  
+min-width: 0px;
+min-height: none;
+}
+#dark .formulario-modal{
+background: #e0dfdff6;
+width: 100%; 
+height: 100%;
+border-bottom-left-radius: 10px; 
+border-bottom-right-radius: 10px; 
+min-width: 0px;
+min-height: none;
 }
 
 @media (max-width: 586px) {
-
-    .cardContainer{
-        margin-top: 10px;
-    }
+  .cardContainer{
+      margin-top: 10px;
   }
-  @media (max-width: 400px) {
 
-    .cardContainer{
-        margin-top: 220px;
-    }
+
+}
+@media (max-width: 400px) {
+
+  .cardContainer{
+      margin-top: 100px;
   }
-  
+}
+
+#light .botao-salvar{
+  margin-top: 30px; 
+  margin-left: 50px;
+  background-color: #41a56d!important;
+}
+#light .formulario-campos{
+  margin-top: 20px;
+  margin-left: 50px;
+}
+
+#dark .botao-salvar{
+  margin-top: 30px; 
+  margin-left: 50px;
+  background-color: #41a56d!important;
+}
+#dark .formulario-campos{
+  margin-top: 20px;
+  margin-left: 50px;
+  color: #fff!important;
+
+}
+#light .ViewTable{
+  margin-left: 20px;
+}
+#dark .ViewTable{
+  margin-left: 20px;
+}
+
+/* ajustar estilos da tabela daqui para baixo*/
+.tabela {
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-top: 50px;
+}
+
+th, td {
+  padding: 10px; /* Adiciona preenchimento às células */
+  text-align: left; /* Alinha o texto à esquerda */
+  border-bottom: 1px solid #ddd; /* Adiciona uma borda inferior dàs células */
+}
+
+th {
+  background-color: #41a56d; /* Cor de fundo dos cabeçalhos */
+  color: white; /* Cor do texto dos cabeçalhos */
+}
+
+tr:hover {background-color: #666666;} /* Cor de fundo da linha quando o mouse passa por cima */

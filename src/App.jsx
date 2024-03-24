@@ -11,6 +11,7 @@ import Atleta from "./pages/Atleta/Atleta";
 import Consultas from "./pages/Consultas/Consultas";
 import Confirmacao from "./pages/Forgot/Confirmacao";
 import Forgot from "./pages/Forgot/Forgot";
+import RedefinirSenha from "./pages/Forgot/RedefinirSenha";
 import Login from "./pages/Login/Login";
 
 export const ThemeContext = createContext(null);
@@ -47,6 +48,7 @@ function App() {
               <Route path='/agendamentos' element={isLoggedIn ? <Agendamentos /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/forgot' element={ <Forgot />} />
               <Route path='/confirmacao' element={ <Confirmacao />} />
+              <Route path='/redefinirsenha' element={ <RedefinirSenha />} />
             </Routes>
             <ThemeToggle />
           </div>

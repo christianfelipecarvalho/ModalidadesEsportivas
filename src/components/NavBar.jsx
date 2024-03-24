@@ -1,5 +1,5 @@
 import { default as React, useContext } from 'react';
-import { FaBackward, FaCalendarAlt, FaCog, FaForward, FaHome, FaSignInAlt, FaUser } from 'react-icons/fa'; // Importe os ícones que você quer usar
+import { FaBackward, FaCalendarAlt, FaCog, FaForward, FaHome, FaSignInAlt, FaUser } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import { ThemeContext } from '../App';
 import { CollapsedContext } from '../contexts/CollapsedContext';

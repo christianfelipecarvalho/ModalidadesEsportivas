@@ -67,6 +67,7 @@ const Login = ({ setIsLoggedIn }) => {
   return (
     <div>
       <div className="main">
+        {/* <img className='logo' src='./src/assets/Geresportes-sem-fundo-redimensionada.png' width={50} height={50}></img> */}
         <p className="entrar" align="center">
           Login
         </p>
@@ -76,6 +77,7 @@ const Login = ({ setIsLoggedIn }) => {
             type="text"
             placeholder="E-mail"
             value={username}
+             required 
             onChange={(e) => setUsername(e.target.value)}
           />
           <input
@@ -83,6 +85,7 @@ const Login = ({ setIsLoggedIn }) => {
             type="password"
             placeholder="Senha"
             value={password}
+            required 
             onChange={(e) => setPassword(e.target.value)}
           />
           <button type="submit" className="submit" disabled={loading}>
