@@ -190,11 +190,6 @@ table {
   margin-top: 50px;
 }
 
-th, td {
-  text-align: left; /* Alinha o texto à esquerda */
-  border-bottom: 1px solid #ddd; /* Adiciona uma borda inferior dàs células */
-}
-
 th {
   background-color: #41a56d; /* Cor de fundo dos cabeçalhos */
   color: white; /* Cor do texto dos cabeçalhos */
