@@ -184,14 +184,13 @@ min-height: none;
 }
 
 /* ajustar estilos da tabela daqui para baixo*/
-.tabela {
+table {
   width: 100%; 
   border-collapse: collapse; 
   margin-top: 50px;
 }
 
 th, td {
-  padding: 10px; /* Adiciona preenchimento às células */
   text-align: left; /* Alinha o texto à esquerda */
   border-bottom: 1px solid #ddd; /* Adiciona uma borda inferior dàs células */
 }
