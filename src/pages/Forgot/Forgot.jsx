@@ -1,31 +1,51 @@
-import React, { useState } from 'react';
+import { Card, CircularProgress } from '@material-ui/core';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { recuperacao } from '../../services/LoginService';
 import './Forgot.css';
+
 const Forgot = () => {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
-  const handleRecuperarSenha = (event) => {
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  const handleRecuperarSenha = async (event) => {
     event.preventDefault();
-  
-    // Faz a requisição POST
-    fetch('https://gerenciadoresportivo.azurewebsites.net/emails/esqueciMinhaSenha', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ emailTo: email })
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Salva o código de recuperação e navega para a página de confirmação
+    setLoading(true);
+    setErrorMessage('');
+
+    // Cria um source de CancelToken
+    const source = axios.CancelToken.source();
+
+    try {
+      const response = await recuperacao(email, source); // Use a função recuperacao
+      const data = response.data;
       localStorage.setItem('codeRecover', data.codeRecover);
+      localStorage.setItem('email', email);
       navigate('/confirmacao');
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }
-  
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Request canceled', error.message);
+      }
+      else {
+        setErrorMessage('Erro! E-mail inválido!');
+        console.error('Erro ao recuperar a senha', error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="main">
       <p className="recuperar" align="center">
@@ -42,9 +62,13 @@ const Forgot = () => {
         />
   
         <button type="submit" className="submit">
-          Enviar
+        {loading ? <CircularProgress size={30} style={{ color: 'grey' }} />  : 'Enviar'}
         </button>
       </form>
+      {errorMessage && 
+        <Card className="error-login" >
+          {errorMessage ? errorMessage : "OK sucesso"}
+        </Card>}
     </div>
   )
   }

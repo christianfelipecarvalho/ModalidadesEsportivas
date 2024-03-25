@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../../services/LoginService';
 import './Login.css';
 
 // Importe o spinner de carregamento e o Card do Material-UI
@@ -29,15 +30,10 @@ const Login = ({ setIsLoggedIn }) => {
     setErrorMessage('');
 
     try {
-      const response = await axios.put('https://gerenciadoresportivo.azurewebsites.net/logins/login', {
-        email: username,
-        senha: password
-      },{
-        cancelToken: source.token
-      });
+      const response = await login(username, password, source); // Use a função login
       const token = response.data;
       window.localStorage.setItem('token', token);
-
+  
       navigate('/home');
       setIsLoggedIn(true);
     } catch (error) {
@@ -52,6 +48,7 @@ const Login = ({ setIsLoggedIn }) => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     return () => {
