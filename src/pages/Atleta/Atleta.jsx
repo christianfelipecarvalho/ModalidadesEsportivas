@@ -24,7 +24,7 @@ const Atleta = () => {
   const itemsPorPagina = matches ? 3 : 20;
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
-
+  
   useEffect(() => {
     fetch('https://gerenciadoresportivo.azurewebsites.net/usuarios/listarTodosUsuarios')
       .then(response => response.json())
@@ -51,6 +51,9 @@ const Atleta = () => {
           '&$focused $notchedOutline': {
             borderColor: '#41a56d', // Cor da borda quando o TextField está focado
           },
+        },
+        input: {
+          color: '#41a56d', // Cor do texto dentro do campo de entrada
         },
       },
       MuiFormLabel: {
