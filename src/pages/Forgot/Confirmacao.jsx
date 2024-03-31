@@ -61,6 +61,7 @@ const Confirmacao = () => {
     }
 
     return (
+        <div className='principal'>
         <div className="main">
             <p className="recuperar" align="center">
                 Código de recuperação:
@@ -109,6 +110,7 @@ const Confirmacao = () => {
                 <Card className="error-login" >
                     {errorMessage ? errorMessage : "OK sucesso"}
                 </Card>}
+        </div>
         </div>
     )
 }

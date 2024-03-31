@@ -1,8 +1,11 @@
+div .principal-atleta{
+  height: 100vh;
+}
 .cardContainer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly; /* arruma o espaçamento entre os cards*/
-  margin-top: 50px;
+  /* justify-content:center; arruma o espaçamento entre os cards */
+  margin-top: 20px;
 }
 
 #light .card {
@@ -73,15 +76,14 @@
   width: 100%;
 }
 
-
 #light .botao-novo{
   display: flex!important;
   background: #41a56d!important;
   color: rgb(255, 255, 255)!important;
   font-weight: bold;
   position:fixed!important;
-  top: 100px !important;
-  right: 18px !important;
+  top: 5% !important;
+  left: 95%  !important;
 }
 #dark .botao-novo{
   display: flex!important;
@@ -89,8 +91,8 @@
   font-weight: bold;
   color: white!important;
   position:fixed!important;
-  top: 100px !important;
-  right: 18px !important;
+  top: 5% !important;
+  left: 95%  !important;
 }
 .nome-imagem{
 display: flex!important;
@@ -130,6 +132,7 @@ border-bottom-left-radius: 10px;
 border-bottom-right-radius: 10px;  
 min-width: 0px;
 min-height: none;
+
 }
 #dark .formulario-modal{
 background: #e0dfdff6;
@@ -184,15 +187,56 @@ min-height: none;
 }
 
 /* ajustar estilos da tabela daqui para baixo*/
-table {
-  width: 100%; 
-  border-collapse: collapse; 
-  margin-top: 50px;
+#light .forms-tabela .MuiDataGrid-cell {
+  color: black;
+  font-weight:300; /* Cor do texto das células */
+  border-color: #393939a5;
+}
+#light .forms-tabela .MuiDataGrid-columnHeader {
+  background-color: #393939a5;
+  color: #fff; /* Cor de fundo do cabeçalho */
+  font-size: 18px;
 }
 
-th {
-  background-color: #41a56d; /* Cor de fundo dos cabeçalhos */
-  color: white; /* Cor do texto dos cabeçalhos */
+#light .forms-tabela .MuiDataGrid-row:nth-child(odd) {
+  background-color: #f4f4f4; /* Cor de fundo das linhas ímpares */
+}
+#light .forms-tabela .MuiDataGrid-row:nth-child(even) {
+  background-color: #f4f4f4; /* Cor de fundo das linhas pares*/
+}
+#dark .forms-tabela .MuiDataGrid-cell {
+  color: white;
+  font-weight:400; /* Cor do texto das células */
+  border-color: white;
+}
+#dark .forms-tabela .MuiDataGrid-columnHeader {
+  background-color: #41a56d;
+  color: rgb(255, 255, 255); /* Cor de fundo do cabeçalho */
+  font-size: 18px;
+  font-weight: bold!important;
 }
 
-tr:hover {background-color: #666666;} /* Cor de fundo da linha quando o mouse passa por cima */
+#dark .forms-tabela .MuiDataGrid-row:nth-child(odd) {
+  background-color: #464646; /* Cor de fundo das linhas ímpares */
+}
+#dark .forms-tabela .MuiDataGrid-row:nth-child(even) {
+  background-color: #393939; /* Cor de fundo das linhas pares*/
+}
+
+#light .forms-tabela .MuiDataGrid-row:hover {
+  background-color: #41a56d; /* Cor de fundo quando o mouse passa por cima no tema claro */
+}
+
+#dark .forms-tabela .MuiDataGrid-row:hover {
+  background-color: #41a56d; /* Cor de fundo quando o mouse passa por cima no tema escuro */
+}
+
+
+
+.div-tabela{
+ margin-left: 5%;
+ margin-top: 2%;
+ width: 90%;
+}
+
+

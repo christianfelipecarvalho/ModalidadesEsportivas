@@ -6,9 +6,9 @@ import './App.css';
 import NavBar from "./components/NavBar";
 import ThemeToggle from "./components/ThemeToggle";
 import { CollapsedContext } from './contexts/CollapsedContext'; // Importe o CollapsedContext
+import Agenda from "./pages/Agenda/Agenda";
 import Agendamentos from "./pages/Agendamentos/Agendamentos";
 import Atleta from "./pages/Atleta/Atleta";
-import Consultas from "./pages/Consultas/Consultas";
 import Confirmacao from "./pages/Forgot/Confirmacao";
 import Forgot from "./pages/Forgot/Forgot";
 import RedefinirSenha from "./pages/Forgot/RedefinirSenha";
@@ -44,7 +44,7 @@ function App() {
               <Route path='/' element={ <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/home' element={isLoggedIn ? <Home /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/atleta' element={isLoggedIn ? <Atleta /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
-              <Route path='/consultas' element={isLoggedIn ? <Consultas /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
+              <Route path='/consultas' element={isLoggedIn ? <Agenda /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/agendamentos' element={isLoggedIn ? <Agendamentos /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/forgot' element={ <Forgot />} />
               <Route path='/confirmacao' element={ <Confirmacao />} />

@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-const API_URL = 'https://gerenciadoresportivo.azurewebsites.net';
+const API_URL = 'https://geresportes.azurewebsites.net';
 
 export const login = (username, password, source) => {
-  return axios.put(`${API_URL}/logins/login`, {
-    email: username,
-    senha: password
+  return axios.put(`${API_URL}/Login/Login`, {
+    senha: password,
+    email: username
   },{
+    headers: {
+      'Content-Type': 'application/json'
+    },
     cancelToken: source.token
   });
 }
@@ -15,9 +18,12 @@ export const login = (username, password, source) => {
 //envia para qual email sera recuperado a senha
 
 export const recuperacao = (email, source) => {
-  return axios.post(`${API_URL}/emails/esqueciMinhaSenha`, {
+  return axios.put(`${API_URL}/Email/EsqueciMinhaSenha`, {
     emailTo: email
   },{
+    headers: {
+      'Content-Type': 'application/json'
+    },
     cancelToken: source.token
   });
 }
@@ -26,15 +32,16 @@ export const recuperacao = (email, source) => {
 // envia codigo de recuperação para validar no backend
 
 export const validaCodigoRecuperacao = (email,codigoRecuperacao, source) => {
-  return axios.post(`${API_URL}/emails/validarCodigoRecuperacao`, {
-    emailTo: email,
+  return axios.post(`${API_URL}/email/validarCodigoRecuperacao`, {
+    email: email,
     codigoRecuperacao: codigoRecuperacao,
-    },{
-    cancelToken: source.token
-  });
-}
-
-
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      cancelToken: source.token
+    });
+  }
 
 
 

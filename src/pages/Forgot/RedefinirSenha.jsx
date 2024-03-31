@@ -43,6 +43,7 @@ const RedefinirSenha = () => {
   }
 
   return (
+    <div className='principal'>
     <div className="main">
       <p className="redefinirsenha" align="center">
         Redefinir Senha
@@ -70,6 +71,7 @@ const RedefinirSenha = () => {
         <Card className="error-login" >
           {errorMessage ? errorMessage : "OK sucesso"}
         </Card>}
+    </div>
     </div>
   );
 }

@@ -47,6 +47,7 @@ const Forgot = () => {
     }
   };
   return (
+    <div className='principal'>
     <div className="main">
       <p className="recuperar" align="center">
         Recuperar Senha:
@@ -69,6 +70,7 @@ const Forgot = () => {
         <Card className="error-login" >
           {errorMessage ? errorMessage : "OK sucesso"}
         </Card>}
+    </div>
     </div>
   )
   }

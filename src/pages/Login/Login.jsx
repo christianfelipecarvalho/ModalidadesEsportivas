@@ -62,7 +62,7 @@ const Login = ({ setIsLoggedIn }) => {
   }
 
   return (
-    <div>
+    <div className='principal'>
       <div className="main">
         {/* <img className='logo' src='./src/assets/Geresportes-sem-fundo-redimensionada.png' width={50} height={50}></img> */}
         <p className="entrar" align="center">

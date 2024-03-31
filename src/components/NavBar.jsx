@@ -25,8 +25,8 @@ const NavBar = () => {
           </button>
         )}
         <NavLink className='nav-link' to="/home" >{collapsed ? <FaHome /> : <> <FaHome /> <span>Home</span> </> } </NavLink>
-        <NavLink className='nav-link' to="/atleta">{collapsed ? <FaUser /> : <> <FaUser /> <span>Atletas</span> </>}</NavLink>
-        <NavLink className='nav-link' to="/consultas">{collapsed ? <FaCalendarAlt /> : <> <FaCalendarAlt /> <span>Consultas</span> </>}</NavLink>
+        <NavLink className='nav-link' to="/atleta">{collapsed ? <FaUser /> : <> <FaUser /> <span>Usuarios</span> </>}</NavLink>
+        <NavLink className='nav-link' to="/Agenda">{collapsed ? <FaCalendarAlt /> : <> <FaCalendarAlt /> <span>Agenda</span> </>}</NavLink>
         <NavLink className='nav-link' to="/agendamentos">{collapsed ? <FaSignInAlt /> : <> <FaSignInAlt /> <span>Agendamentos</span> </>}</NavLink>
         <NavLink className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Configurações</span> </>}</NavLink>
       </nav>
