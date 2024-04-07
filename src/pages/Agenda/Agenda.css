@@ -8,12 +8,15 @@
 	height: 100vh;
 }
 .div-interna-calendario{
+	margin-top: 6%;
 	width: 80%;
 	height: 85%;
 	align-items: center;
 	position:static;
 	margin-left: 17%;
+	overflow-y: auto;
 }
+
 
 .botao-adicionar-evento{
 	display: flex!important;
@@ -22,7 +25,7 @@
 	font-weight: bold;
 	position:fixed!important;
 	top: 5% !important;
-	left: 95%  !important;
+	left: 88%  !important;
   }
 
   .texto-central-agenda{
@@ -64,9 +67,9 @@
 }
 
 
-/* PERSONALIZAÇÃO*/
+/* PERSONALIZAÇÃO CALENDARIO WHITE*/
 
-.calendario {
+#light .calendario {
 	background-color: #f5f5f5; /* Cor de fundo do calendário */
 	border-radius: 10px; /* Bordas arredondadas */
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15); /* Sombra ao redor do calendário */
@@ -74,12 +77,12 @@
   }
   
   /* Estilo para os dias do calendário */
-  .calendario .rbc-day-bg {
+#light .calendario .rbc-day-bg {
 	background-color: #fff; /* Cor de fundo dos dias */
   }
   
   /* Estilo para os eventos do calendário */
-  .calendario .rbc-event {
+#light .calendario .rbc-event {
 	background-color: #41a56d; /* Cor de fundo dos eventos */
 	color: #fff; /* Cor do texto dos eventos */
 	border-radius: 5px; /* Bordas arredondadas para os eventos */
@@ -87,12 +90,12 @@
   }
   
   /* Estilo para os eventos do calendário ao passar o mouse */
-  .calendario .rbc-event:hover {
+#light .calendario .rbc-event:hover {
 	background-color: #339a5b; /* Cor de fundo dos eventos ao passar o mouse */
   }
 
   /* Estilo para os botões do calendário */
-.calendario .rbc-btn-group button {
+#light .calendario .rbc-btn-group button {
 	background-color: #41a56d; /* Cor de fundo dos botões */
 	color: #fff; /* Cor do texto dos botões */
 	border: none; /* Remove a borda dos botões */
@@ -100,13 +103,13 @@
   }
   
   /* Estilo para o mês do calendário */
-  .calendario .rbc-toolbar-label {
+#light .calendario .rbc-toolbar-label {
 	font-size: 2em; /* Tamanho da fonte do mês */
 	color: #41a56d; /* Cor do texto do mês */
   }
   
   /* Estilo para o cabeçalho do dia da semana */
-  .calendario .rbc-header {
+#light .calendario .rbc-header {
 	background-color: #41a56d; /* Cor de fundo do cabeçalho do dia da semana */
 	color: #fff; /* Cor do texto do cabeçalho do dia da semana */
 	font-size: 16px;
@@ -115,7 +118,66 @@
 
   }
 /* Estilo para os numerais do mês */
-  .calendario .rbc-date-cell {
+#light .calendario .rbc-date-cell {
 	font-size: 1.3em; /* Tamanho da fonte dos numerais */
 	color: #41a56d; /* Cor dos numerais */
   }
+/* PERSONALIZAÇÃO CALENDARIO BLACK*/
+
+#dark .calendario {
+	background-color: #626262; 
+	border-radius: 10px; /* Bordas arredondadas */
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15); /* Sombra ao redor do calendário */
+	color:#fff; 
+  }
+  
+  /* Estilo para os dias do calendário */
+#dark .calendario .rbc-day-bg {
+	background-color: #484848; /* Cor de fundo dos dias */
+  }
+  
+  /* Estilo para os eventos do calendário */
+#dark .calendario .rbc-event {
+	background-color: #41a56d; /* Cor de fundo dos eventos */
+	color: #fff; /* Cor do texto dos eventos */
+	border-radius: 5px; /* Bordas arredondadas para os eventos */
+	padding: 5px; /* Espaçamento interno para os eventos */
+  }
+  
+  /* Estilo para os eventos do calendário ao passar o mouse */
+#dark .calendario .rbc-event:hover {
+	background-color: #339a5b; /* Cor de fundo dos eventos ao passar o mouse */
+  }
+
+  /* Estilo para os botões do calendário */
+#dark .calendario .rbc-btn-group button {
+	background-color: #383838; /* Cor de fundo dos botões */
+	color: #fff; /* Cor do texto dos botões */
+	border: none; /* Remove a borda dos botões */
+	margin: 0 5px; /* Adiciona uma margem ao redor dos botões */
+  }
+  
+  /* Estilo para o mês do calendário */
+#dark .calendario .rbc-toolbar-label {
+	font-size: 2em; /* Tamanho da fonte do mês */
+	color: #ffffff; /* Cor do texto do mês */
+  }
+  
+  /* Estilo para o cabeçalho do dia da semana */
+#dark .calendario .rbc-header {
+	background-color: #41a56d; /* Cor de fundo do cabeçalho do dia da semana */
+	color: #fff; /* Cor do texto do cabeçalho do dia da semana */
+	font-size: 16px;
+	font-weight: bold;
+	border-radius: 2px; /* Bordas arredondadas para o cabeçalho do dia da semana */
+
+  }
+/* Estilo para os numerais do mês */
+#dark .calendario .rbc-date-cell {
+	font-size: 1.3em; /* Tamanho da fonte dos numerais */
+	color: #ffffff; /* Cor dos numerais */
+}
+#dark .rbc-agenda-event-cell,#dark .rbc-agenda-date-cell,#dark .rbc-agenda-time-cell {
+	color: #fff;
+}
+

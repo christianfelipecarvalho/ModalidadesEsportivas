@@ -1,10 +1,9 @@
-import { Fab, FormControl, InputLabel, NativeSelect, TextField } from '@material-ui/core';
+import { FormControl, InputLabel, NativeSelect, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import AddIcon from '@mui/icons-material/Add';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -22,6 +21,7 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useNavigate } from 'react-router-dom';
 import './Agenda.css';
 
 
@@ -38,24 +38,43 @@ const localizer = dateFnsLocalizer({
 });
 
 const DnDCalendar = withDragAndDrop(Calendar);
+
+
 function Agenda() {
   const [events, setEvents] = useState([
     {
       start: new Date(),
       end: new Date(),
-      title: "Evento inicial"
+      title: "Evento inicial",
+      modalidade: "basket",
+      tipoEvento: "Consultas",
+      local: "FME Içara"
     }
   ]);
+  
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [open, setOpen] = useState(false); // Para controlar a abertura/fechamento do modal
   const [modalidade, setModalidade] = useState("");
   const [tipoEvento, setTipoEvento] = useState("");
   const [local, setLocal] = useState("");
+  const [viewDate, setViewDate] = useState(new Date());
+  const navigate = useNavigate();
 
+  // const handleMonthChange = (event) => {
+  //   const year = viewDate.getFullYear();
+  //   const newDate = new Date(year, event.target.value, 1);
+  //   setViewDate(newDate);
+  // };
   const handleOpen = (slotInfo) => {
-    setStartDate(slotInfo.start);
-    setEndDate(slotInfo.end);
+    if (slotInfo) {
+      setStartDate(slotInfo.start);
+      setEndDate(slotInfo.end);
+    } else {
+      const now = new Date();
+      setStartDate(now);
+      setEndDate(now);
+    }
     setOpen(true);
   };
 
@@ -89,20 +108,34 @@ function Agenda() {
     setEvents(nextEvents);
   };
 
+  // useEffect(() => {
+  //   window.addEventListener('touchstart', handleSelect, { passive: true });
+  //   return () => {
+  //     window.removeEventListener('touchstart', handleSelect);
+  //   };
+  // }, []);
+ 
   useEffect(() => {
-    window.addEventListener('touchstart', handleSelect, { passive: true });
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "Você tem certeza que deseja sair da página?";
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      window.removeEventListener('touchstart', handleSelect);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+
     };
   }, []);
 
   return (
     <div className='div-geral-calendario'>
       <div className='div-interna-calendario'>
-        <h2 className='texto-central-agenda'>Agenda</h2>
-        <Fab className='botao-adicionar-evento' onClick={handleOpen} aria-label="add">
+        {/* <h2 className='texto-central-agenda'>Agenda</h2> */}
+        {/* <Fab className='botao-adicionar-evento' onClick={handleOpen} aria-label="add">
           <AddIcon />
-        </Fab>
+        </Fab> */}
+        <button type="button" className='botao-adicionar-evento' onClick={handleOpen}>Criar novo evento</button>
         {/* AQUI FICA O MODAL E OS CALENDARIOS DE REGISTRO*/ }
         <Dialog className='modal-agendamento' open={open} onClose={handleClose}>
           <DialogTitle>Adicionar novo evento</DialogTitle>
@@ -194,6 +227,20 @@ function Agenda() {
           </DialogActions>
         </Dialog>
         {/* AQUI FICA O BIG CALENDARIO*/}
+        {/* <select onChange={handleMonthChange}>
+  <option value="0">Janeiro</option>
+  <option value="1">Fevereiro</option>
+  <option value="2">Março</option>
+  <option value="3">Abril</option>
+  <option value="4">Maio</option>
+  <option value="5">Junho</option>
+  <option value="6">Julho</option>
+  <option value="7">Agosto</option>
+  <option value="8">Setembro</option>
+  <option value="9">Outubro</option>
+  <option value="10">Novembro</option>
+  <option value="11">Dezembro</option>
+</select> */}
         <DnDCalendar
           className='calendario'
           localizer={localizer}
@@ -201,6 +248,7 @@ function Agenda() {
           startAccessor="start"
           endAccessor="end"
           culture='pt'
+          // date={viewDate}
           onEventDrop={onEventDrop}
           onEventResize={onEventResize}
           resizable
@@ -219,7 +267,15 @@ function Agenda() {
             showMore: total => `+ Ver mais (${total})`
             
           }}
-          onSelectSlot={handleOpen}
+          onSelectEvent={event => {
+            // setStartDate(event.start);
+            // setEndDate(event.end);
+            // setModalidade(event.modalidade);
+            // setTipoEvento(event.tipoEvento);
+            // setLocal(event.local);
+            handleOpen();
+          }}
+          onSelectSlot={slotInfo => handleOpen(slotInfo)}
         />
       </div>
     </div>

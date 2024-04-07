@@ -87,10 +87,24 @@ const Atleta = () => {
     federacao: atleta.federacao,
     tipoUsuario: atleta.tipoUsuario,
   }));
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(+event.target.value);
+  //   setPage(0);
+  // };
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "Você tem certeza que deseja sair da página?";
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+  
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -273,9 +287,7 @@ const Atleta = () => {
   return (
     <div className='principal-atleta'>
       <div className="atletaPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
-        <Fab className='botao-novo' aria-label="add" onClick={handleAddAtleta}>
-          <AddIcon />
-        </Fab>
+        
         <ThemeProvider theme={theme}>
           <div className='pesquisar'>
             <TextField
@@ -289,7 +301,9 @@ const Atleta = () => {
             <Fab className='ViewTable' color="primary" onClick={() => setIsTableView(!isTableView)}>
               {isTableView ? <FaTableCells /> : <GrTable />}
             </Fab >
-
+            <Fab className='botao-novo' aria-label="add" onClick={handleAddAtleta}>
+          <AddIcon />
+        </Fab>
           </div>
         </ThemeProvider>
 
@@ -303,8 +317,8 @@ const Atleta = () => {
               x: 150,
               y: 100,
             }}
-            minWidth={formulario.isMinimized ? undefined : '50%'}
-            minHeight={formulario.isMinimized ? undefined : '50%'}
+            minWidth={formulario.isMinimized ? undefined : '60%'}
+            minHeight={formulario.isMinimized ? undefined : '80%'}
             bounds="parent"
           >
             <div className='botoes-modal' >
