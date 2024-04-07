@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './BaseService';
 
 const API_URL = 'https://geresportes.azurewebsites.net';
 
@@ -7,9 +7,6 @@ export const login = (username, password, source) => {
     senha: password,
     email: username
   },{
-    headers: {
-      'Content-Type': 'application/json'
-    },
     cancelToken: source.token
   });
 }
@@ -46,10 +43,11 @@ export const validaCodigoRecuperacao = (email,codigoRecuperacao, source) => {
 
 
 
-export const redefinirSenha = (username, password, source) => {
-  return axios.put(`${API_URL}/logins/redefinirSenha`, {
-    email: username,
-    senha: password
+export const redefinirSenha = (codigo,senha, password, source) => {
+  return axios.put(`${API_URL}/Usuario/SalvarSenha`, {
+    CodigoUsuario: codigo,
+    SenhaConfirmacao: senha,
+    SenhaNova: password
   },{
     cancelToken: source.token
   });

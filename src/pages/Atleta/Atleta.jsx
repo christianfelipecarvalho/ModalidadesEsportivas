@@ -1,10 +1,10 @@
-import { Button, Card, CardContent, CardMedia, Fab, IconButton, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Fab, IconButton, MenuItem, Select, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Pagination from '@material-ui/lab/Pagination';
 import AddIcon from '@mui/icons-material/Add';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { DataGrid } from '@mui/x-data-grid';
-
 import React, { useContext, useEffect, useState } from 'react';
 import { AiOutlineCloseCircle, AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 import { FaTableCells } from "react-icons/fa6";
@@ -12,8 +12,10 @@ import { GrTable } from "react-icons/gr";
 import { Rnd } from 'react-rnd';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
+import axios from '../../services/BaseService';
 import { listarTodosUsuarios, listarUsuario, salvarUsuario } from '../../services/UsuarioService';
 import './Atleta.css';
+
 const Formulario = ({ atleta }) => {
   const [tipoUsuario, setTipoUsuario] = useState('');
 
@@ -21,13 +23,13 @@ const Formulario = ({ atleta }) => {
     if (atleta) {
       let tipo;
       switch (atleta.tipoUsuario) {
-        case 1:
+        case 0:
           tipo = 'TECNICO';
           break;
-        case 2:
+        case 1:
           tipo = 'ATLETA';
           break;
-        case 3:
+        case 2:
           tipo = 'ADMINISTRADOR';
           break;
         default:
@@ -42,7 +44,7 @@ const Atleta = () => {
   const { collapsed } = useContext(CollapsedContext);
   const [atletas, setAtletas] = useState([]);
   const [pesquisaAtleta, setPesquisaAtleta] = useState('');
-  const [novoAtleta, setNovoAtleta] = useState(false);
+  const [fileData, setFileData] = useState(null);
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(true);
   const [formularios, setFormularios] = useState([]);
   const [pagina, setPagina] = useState(1);
@@ -50,7 +52,10 @@ const Atleta = () => {
   const itemsPorPagina = matches ? 3 : 20;
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [fileName, setFileName] = useState('');
   const [tipoUsuario, setTipoUsuario] = useState('');
+  const [value, setValue] = React.useState(0);
   const columns = [
     { field: 'nome', headerName: 'Nome', minWidth: 350 },
     { field: 'email', headerName: 'Email', minWidth: 350 },
@@ -69,8 +74,8 @@ const Atleta = () => {
     (atleta.subcategoria && atleta.subcategoria.toLowerCase().includes(pesquisaAtleta.toLowerCase()))
   );
 
-  const rows = filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta, index) => ({
-    id: index,
+  const rows = filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => ({
+    id: atleta.id,
     nome: atleta.nome,
     email: atleta.email,
     idade: atleta.idade,
@@ -86,6 +91,9 @@ const Atleta = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   useEffect(() => {
     listarTodosUsuarios()
@@ -96,6 +104,15 @@ const Atleta = () => {
   const handleClose = (index) => {
     setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== index));
   };
+  const handleCloseModalFiles = () => {
+    setOpen(false);
+    setFileData(null);
+    setFileName('');
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
   const handleSearchChange = (event) => {
     setPesquisaAtleta(event.target.value);
   };
@@ -149,13 +166,13 @@ const Atleta = () => {
         // Atualiza o estado do tipoUsuario
         let tipo;
         switch (response.data.tipoUsuario) {
-          case 1:
+          case 0:
             tipo = 'TECNICO';
             break;
-          case 2:
+          case 1:
             tipo = 'ATLETA';
             break;
-          case 3:
+          case 2:
             tipo = 'ADMINISTRADOR';
             break;
           default:
@@ -218,9 +235,35 @@ const Atleta = () => {
       .then(response => console.log(response.data))
       .catch(error => console.error('Error:', error));
   };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
 
-  const handleNavbarToggle = () => {
-    setIsNavbarExpanded(!isNavbarExpanded);
+    reader.onloadend = () => {
+      const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+
+      setFileData({
+        data: base64String,
+        nomeArquivo: fileName,
+        extencao: file.name.split('.').pop(),
+        codigoUsuario: 10
+      });
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleSave = () => {
+    if (fileData) {
+      axios.post('https://geresportes.azurewebsites.net/usuario/uploadDocumento', fileData)
+        .then(response => {
+          console.log(response.data);
+          handleCloseModalFiles();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   };
 
   const handleChangePage = (event, value) => {
@@ -260,8 +303,8 @@ const Atleta = () => {
               x: 150,
               y: 100,
             }}
-            minWidth={formulario.isMinimized ? undefined : 600}
-            minHeight={formulario.isMinimized ? undefined : 500}
+            minWidth={formulario.isMinimized ? undefined : '50%'}
+            minHeight={formulario.isMinimized ? undefined : '50%'}
             bounds="parent"
           >
             <div className='botoes-modal' >
@@ -274,29 +317,93 @@ const Atleta = () => {
             </div>
             {!formulario.isMinimized && (
               <div className='formulario-modal'  >
+                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" 
+                className='tabs-modal' variant='scrollable'>
+                  <Tab  label="Dados Pessoais" />
+                  <Tab label="Informações Complementares" />
+                  <Tab label="Documentos" />
+                  <Tab label="Jogos" />
+                </Tabs>
                 <form className='formulario' onSubmit={handleFormSubmit}>
-                  <TextField className='formulario-campos' id="nome" label="Nome" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
-                  <TextField className='formulario-campos' id="senha" label="Senha" variant="outlined" type="password" defaultValue={formulario.atleta ? formulario.atleta.senha : ''} />
-                  <TextField className='formulario-campos' id="email" label="Email" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
-                  <TextField className='formulario-campos' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
-                  <TextField className='formulario-campos' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
-                  <TextField className='formulario-campos' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
-                  <TextField className='formulario-campos' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
-                  <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
-                  <TextField className='formulario-campos' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
-                  <TextField className='formulario-campos' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
-                  <Select
-                    value={tipoUsuario}
-                    onChange={(event) => setTipoUsuario(event.target.value)}
-                    className='formulario-campos'
-                    id="tipoUsuario"
-                    label="Tipo de Usuário"
-                    variant="outlined"
-                  >
-                    <MenuItem value={'ADMINISTRADOR'}>ADMINISTRADOR</MenuItem>
-                    <MenuItem value={'TECNICO'}>TECNICO</MenuItem>
-                    <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
-                  </Select>
+                  <CardMedia
+                    className='imagem-atleta'
+                    component="img"
+                    height="200"
+                    image={imagemPadrao}
+                  />
+                  <Box hidden={value !== 2} className='campos-container'>
+                    <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickOpen}>
+                      <AttachFileIcon />
+                    </IconButton>
+
+                    <Dialog open={open} onClose={handleCloseModalFiles} aria-labelledby="form-dialog-title">
+                      <DialogTitle id="form-dialog-title">Upload File</DialogTitle>
+                      <DialogContent>
+                        <Button
+                          variant="contained"
+                          component="label"
+                          color='primary'
+                        >
+                          Anexar arquivos
+                          <input
+                            type="file"
+                            hidden
+                            onChange={handleFileChange}
+                          />
+                        </Button>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Nome Arquivo"
+                          type="text"
+                          fullWidth
+                          value={fileName}
+                          onChange={(event) => setFileName(event.target.value)}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+
+                        <Button onClick={handleSave} color="primary">
+                          Salvar
+                        </Button>
+                        <Button onClick={handleCloseModalFiles} color="primary">
+                          Cancelar
+                        </Button>
+
+                      </DialogActions>
+                    </Dialog>
+                  </Box>
+                  <Box hidden={value !== 0} className='campos-container'>
+                     <div className='campos-container-div'> 
+                    <TextField className='formulario-campos' id="nome" label="Nome" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
+                    <TextField className='formulario-campos' id="senha" label="Senha" variant="outlined" type="password" defaultValue={formulario.atleta ? formulario.atleta.senha : ''} />
+                    <TextField className='formulario-campos' id="email" label="Email" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
+                    <TextField className='formulario-campos' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
+                    <TextField className='formulario-campos' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
+                    <TextField className='formulario-campos' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
+                     </div> 
+                  </Box>
+                  <Box hidden={value !== 1} className='campos-container'>
+                  <div className='campos-container-div'> 
+                    <TextField className='formulario-campos' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
+                    <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
+                    <TextField className='formulario-campos' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
+                    <TextField className='formulario-campos' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
+                    <Select
+                      value={tipoUsuario}
+                      onChange={(event) => setTipoUsuario(event.target.value)}
+                      className='formulario-campos'
+                      id="tipoUsuario"
+                      label="Tipo de Usuário"
+                      variant="outlined"
+                    >
+                      <MenuItem value={'ADMINISTRADOR'}>ADMINISTRADOR</MenuItem>
+                      <MenuItem value={'TECNICO'}>TECNICO</MenuItem>
+                      <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
+                    </Select>
+                    </div>
+                  </Box>
                   <Button className='botao-salvar' type="submit" variant="contained" color="primary">
                     Salvar
                   </Button>
@@ -329,31 +436,31 @@ const Atleta = () => {
           </div>
         ) : (
           <div>
-          <div className="cardContainer">
-            {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => (
-              <Card key={atleta.id} className="card">
-                <CardContent onClick={() => handleEditAtleta(atleta)}>
-                  <Typography className='nome-imagem' variant="h5">
-                    <CardMedia
-                      component="img"
-                      alt={atleta.nome}
-                      height="140"
-                      image={atleta.imagem || imagemPadrao}
-                      title={atleta.nome}
-                      style={{ borderRadius: '50%', maxHeight: '75px', maxWidth: '75px', marginRight: '10px', marginBottom: '10px' }}
-                    />{atleta.nome}</Typography>
-                  <Typography>Email: {atleta.email}</Typography>
-                  <Typography>Idade: {atleta.idade}</Typography>
-                  <Typography>Subcategoria: {atleta.subCategoria}</Typography>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
+            <div className="cardContainer">
+              {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => (
+                <Card key={atleta.id} className="card">
+                  <CardContent onClick={() => handleEditAtleta(atleta)}>
+                    <Typography className='nome-imagem' variant="h5">
+                      <CardMedia
+                        component="img"
+                        alt={atleta.nome}
+                        height="140"
+                        image={atleta.imagem || imagemPadrao}
+                        title={atleta.nome}
+                        style={{ borderRadius: '50%', maxHeight: '75px', maxWidth: '75px', marginRight: '10px', marginBottom: '10px' }}
+                      />{atleta.nome}</Typography>
+                    <Typography>Email: {atleta.email}</Typography>
+                    <Typography>Idade: {atleta.idade}</Typography>
+                    <Typography>Subcategoria: {atleta.subCategoria}</Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
 
           </div>
         )}
-        
+
       </div>
     </div>
   );

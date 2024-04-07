@@ -29,7 +29,7 @@ const Forgot = () => {
     const source = axios.CancelToken.source();
 
     try {
-      const response = await recuperacao(email, source); // Use a função recuperacao
+      const response = await recuperacao(email, source); 
       const data = response.data;
       localStorage.setItem('codeRecover', data.codeRecover);
       localStorage.setItem('email', email);

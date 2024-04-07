@@ -45,6 +45,7 @@ const Confirmacao = () => {
         try {
             const response = await validaCodigoRecuperacao(email, codigo, source);
             // Colocar uma mensagem de sucesso aqui após validar
+            const codigoUsuario = localStorage.setItem('codigoUsuario', response.data);
             navigate('/redefinirsenha');
 
         } catch (error) {
@@ -52,7 +53,7 @@ const Confirmacao = () => {
                 console.log('Request canceled', error.message);
             }
             else {
-                setErrorMessage('Erro! Codigo inválido ');
+                setErrorMessage('Erro! Código inválido ');
                 console.error('Erro ao fazer login', error);
             }
         } finally {

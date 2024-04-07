@@ -44,7 +44,7 @@ function App() {
               <Route path='/' element={ <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/home' element={isLoggedIn ? <Home /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/atleta' element={isLoggedIn ? <Atleta /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
-              <Route path='/consultas' element={isLoggedIn ? <Agenda /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
+              <Route path='/agenda' element={isLoggedIn ? <Agenda /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/agendamentos' element={isLoggedIn ? <Agendamentos /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/forgot' element={ <Forgot />} />
               <Route path='/confirmacao' element={ <Confirmacao />} />

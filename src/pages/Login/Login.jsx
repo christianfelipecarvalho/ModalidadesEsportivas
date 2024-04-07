@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../../services/LoginService';
 import './Login.css';
 
-// Importe o spinner de carregamento e o Card do Material-UI
 import { Card, CircularProgress } from '@material-ui/core';
 
 const Login = ({ setIsLoggedIn }) => {
@@ -14,6 +13,11 @@ const Login = ({ setIsLoggedIn }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const source = axios.CancelToken.source();
+
+  useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+  }, []);
 
   useEffect(() => {
     if (errorMessage) {
@@ -30,12 +34,14 @@ const Login = ({ setIsLoggedIn }) => {
     setErrorMessage('');
 
     try {
-      const response = await login(username, password, source); // Use a função login
-      const token = response.data;
+      const response = await login(username, password, source); 
+      const token = response.data.token;
+      const refreshToken = response.data.refreshToken;
       window.localStorage.setItem('token', token);
+      window.localStorage.setItem('refreshToken', refreshToken);
   
       navigate('/home');
-      setIsLoggedIn(true);
+      setIsLoggedIn(true, token, refreshToken);
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log('Request canceled', error.message);
@@ -48,13 +54,12 @@ const Login = ({ setIsLoggedIn }) => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     return () => {
       source.cancel();
     };
-  }, []); // Adicione quaisquer dependências aqui
+  }, []); 
 
   const handleRecuperacaoSenha = (event) => {
     event.preventDefault();

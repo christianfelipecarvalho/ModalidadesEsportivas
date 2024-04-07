@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './BaseService';
 
 const API_URL = 'https://geresportes.azurewebsites.net';
 
@@ -17,3 +17,13 @@ export const salvarUsuario = (usuario) => {
     }
   });
 };
+
+
+export const uploadFiles = () =>{
+  return axios.post(`${API_URL}/usuario/uploadFiles`, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+
+}
