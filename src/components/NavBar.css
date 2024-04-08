@@ -62,6 +62,7 @@
 .nav-link {
   margin-top: 18px;
   color: #ffffff; 
+  font-weight: 600;
 }
 
 /* Cor das letras quando o link está ativo */
