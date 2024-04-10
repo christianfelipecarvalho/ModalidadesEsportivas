@@ -1,18 +1,17 @@
-.Agenda {
+/* .Agenda {
 	text-align: center;
-}
+} */
 .div-geral-calendario{
-	/* width: 100vw; */
 	display: flex;
 	justify-Content: center;
 	height: 100vh;
 }
 .div-interna-calendario{
-	margin-top: 6%;
+	margin-top: 3%;
 	width: 80%;
-	height: 85%;
+	height: 88%;
 	align-items: center;
-	position:static;
+	/* position:static; */
 	overflow-y: auto;
 }
 
