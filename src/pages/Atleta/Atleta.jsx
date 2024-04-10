@@ -315,19 +315,23 @@ const Atleta = () => {
               width: 150,
               height: 10,
               x: 150,
-              y: 100,
+              y: 0,
             }}
             minWidth={formulario.isMinimized ? undefined : '60%'}
             minHeight={formulario.isMinimized ? undefined : '80%'}
             bounds="parent"
           >
             <div className='botoes-modal' >
+            <Button> 
               <IconButton className='icone-minimizar' edge="end" color="inherit" onClick={() => toggleMinimize(index)} aria-label="minimizar">
                 {!formulario.isMinimized ? <AiOutlineFullscreenExit /> : <AiOutlineFullscreen />}
               </IconButton>
+            </Button>
+            <Button> 
               <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(index)} aria-label="fechar">
                 <AiOutlineCloseCircle />
               </IconButton>
+            </Button>
             </div>
             {!formulario.isMinimized && (
               <div className='formulario-modal'  >

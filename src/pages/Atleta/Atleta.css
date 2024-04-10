@@ -15,6 +15,7 @@ div .principal-atleta{
   background: #fff;
   color: #000;
   border-radius: 8%;
+  box-shadow: rgb(163, 163, 163) 0 0 10px;
 }
 
 #light .card:hover {
@@ -31,6 +32,7 @@ div .principal-atleta{
   color: rgb(255, 255, 255);
   border: 2px solid #393939; /* Adiciona uma borda verde ao cartão */
   border-radius: 8%;
+  box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
 @keyframes minhaAnimacao {
   50% {
@@ -106,6 +108,8 @@ border-top-right-radius: 5px;
 display: flex; 
 justify-Content: end;
 z-index: 1;
+box-shadow: rgb(163, 163, 163) 0 0 20px;
+width: 100%;
 }
 #dark div.botoes-modal{
   background: #41a56d; 
@@ -114,6 +118,8 @@ z-index: 1;
   display: flex; 
   justify-Content: end;
   z-index: 1;
+  box-shadow: rgb(39, 39, 39) 0 0 10px;
+  width: 100%;
 }
 #light .icone-fechar{
 margin-left: 5px;
@@ -134,6 +140,7 @@ min-width: 0px;
 min-height: none;
 overflow-y: auto;
 overflow-x: auto;
+box-shadow: rgb(163, 163, 163) 0 0 20px;
 /* max-height: 100vh; */
 }
 #dark .formulario-modal{
@@ -147,6 +154,7 @@ min-width: 0px;
 min-height: none;
 overflow-y: auto;
 overflow-x: auto;
+box-shadow: rgb(39, 39, 39) 0 0 10px;
 
 }
 
@@ -154,6 +162,7 @@ overflow-x: auto;
   .cardContainer{
       margin-top: 10px;
   }
+  
 
 
 }
@@ -162,6 +171,7 @@ overflow-x: auto;
   .cardContainer{
       margin-top: 100px;
   }
+
 }
 
 #light .botao-salvar{

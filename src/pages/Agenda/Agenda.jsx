@@ -15,13 +15,17 @@ import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import dayjs from 'dayjs';
 import "moment/locale/pt-br";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import AddIcon from '@mui/icons-material/Add';
 import 'react-datepicker/dist/react-datepicker.css';
+import { Fab  } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
+
+import { CollapsedContext } from '../../contexts/CollapsedContext';
 import './Agenda.css';
 
 
@@ -60,6 +64,7 @@ function Agenda() {
   const [local, setLocal] = useState("");
   const [viewDate, setViewDate] = useState(new Date());
   const navigate = useNavigate();
+  const { collapsed } = useContext(CollapsedContext);
 
   // const handleMonthChange = (event) => {
   //   const year = viewDate.getFullYear();
@@ -129,13 +134,13 @@ function Agenda() {
   }, []);
 
   return (
-    <div className='div-geral-calendario'>
+    <div className='div-geral-calendario' style={{ marginLeft: collapsed ? '30px' : '11%' }}>
       <div className='div-interna-calendario'>
         {/* <h2 className='texto-central-agenda'>Agenda</h2> */}
-        {/* <Fab className='botao-adicionar-evento' onClick={handleOpen} aria-label="add">
+        <Fab className='botao-adicionar-evento' onClick={handleOpen} aria-label="add">
           <AddIcon />
-        </Fab> */}
-        <button type="button" className='botao-adicionar-evento' onClick={handleOpen}>Criar novo evento</button>
+        </Fab>
+        {/* <button type="button" className='botao-adicionar-evento' onClick={handleOpen}>Criar novo evento</button> */}
         {/* AQUI FICA O MODAL E OS CALENDARIOS DE REGISTRO*/ }
         <Dialog className='modal-agendamento' open={open} onClose={handleClose}>
           <DialogTitle>Adicionar novo evento</DialogTitle>
