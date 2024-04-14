@@ -41,7 +41,7 @@ function App() {
         <BrowserRouter>
           <NavBarWrapper isLoggedIn={isLoggedIn} /> {/*Componente NavBarWrapper */}
           <div className="App" id={theme}>
-            <Routes>
+          <Routes>
               <Route path='/' element={ <Login setIsLoggedIn={setIsLoggedIn} />} />
               <Route path='/home' element={<PrivateRoute><Home /></PrivateRoute>} />
               <Route path='/atleta' element={<PrivateRoute><Atleta /></PrivateRoute>} />

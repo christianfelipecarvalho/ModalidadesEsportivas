@@ -11,6 +11,7 @@ import { FaTableCells } from "react-icons/fa6";
 import { GrTable } from "react-icons/gr";
 import { Rnd } from 'react-rnd';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
+import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
 import axios from '../../services/BaseService';
 import { listarTodosUsuarios, listarUsuario, salvarUsuario } from '../../services/UsuarioService';
@@ -24,13 +25,13 @@ const Formulario = ({ atleta }) => {
       let tipo;
       switch (atleta.tipoUsuario) {
         case 0:
-          tipo = 'TECNICO';
-          break;
-        case 1:
           tipo = 'ATLETA';
           break;
-        case 2:
+        case 1:
           tipo = 'ADMINISTRADOR';
+          break;
+        case 2:
+          tipo = 'TECNICO';
           break;
         default:
           tipo = '';
@@ -91,6 +92,12 @@ const Atleta = () => {
   //   setRowsPerPage(+event.target.value);
   //   setPage(0);
   // };
+  const [isLoading, setIsLoading] = useState(false);  
+
+  const handleClick = () => {
+    setIsLoading(true);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -110,9 +117,16 @@ const Atleta = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     listarTodosUsuarios()
-      .then(response => setAtletas(response.data))
-      .catch(error => console.error('Error:', error));
+      .then(response => {
+        setAtletas(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false);
+      });
   }, []);
 
   const handleClose = (index) => {
@@ -172,11 +186,12 @@ const Atleta = () => {
     setFormularios(prevFormularios => [...prevFormularios, { isMinimized: false }]);
   };
   const handleEditAtleta = (atleta) => {
+    setIsLoading(true);
     listarUsuario(atleta.id)
       .then(response => {
         // Atualiza o estado do formulário
         setFormularios(prevFormularios => [...prevFormularios, { isMinimized: false, atleta: response.data }]);
-
+  
         // Atualiza o estado do tipoUsuario
         let tipo;
         switch (response.data.tipoUsuario) {
@@ -193,8 +208,12 @@ const Atleta = () => {
             tipo = '';
         }
         setTipoUsuario(tipo);
+        setIsLoading(false);
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false);
+      });
   };
   const toggleMinimize = (index) => {
     setFormularios(prevFormularios => prevFormularios.map((formulario, i) => i === index ? { ...formulario, isMinimized: !formulario.isMinimized } : formulario));
@@ -202,7 +221,7 @@ const Atleta = () => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-
+    setIsLoading(true);
     // Coleta os dados do formulário
     const nome = document.getElementById('nome').value;
     const senha = document.getElementById('senha').value;
@@ -218,13 +237,13 @@ const Atleta = () => {
     let tipoUsuarioValor;
     switch (tipoUsuario) {
       case 'ADMINISTRADOR':
-        tipoUsuarioValor = 3;
+        tipoUsuarioValor = 2;
         break;
       case 'TECNICO':
-        tipoUsuarioValor = 1;
+        tipoUsuarioValor = 0;
         break;
       case 'ATLETA':
-        tipoUsuarioValor = 2;
+        tipoUsuarioValor = 1;
         break;
       default:
         tipoUsuarioValor = 1;
@@ -246,9 +265,15 @@ const Atleta = () => {
 
     // Faz a requisição POST
     salvarUsuario(atleta)
-      .then(response => console.log(response.data))
-      .catch(error => console.error('Error:', error));
-  };
+    .then(response => {
+      console.log(response.data);
+      setIsLoading(false);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setIsLoading(false);
+    });
+};
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -269,13 +294,16 @@ const Atleta = () => {
 
   const handleSave = () => {
     if (fileData) {
+      setIsLoading(true);
       axios.post('https://geresportes.azurewebsites.net/usuario/uploadDocumento', fileData)
         .then(response => {
           console.log(response.data);
           handleCloseModalFiles();
+          setIsLoading(false);
         })
         .catch(error => {
           console.error(error);
+          setIsLoading(false);
         });
     }
   };
@@ -287,7 +315,7 @@ const Atleta = () => {
   return (
     <div className='principal-atleta'>
       <div className="atletaPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
-        
+      {isLoading && <Loading />}
         <ThemeProvider theme={theme}>
           <div className='pesquisar'>
             <TextField

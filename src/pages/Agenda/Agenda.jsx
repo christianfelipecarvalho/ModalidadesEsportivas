@@ -1,9 +1,10 @@
-import { FormControl, InputLabel, NativeSelect, TextField } from '@material-ui/core';
+import { Fab, FormControl, InputLabel, NativeSelect, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import AddIcon from '@mui/icons-material/Add';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -20,11 +21,10 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import AddIcon from '@mui/icons-material/Add';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Fab  } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 
+import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
 import './Agenda.css';
 
@@ -65,6 +65,7 @@ function Agenda() {
   const [viewDate, setViewDate] = useState(new Date());
   const navigate = useNavigate();
   const { collapsed } = useContext(CollapsedContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   // const handleMonthChange = (event) => {
   //   const year = viewDate.getFullYear();
@@ -72,6 +73,7 @@ function Agenda() {
   //   setViewDate(newDate);
   // };
   const handleOpen = (slotInfo) => {
+    setIsLoading(true);
     if (slotInfo) {
       setStartDate(slotInfo.start);
       setEndDate(slotInfo.end);
@@ -80,6 +82,7 @@ function Agenda() {
       setStartDate(now);
       setEndDate(now);
     }
+    setIsLoading(false);
     setOpen(true);
   };
 
@@ -88,12 +91,15 @@ function Agenda() {
   };
 
   const handleSelect = () => {
+    setIsLoading(true);
     const title = `${modalidade} - ${tipoEvento} - ${local}`;
     if (title)
       setEvents([...events, { start: startDate, end: endDate, title }]);
+      setIsLoading(false);
   };
 
   const onEventDrop = ({ event, start, end }) => {
+    setIsLoading(true);
     const idx = events.indexOf(event);
     const updatedEvent = { ...event, start, end };
 
@@ -101,9 +107,11 @@ function Agenda() {
     nextEvents.splice(idx, 1, updatedEvent);
 
     setEvents(nextEvents);
+    setIsLoading(false);
   };
 
   const onEventResize = ({ event, start, end }) => {
+    setIsLoading(true);
     const idx = events.indexOf(event);
     const updatedEvent = { ...event, start, end };
 
@@ -111,6 +119,7 @@ function Agenda() {
     nextEvents.splice(idx, 1, updatedEvent);
 
     setEvents(nextEvents);
+    setIsLoading(false);
   };
 
   // useEffect(() => {
@@ -121,20 +130,22 @@ function Agenda() {
   // }, []);
  
   useEffect(() => {
+    setIsLoading(true);
+    setIsLoading(false);
     const handleBeforeUnload = (event) => {
       event.preventDefault();
       event.returnValue = "Você tem certeza que deseja sair da página?";
     };
-  
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
-
     };
+
   }, []);
 
   return (
     <div className='div-geral-calendario' style={{ marginLeft: collapsed ? '30px' : '11%' }}>
+      {isLoading && <Loading />}
       <div className='div-interna-calendario'>
         {/* <h2 className='texto-central-agenda'>Agenda</h2> */}
         <Fab className='botao-adicionar-evento' onClick={handleOpen} aria-label="add">
