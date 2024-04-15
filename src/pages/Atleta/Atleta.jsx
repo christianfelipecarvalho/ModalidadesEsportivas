@@ -1,19 +1,16 @@
-import { Box, Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Fab, IconButton, MenuItem, Select, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { Fab, TextField } from '@material-ui/core';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Pagination from '@material-ui/lab/Pagination';
 import AddIcon from '@mui/icons-material/Add';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useContext, useEffect, useState } from 'react';
-import { AiOutlineCloseCircle, AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 import { FaTableCells } from "react-icons/fa6";
 import { GrTable } from "react-icons/gr";
-import { Rnd } from 'react-rnd';
-import imagemPadrao from '../../assets/ImagemPadrao.jpg';
+import AtletaCard from '../../components/AtletaCard/AtletaCard';
+import AtletaForm from '../../components/AtletaForm/AtletaForm';
 import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
-import axios from '../../services/BaseService';
 import { listarTodosUsuarios, listarUsuario, salvarUsuario } from '../../services/UsuarioService';
 import './Atleta.css';
 
@@ -45,18 +42,16 @@ const Atleta = () => {
   const { collapsed } = useContext(CollapsedContext);
   const [atletas, setAtletas] = useState([]);
   const [pesquisaAtleta, setPesquisaAtleta] = useState('');
-  const [fileData, setFileData] = useState(null);
-  const [isNavbarExpanded, setIsNavbarExpanded] = useState(true);
   const [formularios, setFormularios] = useState([]);
   const [pagina, setPagina] = useState(1);
   const matches = useMediaQuery('(max-width:891px)');
-  const itemsPorPagina = matches ? 3 : 20;
+  const itemsPorPagina = matches ? 3 : 10;
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const [open, setOpen] = useState(false);
-  const [fileName, setFileName] = useState('');
   const [tipoUsuario, setTipoUsuario] = useState('');
-  const [value, setValue] = React.useState(0);
+
+  // const [value, setValue] = React.useState(0);
   const columns = [
     { field: 'nome', headerName: 'Nome', minWidth: 350 },
     { field: 'email', headerName: 'Email', minWidth: 350 },
@@ -68,12 +63,17 @@ const Atleta = () => {
     { field: 'subCategoria', headerName: 'Subcategoria', minWidth: 170 },
     { field: 'federacao', headerName: 'Federação', minWidth: 170 },
     { field: 'tipoUsuario', headerName: 'Tipo de Usuário', minWidth: 170 },
+    { field: 'ativo', headerName: 'Ativo', minWidth: 170 },
   ];
+  const pesquisaAtletaBoolean = pesquisaAtleta.toLowerCase() === 'true'; // Converte a pesquisa para booleano
+
   const filteredAtletas = atletas.filter((atleta) =>
     (atleta.nome && atleta.nome.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
     (atleta.email && atleta.email.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
-    (atleta.subcategoria && atleta.subcategoria.toLowerCase().includes(pesquisaAtleta.toLowerCase()))
+    (atleta.subcategoria && atleta.subcategoria.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
+    (atleta.ativo === pesquisaAtletaBoolean) // Compara o valor booleano
   );
+  
 
   const rows = filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => ({
     id: atleta.id,
@@ -87,6 +87,8 @@ const Atleta = () => {
     subCategoria: atleta.subCategoria,
     federacao: atleta.federacao,
     tipoUsuario: atleta.tipoUsuario,
+    documentoUsuario: atleta.documentoUsuario,
+    ativo: atleta.ativo
   }));
   // const handleChangeRowsPerPage = (event) => {
   //   setRowsPerPage(+event.target.value);
@@ -99,18 +101,18 @@ const Atleta = () => {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue = "Você tem certeza que deseja sair da página?";
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     event.preventDefault();
+  //     event.returnValue = "Você tem certeza que deseja sair da página?";
+  //   };
   
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
   
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
   
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -129,17 +131,18 @@ const Atleta = () => {
       });
   }, []);
 
-  const handleClose = (index) => {
-    setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== index));
+  // const handleClose = (index) => { jeito antigo de fechar a janela, fechava na ordem que abria e não na ordem que clicava
+  //   setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== index));
+  // };
+  const handleClose = (userId) => {
+    setFormularios(prevFormularios => prevFormularios.filter(formulario => formulario.atleta.id !== userId));
   };
   const handleCloseModalFiles = () => {
     setOpen(false);
     setFileData(null);
     setFileName('');
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+ 
 
   const handleSearchChange = (event) => {
     setPesquisaAtleta(event.target.value);
@@ -233,6 +236,8 @@ const Atleta = () => {
     const documento = document.getElementById('documento').value;
     const subCategoria = document.getElementById('subCategoria').value;
     const federacao = document.getElementById('federacao').value;
+    const ativo = document.getElementById('ativo');
+    // const documentoUsuario = document.getElementById('documentoUsuario').value;
     //const tipoUsuario = document.getElementById('tipoUsuario').value;
     let tipoUsuarioValor;
     switch (tipoUsuario) {
@@ -260,7 +265,9 @@ const Atleta = () => {
       documento,
       subCategoria,
       federacao,
-      tipoUsuario: tipoUsuarioValor
+      tipoUsuario: tipoUsuarioValor,
+      ativo,
+      // documentoUsuario
     };
 
     // Faz a requisição POST
@@ -274,39 +281,9 @@ const Atleta = () => {
       setIsLoading(false);
     });
 };
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+ 
 
-    reader.onloadend = () => {
-      const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 
-      setFileData({
-        data: base64String,
-        nomeArquivo: fileName,
-        extencao: file.name.split('.').pop(),
-        codigoUsuario: 10
-      });
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  const handleSave = () => {
-    if (fileData) {
-      setIsLoading(true);
-      axios.post('https://geresportes.azurewebsites.net/usuario/uploadDocumento', fileData)
-        .then(response => {
-          console.log(response.data);
-          handleCloseModalFiles();
-          setIsLoading(false);
-        })
-        .catch(error => {
-          console.error(error);
-          setIsLoading(false);
-        });
-    }
-  };
 
   const handleChangePage = (event, value) => {
     setPagina(value);
@@ -336,130 +313,17 @@ const Atleta = () => {
         </ThemeProvider>
 
         {formularios.map((formulario, index) => (
-          <Rnd
-            style={{ zIndex: 1 }}
-            key={index}
-            default={{
-              width: 150,
-              height: 10,
-              x: 150,
-              y: 0,
-            }}
-            minWidth={formulario.isMinimized ? undefined : '60%'}
-            minHeight={formulario.isMinimized ? undefined : '80%'}
-            bounds="parent"
-          >
-            <div className='botoes-modal' >
-            <Button> 
-              <IconButton className='icone-minimizar' edge="end" color="inherit" onClick={() => toggleMinimize(index)} aria-label="minimizar">
-                {!formulario.isMinimized ? <AiOutlineFullscreenExit /> : <AiOutlineFullscreen />}
-              </IconButton>
-            </Button>
-            <Button> 
-              <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(index)} aria-label="fechar">
-                <AiOutlineCloseCircle />
-              </IconButton>
-            </Button>
-            </div>
-            {!formulario.isMinimized && (
-              <div className='formulario-modal'  >
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" 
-                className='tabs-modal' variant='scrollable'>
-                  <Tab  label="Dados Pessoais" />
-                  <Tab label="Informações Complementares" />
-                  <Tab label="Documentos" />
-                  <Tab label="Jogos" />
-                </Tabs>
-                <form className='formulario' onSubmit={handleFormSubmit}>
-                  <CardMedia
-                    className='imagem-atleta'
-                    component="img"
-                    height="200"
-                    image={imagemPadrao}
-                  />
-                  <Box hidden={value !== 2} className='campos-container'>
-                    <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickOpen}>
-                      <AttachFileIcon />
-                    </IconButton>
+          <AtletaForm
+            formulario={formulario}
+            index={index}
+            toggleMinimize={toggleMinimize}
+            handleClose={handleClose}
+            handleFormSubmit={handleFormSubmit}
+            tipoUsuario={tipoUsuario}
+            isMinimized={isMinimized}
 
-                    <Dialog open={open} onClose={handleCloseModalFiles} aria-labelledby="form-dialog-title">
-                      <DialogTitle id="form-dialog-title">Upload File</DialogTitle>
-                      <DialogContent>
-                        <Button
-                          variant="contained"
-                          component="label"
-                          color='primary'
-                        >
-                          Anexar arquivos
-                          <input
-                            type="file"
-                            hidden
-                            onChange={handleFileChange}
-                          />
-                        </Button>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="name"
-                          label="Nome Arquivo"
-                          type="text"
-                          fullWidth
-                          value={fileName}
-                          onChange={(event) => setFileName(event.target.value)}
-                        />
-                      </DialogContent>
-                      <DialogActions>
 
-                        <Button onClick={handleSave} color="primary">
-                          Salvar
-                        </Button>
-                        <Button onClick={handleCloseModalFiles} color="primary">
-                          Cancelar
-                        </Button>
-
-                      </DialogActions>
-                    </Dialog>
-                  </Box>
-                  <Box hidden={value !== 0} className='campos-container'>
-                     <div className='campos-container-div'> 
-                    <TextField className='formulario-campos' id="nome" label="Nome" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
-                    <TextField className='formulario-campos' id="senha" label="Senha" variant="outlined" type="password" defaultValue={formulario.atleta ? formulario.atleta.senha : ''} />
-                    <TextField className='formulario-campos' id="email" label="Email" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
-                    <TextField className='formulario-campos' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
-                    <TextField className='formulario-campos' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
-                    <TextField className='formulario-campos' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
-                     </div> 
-                  </Box>
-                  <Box hidden={value !== 1} className='campos-container'>
-                  <div className='campos-container-div'> 
-                    <TextField className='formulario-campos' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
-                    <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
-                    <TextField className='formulario-campos' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
-                    <TextField className='formulario-campos' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
-                    <Select
-                      value={tipoUsuario}
-                      onChange={(event) => setTipoUsuario(event.target.value)}
-                      className='formulario-campos'
-                      id="tipoUsuario"
-                      label="Tipo de Usuário"
-                      variant="outlined"
-                    >
-                      <MenuItem value={'ADMINISTRADOR'}>ADMINISTRADOR</MenuItem>
-                      <MenuItem value={'TECNICO'}>TECNICO</MenuItem>
-                      <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
-                    </Select>
-                    </div>
-                  </Box>
-                  <Button className='botao-salvar' type="submit" variant="contained" color="primary">
-                    Salvar
-                  </Button>
-                </form>
-              </div>
-            )}
-            {isMinimized && (
-              <div style={{ backgroundColor: '#41a56d', width: '10%', height: '20%' }}></div>
-            )}
-          </Rnd>
+          />
         ))}
 
         {isTableView ? (
@@ -484,22 +348,7 @@ const Atleta = () => {
           <div>
             <div className="cardContainer">
               {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => (
-                <Card key={atleta.id} className="card">
-                  <CardContent onClick={() => handleEditAtleta(atleta)}>
-                    <Typography className='nome-imagem' variant="h5">
-                      <CardMedia
-                        component="img"
-                        alt={atleta.nome}
-                        height="140"
-                        image={atleta.imagem || imagemPadrao}
-                        title={atleta.nome}
-                        style={{ borderRadius: '50%', maxHeight: '75px', maxWidth: '75px', marginRight: '10px', marginBottom: '10px' }}
-                      />{atleta.nome}</Typography>
-                    <Typography>Email: {atleta.email}</Typography>
-                    <Typography>Idade: {atleta.idade}</Typography>
-                    <Typography>Subcategoria: {atleta.subCategoria}</Typography>
-                  </CardContent>
-                </Card>
+                <AtletaCard atleta={atleta} handleEditAtleta={handleEditAtleta} />
               ))}
             </div>
             <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />

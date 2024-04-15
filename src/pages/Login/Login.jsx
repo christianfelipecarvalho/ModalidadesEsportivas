@@ -17,15 +17,15 @@ const Login = ({ setIsLoggedIn }) => {
   const source = axios.CancelToken.source();
   const [loadingForgotPassword, setLoadingForgotPassword] = useState(false); 
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 95 ? 0 : prevProgress + 20));
-    }, 800);
+  // React.useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setProgress((prevProgress) => (prevProgress >= 95 ? 0 : prevProgress + 20));
+  //   }, 800);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
   useEffect(() => {
     localStorage.removeItem('token');

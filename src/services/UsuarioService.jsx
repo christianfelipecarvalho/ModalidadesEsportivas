@@ -27,3 +27,6 @@ export const uploadFiles = () =>{
   });
 
 }
+export const inativarUsuario = (id) =>{
+  return axios.put(`${API_URL}/Usuario/InativarUsuario/${id}`);
+}

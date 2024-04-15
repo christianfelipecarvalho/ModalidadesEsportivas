@@ -17,7 +17,31 @@ div .principal-atleta{
   border-radius: 8%;
   box-shadow: rgb(163, 163, 163) 0 0 10px;
 }
-
+#light .card-inativo {
+  margin: 20px;
+  width: 300px; /*muda o tamanho dos cards*/
+  /* transition: transform 0.1s ease-in-out; aqui faz o card vir para frente quando passa o mouse por cima  */
+  background: #ffffff;
+  color: #000;
+  border-radius: 8%;
+  box-shadow: rgba(253, 0, 0, 0.398) 0 0 10px;
+}
+#dark .card-inativo {
+  margin: 20px;
+  width: 300px;
+  transition: transform 0.1s ease-in-out;
+  background: #393939;
+  color: rgb(255, 255, 255);
+  border: 2px solid #393939; /* Adiciona uma borda verde ao cartão */
+  border-radius: 8%;
+  box-shadow: rgba(226, 0, 0, 0.34) 0 0 10px;
+}
+#light .card-inativo:hover {
+  background-color: #ff00006e; 
+}
+#dark .card-inativo:hover {
+  background-color: #ff0000ae; 
+}
 #light .card:hover {
   background-color: #ccc; 
 }
@@ -34,6 +58,7 @@ div .principal-atleta{
   border-radius: 8%;
   box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
+
 @keyframes minhaAnimacao {
   50% {
     transform: scale(1.1);

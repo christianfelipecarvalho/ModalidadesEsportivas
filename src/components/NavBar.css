@@ -52,7 +52,7 @@
   width: 65px;
   align-items: center;
   justify-content: center;
-  display: flex;
+  /* display: flex; */ /* SE ATIVAR QUANDO ATINGIR MAIS DE 810PX VAI HABILITAR O BOTÃO*/
 }
 
 #light .aside-button,  #light .toggle-button {
