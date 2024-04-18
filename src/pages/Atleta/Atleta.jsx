@@ -135,6 +135,7 @@ const Atleta = () => {
   //   setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== index));
   // };
   const handleClose = (userId) => {
+    console.log("Entrei aqui")
     setFormularios(prevFormularios => prevFormularios.filter(formulario => formulario.atleta.id !== userId));
   };
   const handleCloseModalFiles = () => {

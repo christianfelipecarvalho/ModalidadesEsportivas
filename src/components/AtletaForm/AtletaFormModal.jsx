@@ -1,143 +1,34 @@
-// AtletaForm.jsx
-import { Box, Button, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Select, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import React from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import React, { useState } from 'react';
-import { AiOutlineCloseCircle, AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
-import { Rnd } from 'react-rnd';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
-import axios from '../../services/BaseService';
-import { inativarUsuario } from '../../services/UsuarioService';
-import MyDialogComponent from './AtletaFormModal';
-const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleFormSubmit, tipoUsuario, isMinimized }) => {
+import { Box, CardMedia, IconButton, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
 
-    const [value, setValue] = React.useState(0);
-    const [modalIsOpen, setIsOpen] = React.useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [fileName, setFileName] = useState('');
-    const [fileData, setFileData] = useState(null);
-    const [ativo, setAtivo] = useState(formulario.atleta.ativo ? formulario.atleta.ativo : false);
-    const isMobile = window.innerWidth <= 768;
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleSave = () => {
-        if (fileData) {
-            setIsLoading(true);
-            axios.post('https://geresportes.azurewebsites.net/usuario/uploadDocumento', fileData)
-                .then(response => {
-                    console.log(response.data);
-                    handleCloseModalFiles();
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    console.error(error);
-                    setIsLoading(false);
-                });
-        }
-    };
+function MyDialogComponent({ formulario, handleChange, handleFormSubmit, ativo, handleToggle, handleCloseModalFiles, handleFileChange, fileName,handleSave, tipoUsuario  }) {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState(0);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-    const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const handleCloseModalFiles = () => {
-        setOpen(false);
-        setFileData(null);
-        setFileName('');
-    };
-    
-    
-      function closeModal() {
-        setIsOpen(false);
-      }
-    
-
-    const handleFileChange = (event) => {
-        console.log("entrei aqui");
-        const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
-
-            setFileData({
-                data: base64String,
-                nomeArquivo: fileName,
-                extencao: file.name.split('.').pop(),
-                codigoUsuario: 10,
-                imagemPerfil: true
-            });
-        };
-
-        reader.readAsDataURL(file);
-    };
-    const handleToggle = async (event) => {
-        setIsLoading(true);
-        console.log("entrei ativo atleta " + formulario.atleta.id);
-        console.log("event.target.checked " + event.target.checked);
-        setAtivo( event.target.checked);
-        await inativarUsuario(formulario.atleta.id);
-        setIsLoading(false);    
-    };
-    if (isMobile) {
-    return (
-        <MyDialogComponent
-        tipoUsuario={tipoUsuario}
-        handleSave={handleSave}
-        fileName={fileName}
-        handleFileChange={handleFileChange}
-        handleCloseModalFiles={handleCloseModalFiles}
-        handleToggle={handleToggle}
-        ativo={ativo}
-        formulario={formulario}
-        handleChange={handleChange}
-        handleFormSubmit={handleFormSubmit}
-        
-        />
-      );
-    } else {
-        return (
-        <Rnd
-            style={{ zIndex: 1 }}
-            key={index}
-            default={{
-                width: 150,
-                height: 10,
-                x: 100,
-                y: 80,
-            }}
-            minWidth={formulario.isMinimized ? undefined : '50%'}
-            minHeight={formulario.isMinimized ? undefined : '70%'}
-            bounds="window"
-            enableResizing={{
-                top:false, 
-                right:false, 
-                bottom:false, 
-                left:false, 
-                topRight:false, 
-                bottomRight:false, 
-                bottomLeft:false, 
-                topLeft:false
-              }}
-        >
-            <div className='botoes-modal' >
-                <Button>
-                    <IconButton className='icone-minimizar' edge="end" color="inherit" onClick={() => toggleMinimize(index)} aria-label="minimizar">
-                        {!formulario.isMinimized ? <AiOutlineFullscreenExit /> : <AiOutlineFullscreen />}
-                    </IconButton>
-                </Button>
-                <Button>
-                    {/* <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(index)} aria-label="fechar">
-                        <AiOutlineCloseCircle />
-                    </IconButton> */}
-                    <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(formulario.atleta.id)} aria-label="fechar">
-                        <AiOutlineCloseCircle />
-                    </IconButton>
-                </Button>
-            </div>
-            {!formulario.isMinimized && (
-                <div className='formulario-modal'  >
+  return (
+    <div>
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        Abrir Dialog
+      </Button>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Meu Dialog</DialogTitle>
+        <DialogContent>
+        <div className='formulario-modal'  >
                     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
                         className='tabs-modal' variant='scrollable'>
                         <Tab label="Dados Pessoais" />
@@ -166,7 +57,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
                                     <AttachFileIcon />
                                 </IconButton>
 
-                                <Dialog open={open} onClose={handleCloseModalFiles} aria-labelledby="form-dialog-title">
+                                {/* <Dialog open={open} onClose={handleCloseModalFiles} aria-labelledby="form-dialog-title">
                                     <DialogTitle id="form-dialog-title">Upload File</DialogTitle>
                                     <DialogContent>
                                         <Button variant="contained" component="label" color='primary'>
@@ -194,7 +85,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
                                         </Button>
 
                                     </DialogActions>
-                                </Dialog>
+                                </Dialog> */}
                             </Box>
                             <Box hidden={value !== 0} className='campos-container'>
                                 <div className='campos-container-div'>
@@ -233,13 +124,18 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
                         </Button>
                     </form>
                 </div>
-            )}
-            {isMinimized && (
-                <div style={{ backgroundColor: '#41a56d', width: '10%', height: '20%' }}></div>
-            )}
-        </Rnd>
-    
-    );
-};
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Salvar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
 }
-export default AtletaForm;
+
+export default MyDialogComponent;

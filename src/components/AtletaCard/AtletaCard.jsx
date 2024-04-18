@@ -41,7 +41,7 @@ const AtletaCard = ({ atleta, handleEditAtleta }) => {
             checked={atleta.ativo}
             onChange={handleToggle}
             name="checkedB"
-            color="warning"
+            color="default"
           />
         </Typography>
       </CardContent>
