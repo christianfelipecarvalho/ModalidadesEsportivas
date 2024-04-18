@@ -8,7 +8,9 @@ import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import axios from '../../services/BaseService';
 import { inativarUsuario } from '../../services/UsuarioService';
 import MyDialogComponent from './AtletaFormModal';
-const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleFormSubmit, tipoUsuario, isMinimized }) => {
+
+
+const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleFormSubmit, tipoUsuario, isMinimized, openModalResponsivo }) => {
 
     const [value, setValue] = React.useState(0);
     const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -87,13 +89,10 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
         handleSave={handleSave}
         fileName={fileName}
         handleFileChange={handleFileChange}
-        handleCloseModalFiles={handleCloseModalFiles}
         handleToggle={handleToggle}
         ativo={ativo}
         formulario={formulario}
-        handleChange={handleChange}
         handleFormSubmit={handleFormSubmit}
-        
         />
       );
     } else {
@@ -158,7 +157,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
                                         checked={ativo}
                                         onChange={handleToggle}
                                         name="checkedB"
-                                        color="warning"
+                                        color="default"
                                     />
                             </Typography>
                             <Box hidden={value !== 2} className='campos-container'>

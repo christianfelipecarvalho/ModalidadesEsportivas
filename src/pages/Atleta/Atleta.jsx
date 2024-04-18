@@ -14,30 +14,30 @@ import { CollapsedContext } from '../../contexts/CollapsedContext';
 import { listarTodosUsuarios, listarUsuario, salvarUsuario } from '../../services/UsuarioService';
 import './Atleta.css';
 
-const Formulario = ({ atleta }) => {
-  const [tipoUsuario, setTipoUsuario] = useState('');
+// const Formulario = ({ atleta }) => {
+//   const [tipoUsuario, setTipoUsuario] = useState('');
 
-  useEffect(() => {
-    if (atleta) {
-      let tipo;
-      switch (atleta.tipoUsuario) {
-        case 0:
-          tipo = 'ATLETA';
-          break;
-        case 1:
-          tipo = 'ADMINISTRADOR';
-          break;
-        case 2:
-          tipo = 'TECNICO';
-          break;
-        default:
-          tipo = '';
-      }
-      setTipoUsuario(tipo);
-    }
-  }, [atleta]);
+//   useEffect(() => {
+//     if (atleta) {
+//       let tipo;
+//       switch (atleta.tipoUsuario) {
+//         case 0:
+//           tipo = 'ATLETA';
+//           break;
+//         case 1:
+//           tipo = 'ADMINISTRADOR';
+//           break;
+//         case 2:
+//           tipo = 'TECNICO';
+//           break;
+//         default:
+//           tipo = '';
+//       }
+//       setTipoUsuario(tipo);
+//     }
+//   }, [atleta]);
 
-};
+// };
 const Atleta = () => {
   const { collapsed } = useContext(CollapsedContext);
   const [atletas, setAtletas] = useState([]);

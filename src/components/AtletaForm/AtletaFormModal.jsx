@@ -9,24 +9,31 @@ import TextField from '@material-ui/core/TextField';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import { Box, CardMedia, IconButton, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
 
-function MyDialogComponent({ formulario, handleChange, handleFormSubmit, ativo, handleToggle, handleCloseModalFiles, handleFileChange, fileName,handleSave, tipoUsuario  }) {
-  const [open, setOpen] = React.useState(false);
+function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle,  handleFileChange, fileName,handleSave, tipoUsuario  }) {
+  const [open, setOpen] = React.useState(true);
+  const [openFileEdit, setOpenFileEdit] = React.useState(false);
   const [value, setValue] = React.useState(0);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  const handleClose = () => {
+  const handleClickAbrirModalEdicaoArquivos = () => {
+    setOpenFileEdit(true);
+  };
+  const handleFecharModalAnexarArquivos = () => {
+    setOpenFileEdit(false);
+    // setFileData(null);
+    // setFileName('');s
+};
+
+  const handleFecharModalUsuario = () => {
     setOpen(false);
   };
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+};
+
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Abrir Dialog
-      </Button>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Meu Dialog</DialogTitle>
+      <Dialog open={open} onClose={handleFecharModalUsuario} aria-labelledby="form-dialog-title">
         <DialogContent>
         <div className='formulario-modal'  >
                     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
@@ -43,21 +50,21 @@ function MyDialogComponent({ formulario, handleChange, handleFormSubmit, ativo, 
                                 height="200"
                                 image={imagemPadrao}
                             />
-                            <Typography>Ativo: 
+                            <Typography>Ativo:
                             <Switch
                                         style={{ color: ativo ? '#41a56d' : '#ff0000ae' }}
                                         checked={ativo}
                                         onChange={handleToggle}
                                         name="checkedB"
-                                        color="warning"
+                                        color="default"
                                     />
                             </Typography>
                             <Box hidden={value !== 2} className='campos-container'>
-                                <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickOpen}>
+                                <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickAbrirModalEdicaoArquivos}>
                                     <AttachFileIcon />
                                 </IconButton>
 
-                                {/* <Dialog open={open} onClose={handleCloseModalFiles} aria-labelledby="form-dialog-title">
+                                <Dialog open={openFileEdit} onClose={handleFecharModalAnexarArquivos} aria-labelledby="form-dialog-title">
                                     <DialogTitle id="form-dialog-title">Upload File</DialogTitle>
                                     <DialogContent>
                                         <Button variant="contained" component="label" color='primary'>
@@ -80,12 +87,12 @@ function MyDialogComponent({ formulario, handleChange, handleFormSubmit, ativo, 
                                         <Button onClick={handleSave} color="primary">
                                             Salvar
                                         </Button>
-                                        <Button onClick={handleCloseModalFiles} color="primary">
+                                        <Button onClick={handleFecharModalAnexarArquivos} color="primary">
                                             Cancelar
                                         </Button>
 
                                     </DialogActions>
-                                </Dialog> */}
+                                </Dialog>
                             </Box>
                             <Box hidden={value !== 0} className='campos-container'>
                                 <div className='campos-container-div'>
@@ -96,7 +103,7 @@ function MyDialogComponent({ formulario, handleChange, handleFormSubmit, ativo, 
                                     <TextField className='formulario-campos' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
                                     <TextField className='formulario-campos' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
                                     {/* <TextField className='formulario-campos' id="ativo" label="Ativo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.ativo : ''} /> */}
-                                    
+
                             </div>
                         </Box>
                         <Box hidden={value !== 1} className='campos-container'>
@@ -126,12 +133,12 @@ function MyDialogComponent({ formulario, handleChange, handleFormSubmit, ativo, 
                 </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancelar
+          <Button onClick={handleFecharModalUsuario} color="primary">
+            Fechar
           </Button>
-          <Button onClick={handleClose} color="primary">
+          {/* <Button onClick={handleClose} color="primary">
             Salvar
-          </Button>
+          </Button> */}
         </DialogActions>
       </Dialog>
     </div>
