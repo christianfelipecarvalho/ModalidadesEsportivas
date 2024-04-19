@@ -5,6 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Button from '@material-ui/core/Button';
+
 import TextField from '@material-ui/core/TextField';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import { Box, CardMedia, IconButton, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
@@ -35,7 +36,7 @@ function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle, 
     <div>
       <Dialog open={open} onClose={handleFecharModalUsuario} aria-labelledby="form-dialog-title">
         <DialogContent>
-        <div className='formulario-modal'  >
+        <div className='formulario-modal-responsivo'  >
                     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
                         className='tabs-modal' variant='scrollable'>
                         <Tab label="Dados Pessoais" />
@@ -43,9 +44,9 @@ function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle, 
                         <Tab label="Documentos" />
                         <Tab label="Jogos" />
                     </Tabs>
-                        <form className='formulario' onSubmit={handleFormSubmit}>
+                        <form className='formulario-responsivo' onSubmit={handleFormSubmit}>
                             <CardMedia
-                                className='imagem-atleta'
+                                className='imagem-atleta-responsivo'
                                 component="img"
                                 height="200"
                                 image={imagemPadrao}
@@ -95,27 +96,26 @@ function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle, 
                                 </Dialog>
                             </Box>
                             <Box hidden={value !== 0} className='campos-container'>
-                                <div className='campos-container-div'>
-                                    <TextField className='formulario-campos' id="nome" label="Nome" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
-                                    <TextField className='formulario-campos' id="senha" label="Senha" variant="outlined" type="password" defaultValue={formulario.atleta ? formulario.atleta.senha : ''} />
-                                    <TextField className='formulario-campos' id="email" label="Email" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
-                                    <TextField className='formulario-campos' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
-                                    <TextField className='formulario-campos' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
-                                    <TextField className='formulario-campos' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
+                                <div className='campos-container-div-responsivo'>
+                                    <TextField className='formulario-campos-responsivo' id="senha" label="Senha" variant="outlined" type="password" defaultValue={formulario.atleta ? formulario.atleta.senha : ''} />
+                                    <TextField className='formulario-campos-responsivo' id="email" label="Email" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
+                                    <TextField className='formulario-campos-responsivo' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
+                                    <TextField className='formulario-campos-responsivo' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
+                                    <TextField className='formulario-campos-responsivo' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
                                     {/* <TextField className='formulario-campos' id="ativo" label="Ativo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.ativo : ''} /> */}
 
                             </div>
                         </Box>
                         <Box hidden={value !== 1} className='campos-container'>
-                            <div className='campos-container-div'>
-                                <TextField className='formulario-campos' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
-                                <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
-                                <TextField className='formulario-campos' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
-                                <TextField className='formulario-campos' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
+                            <div className='campos-container-div-responsivo'>
+                                <TextField className='formulario-campos-responsivo' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
+                                <TextField className='formulario-campos-responsivo' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
+                                <TextField className='formulario-campos-responsivo' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
+                                <TextField className='formulario-campos-responsivo' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
                                 <Select
                                     value={tipoUsuario}
                                     onChange={(event) => setTipoUsuario(event.target.value)}
-                                    className='formulario-campos'
+                                    className='formulario-campos-responsivo'
                                     id="tipoUsuario"
                                     label="Tipo de Usuário"
                                     variant="outlined"
