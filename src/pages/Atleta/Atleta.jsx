@@ -11,7 +11,7 @@ import AtletaCard from '../../components/AtletaCard/AtletaCard';
 import AtletaForm from '../../components/AtletaForm/AtletaForm';
 import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
-import { listarTodosUsuarios, listarUsuario, salvarUsuario } from '../../services/UsuarioService';
+import { alterarUsuario, listarTodosUsuarios, listarUsuario, salvarUsuario } from '../../services/UsuarioService';
 import './Atleta.css';
 
 // const Formulario = ({ atleta }) => {
@@ -36,8 +36,8 @@ import './Atleta.css';
 //       setTipoUsuario(tipo);
 //     }
 //   }, [atleta]);
-
 // };
+
 const Atleta = () => {
   const { collapsed } = useContext(CollapsedContext);
   const [atletas, setAtletas] = useState([]);
@@ -50,6 +50,7 @@ const Atleta = () => {
   const [isTableView, setIsTableView] = useState(false);
   const [open, setOpen] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('');
+  const [ativo, setAtivo] = useState(formularios.atleta);
 
   // const [value, setValue] = React.useState(0);
   const columns = [
@@ -149,7 +150,6 @@ const Atleta = () => {
     setPesquisaAtleta(event.target.value);
   };
 
-
   const theme = createTheme({
     overrides: {
       MuiOutlinedInput: {
@@ -189,6 +189,7 @@ const Atleta = () => {
   const handleAddAtleta = () => {
     setFormularios(prevFormularios => [...prevFormularios, { isMinimized: false }]);
   };
+
   const handleEditAtleta = (atleta) => {
     setIsLoading(true);
     listarUsuario(atleta.id)
@@ -223,10 +224,12 @@ const Atleta = () => {
     setFormularios(prevFormularios => prevFormularios.map((formulario, i) => i === index ? { ...formulario, isMinimized: !formulario.isMinimized } : formulario));
   };
 
-  const handleFormSubmit = (event) => {
+const handleFormSubmit = (event) => {
     event.preventDefault();
     setIsLoading(true);
     // Coleta os dados do formulário
+    const idElement = document.getElementById('id');
+    const id = idElement ? idElement.value : '';
     const nome = document.getElementById('nome').value;
     const senha = document.getElementById('senha').value;
     const email = document.getElementById('email').value;
@@ -256,6 +259,7 @@ const Atleta = () => {
     }
     // Cria o objeto com os dados do atleta
     const atleta = {
+      id,
       nome,
       senha,
       email,
@@ -270,21 +274,29 @@ const Atleta = () => {
       ativo,
       // documentoUsuario
     };
-
-    // Faz a requisição POST
-    salvarUsuario(atleta)
-    .then(response => {
-      console.log(response.data);
-      setIsLoading(false);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      setIsLoading(false);
-    });
+    if(atleta.id !== null){
+      // salva o atleta novo se não existir
+      salvarUsuario(atleta)
+      .then(response => {
+        console.log(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false);
+      });
+    }else{
+      alterarUsuario(atleta)
+      .then(response => {
+        console.log(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false);
+      });
+    }
 };
- 
-
-
 
   const handleChangePage = (event, value) => {
     setPagina(value);
@@ -322,7 +334,7 @@ const Atleta = () => {
             handleFormSubmit={handleFormSubmit}
             tipoUsuario={tipoUsuario}
             isMinimized={isMinimized}
-
+            ativo={ativo}
 
           />
         ))}
@@ -349,7 +361,7 @@ const Atleta = () => {
           <div>
             <div className="cardContainer">
               {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => (
-                <AtletaCard atleta={atleta} handleEditAtleta={handleEditAtleta} />
+                <AtletaCard ativo={ativo} atleta={atleta} handleEditAtleta={handleEditAtleta} />
               ))}
             </div>
             <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />

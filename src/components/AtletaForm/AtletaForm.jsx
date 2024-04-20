@@ -6,18 +6,18 @@ import { AiOutlineCloseCircle, AiOutlineFullscreen, AiOutlineFullscreenExit } fr
 import { Rnd } from 'react-rnd';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import axios from '../../services/BaseService';
-import { inativarUsuario } from '../../services/UsuarioService';
+import { alterarUsuario, inativarUsuario, salvarUsuario } from '../../services/UsuarioService';
 import MyDialogComponent from './AtletaFormModal';
 
 
-const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleFormSubmit, tipoUsuario, isMinimized, openModalResponsivo }) => {
+const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuario, isMinimized, openModalResponsivo, ativo }) => {
 
     const [value, setValue] = React.useState(0);
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fileName, setFileName] = useState('');
     const [fileData, setFileData] = useState(null);
-    const [ativo, setAtivo] = useState(formulario.atleta.ativo ? formulario.atleta.ativo : false);
+    // const [ativoAtleta, setAtivoAtleta] = useState(ativo);
     const isMobile = window.innerWidth <= 768;
     const handleClickOpen = () => {
         setOpen(true);
@@ -38,6 +38,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
         }
     };
 
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -48,12 +49,12 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
         setFileData(null);
         setFileName('');
     };
-    
-    
-      function closeModal() {
+
+
+    function closeModal() {
         setIsOpen(false);
-      }
-    
+    }
+
 
     const handleFileChange = (event) => {
         console.log("entrei aqui");
@@ -78,72 +79,147 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
         setIsLoading(true);
         console.log("entrei ativo atleta " + formulario.atleta.id);
         console.log("event.target.checked " + event.target.checked);
-        setAtivo( event.target.checked);
+        // setAtivo( event.target.checked);
         await inativarUsuario(formulario.atleta.id);
-        setIsLoading(false);    
+        location.reload();
+        setIsLoading(false);
+    };
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        setIsLoading(true);
+        // Coleta os dados do formulário
+        const codigoUsuario = formulario.atleta.id;
+        const nome = document.getElementById('nome').value;
+        const senha = document.getElementById('senha').value;
+        const email = document.getElementById('email').value;
+        const idade = document.getElementById('idade').value;
+        const cargo = document.getElementById('cargo').value;
+        const telefone = document.getElementById('telefone').value;
+        const cref = document.getElementById('cref').value;
+        const documento = document.getElementById('documento').value;
+        const subCategoria = document.getElementById('subCategoria').value;
+        const federacao = document.getElementById('federacao').value;
+        const ativo = formulario.atleta.ativo;
+        // const documentoUsuario = document.getElementById('documentoUsuario').value;
+        //const tipoUsuario = document.getElementById('tipoUsuario').value;
+        let tipoUsuarioValor;
+        switch (tipoUsuario) {
+          case 'ADMINISTRADOR':
+            tipoUsuarioValor = 2;
+            break;
+          case 'TECNICO':
+            tipoUsuarioValor = 0;
+            break;
+          case 'ATLETA':
+            tipoUsuarioValor = 1;
+            break;
+          default:
+            tipoUsuarioValor = 1;
+        }
+        // Cria o objeto com os dados do atleta
+        const atleta = {
+          codigoUsuario,
+          nome,
+          senha,
+          email,
+          idade,
+          cargo,
+          telefone,
+          cref,
+          documento,
+          subCategoria,
+          federacao,
+          tipoUsuario: tipoUsuarioValor,
+          ativo,
+          // documentoUsuario
+        };
+        console.log("atelta id " + formulario.atleta.id);
+        if(formulario.atleta.codigoUsuario === null || formulario.atleta.codigoUsuario === ''){
+          // salva o atleta novo se não existir
+          salvarUsuario(atleta)
+          .then(response => {
+            console.log(response.data);
+            setIsLoading(false);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            setIsLoading(false);
+          });
+        }else{
+          alterarUsuario(atleta)
+          .then(response => {
+            console.log(response.data);
+            setIsLoading(false);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            setIsLoading(false);
+          });
+        }
     };
     if (isMobile) {
-    return (
-        <MyDialogComponent
-        tipoUsuario={tipoUsuario}
-        handleSave={handleSave}
-        fileName={fileName}
-        handleFileChange={handleFileChange}
-        handleToggle={handleToggle}
-        ativo={ativo}
-        formulario={formulario}
-        handleFormSubmit={handleFormSubmit}
-        />
-      );
+        return (
+            <MyDialogComponent
+                tipoUsuario={tipoUsuario}
+                handleSave={handleSave}
+                fileName={fileName}
+                handleFileChange={handleFileChange}
+                handleToggle={handleToggle}
+                ativo={ativo}
+                formulario={formulario}
+                handleFormSubmit={handleFormSubmit}
+            />
+        );
     } else {
         return (
-        <Rnd
-            style={{ zIndex: 1 }}
-            key={index}
-            default={{
-                width: 150,
-                height: 10,
-                x: 100,
-                y: 80,
-            }}
-            minWidth={formulario.isMinimized ? undefined : '50%'}
-            minHeight={formulario.isMinimized ? undefined : '70%'}
-            bounds="window"
-            enableResizing={{
-                top:false, 
-                right:false, 
-                bottom:false, 
-                left:false, 
-                topRight:false, 
-                bottomRight:false, 
-                bottomLeft:false, 
-                topLeft:false
-              }}
-        >
-            <div className='botoes-modal' >
-                <Button>
-                    <IconButton className='icone-minimizar' edge="end" color="inherit" onClick={() => toggleMinimize(index)} aria-label="minimizar">
-                        {!formulario.isMinimized ? <AiOutlineFullscreenExit /> : <AiOutlineFullscreen />}
-                    </IconButton>
-                </Button>
-                <Button>
-                    {/* <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(index)} aria-label="fechar">
+            <Rnd
+                style={{ zIndex: 1 }}
+                key={index}
+                default={{
+                    width: 150,
+                    height: 10,
+                    x: 100,
+                    y: 80,
+                }}
+                minWidth={formulario.isMinimized ? undefined : '50%'}
+                minHeight={formulario.isMinimized ? undefined : '70%'}
+                bounds="window"
+                enableResizing={{
+                    top: false,
+                    right: false,
+                    bottom: false,
+                    left: false,
+                    topRight: false,
+                    bottomRight: false,
+                    bottomLeft: false,
+                    topLeft: false
+                }}
+            >
+                <div className='botoes-modal' >
+                    <Button>
+                        <IconButton className='icone-minimizar' edge="end" color="inherit" onClick={() => toggleMinimize(index)} aria-label="minimizar">
+                            {!formulario.isMinimized ? <AiOutlineFullscreenExit /> : <AiOutlineFullscreen />}
+                        </IconButton>
+                    </Button>
+                    <Button>
+                        {/* <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(index)} aria-label="fechar">
                         <AiOutlineCloseCircle />
                     </IconButton> */}
-                    <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(formulario.atleta.id)} aria-label="fechar">
-                        <AiOutlineCloseCircle />
-                    </IconButton>
-                </Button>
-            </div>
-            {!formulario.isMinimized && (
-                <div className='formulario-modal'  >
-                    <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
-                        className='tabs-modal' variant='scrollable'>
-                        <Tab label="Dados Pessoais" />
-                        <Tab label="Informações Complementares" />
-                        <Tab label="Documentos" />
-                        <Tab label="Jogos" />
-                    </Tabs>
+                        <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(formulario.atleta.id)} aria-label="fechar">
+                            <AiOutlineCloseCircle />
+                        </IconButton>
+                    </Button>
+                </div>
+                {!formulario.isMinimized && (
+                    <div className='formulario-modal'  >
+                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
+                            className='tabs-modal' variant='scrollable'>
+                            <Tab label="Dados Pessoais" />
+                            <Tab label="Informações Complementares" />
+                            <Tab label="Documentos" />
+                            <Tab label="Jogos" />
+                        </Tabs>
                         <form className='formulario' onSubmit={handleFormSubmit}>
                             <CardMedia
                                 className='imagem-atleta'
@@ -151,14 +227,23 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
                                 height="200"
                                 image={imagemPadrao}
                             />
-                            <Typography>Ativo: 
-                            <Switch
-                                        style={{ color: ativo ? '#41a56d' : '#ff0000ae' }}
-                                        checked={ativo}
+                            <Typography>Ativo:
+                                {/* <Switch
+                                        style={{ color: formulario.atleta.ativo ? '#41a56d' : '#ff0000ae' }}
+                                        checked={formulario.atleta.ativo}
                                         onChange={handleToggle}
                                         name="checkedB"
                                         color="default"
-                                    />
+                                    /> */}
+                                <Switch
+                                    style={{ color: (!formulario.atleta || formulario.atleta.ativo) ? '#41a56d' : '#ff0000ae' }}
+                                    checked={!formulario.atleta || formulario.atleta.ativo ? true : formulario.atleta.ativo}
+                                    onChange={handleToggle}
+                                    name="checkedB"
+                                    color="default"
+                                />
+
+
                             </Typography>
                             <Box hidden={value !== 2} className='campos-container'>
                                 <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickOpen}>
@@ -204,41 +289,41 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, handleForm
                                     <TextField className='formulario-campos' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
                                     <TextField className='formulario-campos' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
                                     {/* <TextField className='formulario-campos' id="ativo" label="Ativo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.ativo : ''} /> */}
-                                    
-                            </div>
-                        </Box>
-                        <Box hidden={value !== 1} className='campos-container'>
-                            <div className='campos-container-div'>
-                                <TextField className='formulario-campos' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
-                                <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
-                                <TextField className='formulario-campos' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
-                                <TextField className='formulario-campos' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
-                                <Select
-                                    value={tipoUsuario}
-                                    onChange={(event) => setTipoUsuario(event.target.value)}
-                                    className='formulario-campos'
-                                    id="tipoUsuario"
-                                    label="Tipo de Usuário"
-                                    variant="outlined"
-                                >
-                                    <MenuItem value={'ADMINISTRADOR'}>ADMINISTRADOR</MenuItem>
-                                    <MenuItem value={'TECNICO'}>TECNICO</MenuItem>
-                                    <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
-                                </Select>
-                            </div>
-                        </Box>
-                        <Button className='botao-salvar' type="submit" variant="contained" color="primary">
-                            Salvar
-                        </Button>
-                    </form>
-                </div>
-            )}
-            {isMinimized && (
-                <div style={{ backgroundColor: '#41a56d', width: '10%', height: '20%' }}></div>
-            )}
-        </Rnd>
-    
-    );
-};
+
+                                </div>
+                            </Box>
+                            <Box hidden={value !== 1} className='campos-container'>
+                                <div className='campos-container-div'>
+                                    <TextField className='formulario-campos' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
+                                    <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
+                                    <TextField className='formulario-campos' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
+                                    <TextField className='formulario-campos' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
+                                    <Select
+                                        value={tipoUsuario}
+                                        onChange={(event) => setTipoUsuario(event.target.value)}
+                                        className='formulario-campos'
+                                        id="tipoUsuario"
+                                        label="Tipo de Usuário"
+                                        variant="outlined"
+                                    >
+                                        <MenuItem value={'ADMINISTRADOR'}>ADMINISTRADOR</MenuItem>
+                                        <MenuItem value={'TECNICO'}>TECNICO</MenuItem>
+                                        <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
+                                    </Select>
+                                </div>
+                            </Box>
+                            <Button className='botao-salvar' type="submit" variant="contained" color="primary">
+                                Salvar
+                            </Button>
+                        </form>
+                    </div>
+                )}
+                {isMinimized && (
+                    <div style={{ backgroundColor: '#41a56d', width: '10%', height: '20%' }}></div>
+                )}
+            </Rnd>
+
+        );
+    };
 }
 export default AtletaForm;

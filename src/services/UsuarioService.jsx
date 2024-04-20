@@ -17,6 +17,13 @@ export const salvarUsuario = (usuario) => {
     }
   });
 };
+export const alterarUsuario = (usuario) => {
+  return axios.put(`${API_URL}/usuario/AlterarUsuario`, usuario, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};
 
 
 export const uploadFiles = () =>{

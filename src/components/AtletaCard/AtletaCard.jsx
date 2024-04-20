@@ -4,14 +4,13 @@ import ImagemPadrao from '../../assets/ImagemPadrao.jpg';
 import { inativarUsuario } from '../../services/UsuarioService';
 import Loading from '../Loading/Loading';
 
-const AtletaCard = ({ atleta, handleEditAtleta }) => {
-  const [ativo, setAtivo] = useState(atleta.ativo);
+const AtletaCard = ({ atleta, handleEditAtleta, ativo }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
   const handleToggle = async (event) => {
     setIsLoading(true);
-    setAtivo(event.target.checked);
+    // setAtivo(event.target.checked);
     console.log("entrei ativo atleta " + atleta.id);
     await inativarUsuario(atleta.id);
     window.location.reload();
