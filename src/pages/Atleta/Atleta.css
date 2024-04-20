@@ -24,7 +24,8 @@ div .principal-atleta{
   background: #ffffff;
   color: #000;
   border-radius: 8%;
-  box-shadow: rgba(253, 0, 0, 0.398) 0 0 10px;
+  box-shadow: rgb(163, 163, 163) 0 0 10px;
+  /* box-shadow: rgba(253, 0, 0, 0.398) 0 0 10px; */
 }
 #dark .card-inativo {
   margin: 20px;
@@ -34,7 +35,8 @@ div .principal-atleta{
   color: rgb(255, 255, 255);
   border: 2px solid #393939; /* Adiciona uma borda verde ao cartão */
   border-radius: 8%;
-  box-shadow: rgba(226, 0, 0, 0.34) 0 0 10px;
+  box-shadow: rgb(39, 39, 39) 0 0 10px;
+  /* box-shadow: rgba(226, 0, 0, 0.34) 0 0 10px; */
 }
 #light .card-inativo:hover {
   background-color: #ff00006e; 
@@ -73,6 +75,10 @@ div .principal-atleta{
  .card:hover {
   animation: minhaAnimacao 0.6s ease-in-out;
 } 
+ .card-inativo:hover {
+  animation: minhaAnimacao 0.6s ease-in-out;
+} 
+
 
 .atletaPage {
   transition: margin-left 0.3s ease;
@@ -194,7 +200,7 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 @media (max-width: 400px) {
 
   .cardContainer{
-      margin-top: 100px;
+      margin-top: 70px;
   }
 
 }
@@ -292,6 +298,10 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   margin-bottom: 15px;
   
 }
+/* cor paginação */
+#dark .MuiPaginationItem-root{
+  color: #ffffff!important;
+}
 
 #light .formulario {
   display: flex;
@@ -361,11 +371,11 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   font-weight:bold;
 }
 #light .formulario-campos{
-  flex: 1 0 25%; 
+  flex: 1 0 33%; 
   margin: 15px; 
 }
 #dark .formulario-campos{
-  flex: 1 0 25%; 
+  flex: 1 0 33%; 
   margin: 15px; 
 }
 
@@ -378,6 +388,14 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 
 /* DESIGN RESPONSIVO PAGINA DE USUARIOS - INICIO*/
 
+.fechar-modal-responsivo{
+  color: #ccc!important;
+  position: relative;
+  width: 35%!important;
+  display: flex!important;
+  background-color: #393939!important;
+  font-size: 16px!important;
+}
 
 
 .imagem-atleta-responsivo{

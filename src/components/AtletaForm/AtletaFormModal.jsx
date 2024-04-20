@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import React from 'react';
 
+import { Box, CardMedia, IconButton, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
-import { Box, CardMedia, IconButton, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
 
 function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle, handleFileChange, fileName, handleSave, tipoUsuario }) {
   const [open, setOpen] = React.useState(true);
   const [openFileEdit, setOpenFileEdit] = React.useState(false);
   const [value, setValue] = React.useState(0);
-  // const [ativoAtleta, setAtivoAtleta] = useState(formulario.atleta.ativo);
 
   const handleClickAbrirModalEdicaoArquivos = () => {
     setOpenFileEdit(true);
@@ -60,8 +59,6 @@ function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle, 
                   name="checkedB"
                   color="default"
                 />
-
-
               </Typography>
               <Box hidden={value !== 2} className='campos-container'>
                 <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickAbrirModalEdicaoArquivos}>
@@ -100,12 +97,12 @@ function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle, 
               </Box>
               <Box hidden={value !== 0} className='campos-container'>
                 <div className='campos-container-div-responsivo'>
+                <TextField className='formulario-campos-responsivo' id="nome" label="Nome" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
                   <TextField className='formulario-campos-responsivo' id="senha" label="Senha" variant="outlined" type="password" defaultValue={formulario.atleta ? formulario.atleta.senha : ''} />
                   <TextField className='formulario-campos-responsivo' id="email" label="Email" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
                   <TextField className='formulario-campos-responsivo' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
                   <TextField className='formulario-campos-responsivo' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
                   <TextField className='formulario-campos-responsivo' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
-                  {/* <TextField className='formulario-campos' id="ativo" label="Ativo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.ativo : ''} /> */}
 
                 </div>
               </Box>
@@ -135,13 +132,10 @@ function MyDialogComponent({ formulario, handleFormSubmit, ativo, handleToggle, 
             </form>
           </div>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleFecharModalUsuario} color="primary">
+        <DialogActions >
+          <Button className='fechar-modal-responsivo' onClick={handleFecharModalUsuario} color="primary">
             Fechar
           </Button>
-          {/* <Button onClick={handleClose} color="primary">
-            Salvar
-          </Button> */}
         </DialogActions>
       </Dialog>
     </div>

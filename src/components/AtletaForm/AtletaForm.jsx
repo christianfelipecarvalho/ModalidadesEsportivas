@@ -1,4 +1,3 @@
-// AtletaForm.jsx
 import { Box, Button, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Select, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import React, { useState } from 'react';
@@ -10,14 +9,12 @@ import { alterarUsuario, inativarUsuario, salvarUsuario } from '../../services/U
 import MyDialogComponent from './AtletaFormModal';
 
 
-const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuario, isMinimized, openModalResponsivo, ativo }) => {
+const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuario, isMinimized, ativo }) => {
 
     const [value, setValue] = React.useState(0);
-    const [modalIsOpen, setIsOpen] = React.useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fileName, setFileName] = useState('');
     const [fileData, setFileData] = useState(null);
-    // const [ativoAtleta, setAtivoAtleta] = useState(ativo);
     const isMobile = window.innerWidth <= 768;
     const handleClickOpen = () => {
         setOpen(true);
@@ -37,8 +34,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 });
         }
     };
-
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -49,12 +44,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         setFileData(null);
         setFileName('');
     };
-
-
-    function closeModal() {
-        setIsOpen(false);
-    }
-
 
     const handleFileChange = (event) => {
         console.log("entrei aqui");
@@ -72,14 +61,12 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 imagemPerfil: true
             });
         };
-
         reader.readAsDataURL(file);
     };
     const handleToggle = async (event) => {
         setIsLoading(true);
         console.log("entrei ativo atleta " + formulario.atleta.id);
         console.log("event.target.checked " + event.target.checked);
-        // setAtivo( event.target.checked);
         await inativarUsuario(formulario.atleta.id);
         location.reload();
         setIsLoading(false);
@@ -89,7 +76,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         event.preventDefault();
         setIsLoading(true);
         // Coleta os dados do formulário
-        const codigoUsuario = formulario.atleta.id;
+        const codigoUsuario = formulario.atleta ? formulario.atleta.id : null;
         const nome = document.getElementById('nome').value;
         const senha = document.getElementById('senha').value;
         const email = document.getElementById('email').value;
@@ -100,7 +87,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         const documento = document.getElementById('documento').value;
         const subCategoria = document.getElementById('subCategoria').value;
         const federacao = document.getElementById('federacao').value;
-        const ativo = formulario.atleta.ativo;
+        const ativo = formulario.atleta ? formulario.atleta.ativo : true;
         // const documentoUsuario = document.getElementById('documentoUsuario').value;
         //const tipoUsuario = document.getElementById('tipoUsuario').value;
         let tipoUsuarioValor;
@@ -134,8 +121,8 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
           ativo,
           // documentoUsuario
         };
-        console.log("atelta id " + formulario.atleta.id);
-        if(formulario.atleta.codigoUsuario === null || formulario.atleta.codigoUsuario === ''){
+        console.log("atelta id " + formulario.atleta);
+        if(formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined){
           // salva o atleta novo se não existir
           salvarUsuario(atleta)
           .then(response => {
@@ -182,8 +169,8 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                     x: 100,
                     y: 80,
                 }}
-                minWidth={formulario.isMinimized ? undefined : '50%'}
-                minHeight={formulario.isMinimized ? undefined : '70%'}
+                minWidth={formulario.isMinimized ? undefined : '40%'}
+                minHeight={formulario.isMinimized ? undefined : '80%'}
                 bounds="window"
                 enableResizing={{
                     top: false,
@@ -203,10 +190,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                         </IconButton>
                     </Button>
                     <Button>
-                        {/* <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(index)} aria-label="fechar">
-                        <AiOutlineCloseCircle />
-                    </IconButton> */}
-                        <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(formulario.atleta.id)} aria-label="fechar">
+                        <IconButton className='icone-fechar' edge="end" color="inherit" onClick={() => handleClose(formulario.atleta)} aria-label="fechar">
                             <AiOutlineCloseCircle />
                         </IconButton>
                     </Button>
@@ -228,13 +212,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                                 image={imagemPadrao}
                             />
                             <Typography>Ativo:
-                                {/* <Switch
-                                        style={{ color: formulario.atleta.ativo ? '#41a56d' : '#ff0000ae' }}
-                                        checked={formulario.atleta.ativo}
-                                        onChange={handleToggle}
-                                        name="checkedB"
-                                        color="default"
-                                    /> */}
                                 <Switch
                                     style={{ color: (!formulario.atleta || formulario.atleta.ativo) ? '#41a56d' : '#ff0000ae' }}
                                     checked={!formulario.atleta || formulario.atleta.ativo ? true : formulario.atleta.ativo}
@@ -242,8 +219,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                                     name="checkedB"
                                     color="default"
                                 />
-
-
                             </Typography>
                             <Box hidden={value !== 2} className='campos-container'>
                                 <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickOpen}>
@@ -288,8 +263,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                                     <TextField className='formulario-campos' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
                                     <TextField className='formulario-campos' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
                                     <TextField className='formulario-campos' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
-                                    {/* <TextField className='formulario-campos' id="ativo" label="Ativo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.ativo : ''} /> */}
-
                                 </div>
                             </Box>
                             <Box hidden={value !== 1} className='campos-container'>

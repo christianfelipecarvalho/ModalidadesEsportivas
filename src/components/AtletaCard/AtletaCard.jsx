@@ -10,7 +10,6 @@ const AtletaCard = ({ atleta, handleEditAtleta, ativo }) => {
 
   const handleToggle = async (event) => {
     setIsLoading(true);
-    // setAtivo(event.target.checked);
     console.log("entrei ativo atleta " + atleta.id);
     await inativarUsuario(atleta.id);
     window.location.reload();
@@ -33,7 +32,6 @@ const AtletaCard = ({ atleta, handleEditAtleta, ativo }) => {
         <Typography>Email: {atleta.email}</Typography>
         <Typography>Idade: {atleta.idade}</Typography>
         <Typography>Subcategoria: {atleta.subCategoria}</Typography>
-        {/* <Typography>Ativo: {String(atleta.ativo) === 'true'? 'Sim' : 'Não'}</Typography> */}
         <Typography>Ativo: 
           <Switch
             style={{ color: atleta.ativo ? '#41a56d' : '#ff0000ae' }}

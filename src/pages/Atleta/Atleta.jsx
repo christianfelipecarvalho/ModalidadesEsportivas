@@ -11,32 +11,8 @@ import AtletaCard from '../../components/AtletaCard/AtletaCard';
 import AtletaForm from '../../components/AtletaForm/AtletaForm';
 import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
-import { alterarUsuario, listarTodosUsuarios, listarUsuario, salvarUsuario } from '../../services/UsuarioService';
+import { listarTodosUsuarios, listarUsuario } from '../../services/UsuarioService';
 import './Atleta.css';
-
-// const Formulario = ({ atleta }) => {
-//   const [tipoUsuario, setTipoUsuario] = useState('');
-
-//   useEffect(() => {
-//     if (atleta) {
-//       let tipo;
-//       switch (atleta.tipoUsuario) {
-//         case 0:
-//           tipo = 'ATLETA';
-//           break;
-//         case 1:
-//           tipo = 'ADMINISTRADOR';
-//           break;
-//         case 2:
-//           tipo = 'TECNICO';
-//           break;
-//         default:
-//           tipo = '';
-//       }
-//       setTipoUsuario(tipo);
-//     }
-//   }, [atleta]);
-// };
 
 const Atleta = () => {
   const { collapsed } = useContext(CollapsedContext);
@@ -48,11 +24,9 @@ const Atleta = () => {
   const itemsPorPagina = matches ? 3 : 10;
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
-  const [open, setOpen] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('');
   const [ativo, setAtivo] = useState(formularios.atleta);
 
-  // const [value, setValue] = React.useState(0);
   const columns = [
     { field: 'nome', headerName: 'Nome', minWidth: 350 },
     { field: 'email', headerName: 'Email', minWidth: 350 },
@@ -74,7 +48,6 @@ const Atleta = () => {
     (atleta.subcategoria && atleta.subcategoria.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
     (atleta.ativo === pesquisaAtletaBoolean) // Compara o valor booleano
   );
-  
 
   const rows = filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => ({
     id: atleta.id,
@@ -91,34 +64,13 @@ const Atleta = () => {
     documentoUsuario: atleta.documentoUsuario,
     ativo: atleta.ativo
   }));
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(+event.target.value);
-  //   setPage(0);
-  // };
   const [isLoading, setIsLoading] = useState(false);  
 
   const handleClick = () => {
     setIsLoading(true);
     setIsLoading(false);
   };
-
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event) => {
-  //     event.preventDefault();
-  //     event.returnValue = "Você tem certeza que deseja sair da página?";
-  //   };
-  
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-  
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, []);
-  
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
+ 
   useEffect(() => {
     setIsLoading(true);
     listarTodosUsuarios()
@@ -131,20 +83,14 @@ const Atleta = () => {
         setIsLoading(false);
       });
   }, []);
-
-  // const handleClose = (index) => { jeito antigo de fechar a janela, fechava na ordem que abria e não na ordem que clicava
-  //   setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== index));
-  // };
-  const handleClose = (userId) => {
-    console.log("Entrei aqui")
-    setFormularios(prevFormularios => prevFormularios.filter(formulario => formulario.atleta.id !== userId));
+  const handleClose = (user) => {
+    console.log("Entrei aqui >>" + user)
+    if(user === undefined){
+      setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== prevFormularios.length - 1));
+    }else{
+      setFormularios(prevFormularios => prevFormularios.filter(formulario => formulario.atleta.id !== user.id));
+    }
   };
-  const handleCloseModalFiles = () => {
-    setOpen(false);
-    setFileData(null);
-    setFileName('');
-  };
- 
 
   const handleSearchChange = (event) => {
     setPesquisaAtleta(event.target.value);
@@ -184,8 +130,6 @@ const Atleta = () => {
     },
   });
 
-
-
   const handleAddAtleta = () => {
     setFormularios(prevFormularios => [...prevFormularios, { isMinimized: false }]);
   };
@@ -224,80 +168,6 @@ const Atleta = () => {
     setFormularios(prevFormularios => prevFormularios.map((formulario, i) => i === index ? { ...formulario, isMinimized: !formulario.isMinimized } : formulario));
   };
 
-const handleFormSubmit = (event) => {
-    event.preventDefault();
-    setIsLoading(true);
-    // Coleta os dados do formulário
-    const idElement = document.getElementById('id');
-    const id = idElement ? idElement.value : '';
-    const nome = document.getElementById('nome').value;
-    const senha = document.getElementById('senha').value;
-    const email = document.getElementById('email').value;
-    const idade = document.getElementById('idade').value;
-    const cargo = document.getElementById('cargo').value;
-    const telefone = document.getElementById('telefone').value;
-    const cref = document.getElementById('cref').value;
-    const documento = document.getElementById('documento').value;
-    const subCategoria = document.getElementById('subCategoria').value;
-    const federacao = document.getElementById('federacao').value;
-    const ativo = document.getElementById('ativo');
-    // const documentoUsuario = document.getElementById('documentoUsuario').value;
-    //const tipoUsuario = document.getElementById('tipoUsuario').value;
-    let tipoUsuarioValor;
-    switch (tipoUsuario) {
-      case 'ADMINISTRADOR':
-        tipoUsuarioValor = 2;
-        break;
-      case 'TECNICO':
-        tipoUsuarioValor = 0;
-        break;
-      case 'ATLETA':
-        tipoUsuarioValor = 1;
-        break;
-      default:
-        tipoUsuarioValor = 1;
-    }
-    // Cria o objeto com os dados do atleta
-    const atleta = {
-      id,
-      nome,
-      senha,
-      email,
-      idade,
-      cargo,
-      telefone,
-      cref,
-      documento,
-      subCategoria,
-      federacao,
-      tipoUsuario: tipoUsuarioValor,
-      ativo,
-      // documentoUsuario
-    };
-    if(atleta.id !== null){
-      // salva o atleta novo se não existir
-      salvarUsuario(atleta)
-      .then(response => {
-        console.log(response.data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setIsLoading(false);
-      });
-    }else{
-      alterarUsuario(atleta)
-      .then(response => {
-        console.log(response.data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setIsLoading(false);
-      });
-    }
-};
-
   const handleChangePage = (event, value) => {
     setPagina(value);
   };
@@ -327,11 +197,11 @@ const handleFormSubmit = (event) => {
 
         {formularios.map((formulario, index) => (
           <AtletaForm
+            key={formulario.atleta ? formulario.atleta.id : index} // Colocado index como chave se atleta for undefined
             formulario={formulario}
             index={index}
             toggleMinimize={toggleMinimize}
             handleClose={handleClose}
-            handleFormSubmit={handleFormSubmit}
             tipoUsuario={tipoUsuario}
             isMinimized={isMinimized}
             ativo={ativo}
@@ -350,8 +220,6 @@ const handleFormSubmit = (event) => {
                   paginationModel: { page: 0, pageSize: 20 },
                 },
               }}
-              //  //checkboxSelection
-              // onPageChange={(params) => setPagina(params.page)}
 
               onRowClick={(params) => handleEditAtleta(params.row)}
             />
