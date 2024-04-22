@@ -25,7 +25,8 @@ const AtletaCard = ({ atleta, handleEditAtleta, ativo }) => {
             component="img"
             alt={atleta.nome}
             height="140"
-            image={atleta.imagem || ImagemPadrao}
+            // image={atleta.imagemPerfilBase64 || ImagemPadrao}
+            image={atleta.imagemPerfilBase64 ? `data:image/jpeg;base64,${atleta.imagemPerfilBase64}` : ImagemPadrao}
             title={atleta.nome}
             style={{ borderRadius: '50%', maxHeight: '75px', maxWidth: '75px', marginRight: '10px', marginBottom: '10px' }}
           />{atleta.nome}</Typography>

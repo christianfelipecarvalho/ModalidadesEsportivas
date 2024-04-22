@@ -153,11 +153,11 @@ width: 100%;
   width: 100%;
 }
 #light .icone-fechar{
-margin-left: 5px;
+margin-left: 10px;
 margin-right: 1px;
 }
 #dark .icone-fechar{
-margin-left: 5px;
+margin-left: 10px;
 margin-right: 1px;
 }
 
@@ -383,6 +383,16 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   margin-top: 10px;
 }
 
+.coluna-documentos{
+  /* border: 1px solid black; */
+  padding: 5px;
+  text-align: left;
+}
+.tabela-documentos{
+  width: 90%;
+  margin: 3%;
+  border-collapse: collapse;
+}
 
 
 

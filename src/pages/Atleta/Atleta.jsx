@@ -57,7 +57,7 @@ const Atleta = () => {
     cargo: atleta.cargo,
     telefone: atleta.telefone,
     cref: atleta.cref,
-    documento: atleta.documento,
+    documento: atleta.cpfRg,
     subCategoria: atleta.subCategoria,
     federacao: atleta.federacao,
     tipoUsuario: atleta.tipoUsuario,

@@ -1,4 +1,4 @@
-import { Box, Button, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Select, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { Box, Button, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, MenuItem, Select, Switch, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import React, { useState } from 'react';
 import { AiOutlineCloseCircle, AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
@@ -6,6 +6,7 @@ import { Rnd } from 'react-rnd';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import axios from '../../services/BaseService';
 import { alterarUsuario, inativarUsuario, salvarUsuario } from '../../services/UsuarioService';
+import Loading from '../Loading/Loading';
 import MyDialogComponent from './AtletaFormModal';
 
 
@@ -15,11 +16,30 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
     const [isLoading, setIsLoading] = useState(false);
     const [fileName, setFileName] = useState('');
     const [fileData, setFileData] = useState(null);
+    const [file, setFile] = useState(null);
+    const [imagemPerfil, setImagemPerfil] = useState(false);
     const isMobile = window.innerWidth <= 768;
     const handleClickOpen = () => {
         setOpen(true);
     };
+
     const handleSave = () => {
+        setIsLoading(true);
+        console.log("entrei aqui handleSave");
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+
+            setFileData({
+                data: base64String,
+                nomeArquivo: fileName,
+                extencao: '.' + file.name.split('.').pop(),
+                codigoUsuario: formulario.atleta.id,
+                imagemPerfil: imagemPerfil
+            });
+        };
+        reader.readAsDataURL(file);
+
         if (fileData) {
             setIsLoading(true);
             axios.post('https://geresportes.azurewebsites.net/usuario/uploadDocumento', fileData)
@@ -33,6 +53,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                     setIsLoading(false);
                 });
         }
+        setIsLoading(false);
     };
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -44,24 +65,20 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         setFileData(null);
         setFileName('');
     };
-
+    const handleCheckBoxImagemPerfil = (event) => {
+        // console.log("event.target.checked " + event.target.checked);
+        setImagemPerfil(event.target.checked);
+    };
+    const handleFileNameChange = (event) => {
+        setFileName(event.target.value); // Atualiza o nome do arquivo quando o usuário digita no campo de texto
+    };
     const handleFileChange = (event) => {
         console.log("entrei aqui");
-        const file = event.target.files[0];
-        const reader = new FileReader();
+        setFile(event.target.files[0]);
+        // Define o nome do arquivo com base no arquivo selecionado apenas se o usuário não tiver fornecido um nome
+        setFileName(event.target.files[0].name);
 
-        reader.onloadend = () => {
-            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 
-            setFileData({
-                data: base64String,
-                nomeArquivo: fileName,
-                extencao: file.name.split('.').pop(),
-                codigoUsuario: 10,
-                imagemPerfil: true
-            });
-        };
-        reader.readAsDataURL(file);
     };
     const handleToggle = async (event) => {
         setIsLoading(true);
@@ -84,7 +101,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         const cargo = document.getElementById('cargo').value;
         const telefone = document.getElementById('telefone').value;
         const cref = document.getElementById('cref').value;
-        const documento = document.getElementById('documento').value;
+        const cpfRg = document.getElementById('documento').value;
         const subCategoria = document.getElementById('subCategoria').value;
         const federacao = document.getElementById('federacao').value;
         const ativo = formulario.atleta ? formulario.atleta.ativo : true;
@@ -92,57 +109,57 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         //const tipoUsuario = document.getElementById('tipoUsuario').value;
         let tipoUsuarioValor;
         switch (tipoUsuario) {
-          case 'ADMINISTRADOR':
-            tipoUsuarioValor = 2;
-            break;
-          case 'TECNICO':
-            tipoUsuarioValor = 0;
-            break;
-          case 'ATLETA':
-            tipoUsuarioValor = 1;
-            break;
-          default:
-            tipoUsuarioValor = 1;
+            case 'ADMINISTRADOR':
+                tipoUsuarioValor = 2;
+                break;
+            case 'TECNICO':
+                tipoUsuarioValor = 0;
+                break;
+            case 'ATLETA':
+                tipoUsuarioValor = 1;
+                break;
+            default:
+                tipoUsuarioValor = 1;
         }
         // Cria o objeto com os dados do atleta
         const atleta = {
-          codigoUsuario,
-          nome,
-          senha,
-          email,
-          idade,
-          cargo,
-          telefone,
-          cref,
-          documento,
-          subCategoria,
-          federacao,
-          tipoUsuario: tipoUsuarioValor,
-          ativo,
-          // documentoUsuario
+            codigoUsuario,
+            nome,
+            senha,
+            email,
+            idade,
+            cargo,
+            telefone,
+            cref,
+            cpfRg,
+            subCategoria,
+            federacao,
+            tipoUsuario: tipoUsuarioValor,
+            ativo,
+            // documentoUsuario
         };
         console.log("atelta id " + formulario.atleta);
-        if(formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined){
-          // salva o atleta novo se não existir
-          salvarUsuario(atleta)
-          .then(response => {
-            console.log(response.data);
-            setIsLoading(false);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            setIsLoading(false);
-          });
-        }else{
-          alterarUsuario(atleta)
-          .then(response => {
-            console.log(response.data);
-            setIsLoading(false);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            setIsLoading(false);
-          });
+        if (formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined) {
+            // salva o atleta novo se não existir
+            salvarUsuario(atleta)
+                .then(response => {
+                    console.log(response.data);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    setIsLoading(false);
+                });
+        } else {
+            alterarUsuario(atleta)
+                .then(response => {
+                    console.log(response.data);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    setIsLoading(false);
+                });
         }
     };
     if (isMobile) {
@@ -170,7 +187,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                     y: 80,
                 }}
                 minWidth={formulario.isMinimized ? undefined : '40%'}
-                minHeight={formulario.isMinimized ? undefined : '80%'}
+                minHeight={formulario.isMinimized ? undefined : '70%'}
                 bounds="window"
                 enableResizing={{
                     top: false,
@@ -183,6 +200,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                     topLeft: false
                 }}
             >
+                {isLoading && <Loading />}
                 <div className='botoes-modal' >
                     <Button>
                         <IconButton className='icone-minimizar' edge="end" color="inherit" onClick={() => toggleMinimize(index)} aria-label="minimizar">
@@ -209,7 +227,8 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                                 className='imagem-atleta'
                                 component="img"
                                 height="200"
-                                image={imagemPadrao}
+                                image={formulario.atleta ? formulario.atleta.imagemPerfilBase64 ? `data:image/jpeg;base64,${formulario.atleta.imagemPerfilBase64}` : imagemPadrao : imagemPadrao}
+
                             />
                             <Typography>Ativo:
                                 <Switch
@@ -222,8 +241,29 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                             </Typography>
                             <Box hidden={value !== 2} className='campos-container'>
                                 <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickOpen}>
+                                    {/* Novo:  */}
                                     <AttachFileIcon />
                                 </IconButton>
+                                <h4 style={{marginLeft: '15px'}}>Arquivos</h4>
+                                {formulario.atleta && 
+                                <table className='tabela-documentos' border="1" style={{width: '90%', margin: '3%'}}>
+                                    <tr>
+                                        <th className='coluna-documentos'>Id</th>
+                                        <th className='coluna-documentos'>Nome</th>
+                                        {/* <th className='coluna-documentos'>Chave</th> */}
+                                        <th className='coluna-documentos'>Perfil</th>
+                                        <th className='coluna-documentos'>Baixar</th>
+                                    </tr>
+                                    { formulario.atleta.documentoUsuario.map((documento) => (
+                                        <tr>
+                                            <td className='coluna-documentos'>{documento.id}</td>
+                                            <td className='coluna-documentos'>{documento.nomeDocumento}</td>
+                                            {/* <td className='coluna-documentos'>{documento.guidDocumento}</td> */}
+                                            <td className='coluna-documentos'>{documento.imagemPerfil ? 'Sim' : 'Não'}</td>
+                                            <td className='coluna-documentos'>Baixar</td>
+                                        </tr>
+                                    ))}
+                                </table>}
 
                                 <Dialog open={open} onClose={handleCloseModalFiles} aria-labelledby="form-dialog-title">
                                     <DialogTitle id="form-dialog-title">Upload File</DialogTitle>
@@ -240,7 +280,19 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                                             type="text"
                                             fullWidth
                                             value={fileName}
-                                            onChange={(event) => setFileName(event.target.value)}
+                                            onChange={handleFileNameChange}
+                                            disabled={true}
+                                        />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={imagemPerfil}
+                                                    onChange={handleCheckBoxImagemPerfil}
+                                                    name="checkedB"
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Imagem de Perfil"
                                         />
                                     </DialogContent>
                                     <DialogActions>
@@ -268,7 +320,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                             <Box hidden={value !== 1} className='campos-container'>
                                 <div className='campos-container-div'>
                                     <TextField className='formulario-campos' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
-                                    <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
+                                    <TextField className='formulario-campos' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cpfRg : ''} />
                                     <TextField className='formulario-campos' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
                                     <TextField className='formulario-campos' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
                                     <Select
