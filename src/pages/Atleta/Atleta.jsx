@@ -21,11 +21,13 @@ const Atleta = () => {
   const [formularios, setFormularios] = useState([]);
   const [pagina, setPagina] = useState(1);
   const matches = useMediaQuery('(max-width:891px)');
-  const itemsPorPagina = matches ? 3 : 10;
+  const itemsPorPagina = matches ? 4 : 8;
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('');
   const [ativo, setAtivo] = useState(formularios.atleta);
+  const [formId, setFormId] = useState(0);
+  const [valorY, setValorY] = useState(0);
 
   const columns = [
     { field: 'nome', headerName: 'Nome', minWidth: 350 },
@@ -60,17 +62,17 @@ const Atleta = () => {
     documento: atleta.cpfRg,
     subCategoria: atleta.subCategoria,
     federacao: atleta.federacao,
-    tipoUsuario: atleta.tipoUsuario,
+    tipoUsuario: atleta.tipoUsuario === 1 ? 'Atleta' : atleta.tipoUsuario === 0 ? 'Técnico' : 'Administrador',
     documentoUsuario: atleta.documentoUsuario,
     ativo: atleta.ativo
   }));
-  const [isLoading, setIsLoading] = useState(false);  
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
     setIsLoading(true);
     setIsLoading(false);
   };
- 
+
   useEffect(() => {
     setIsLoading(true);
     listarTodosUsuarios()
@@ -84,10 +86,9 @@ const Atleta = () => {
       });
   }, []);
   const handleClose = (user) => {
-    console.log("Entrei aqui >>" + user)
-    if(user === undefined){
+    if (user === undefined) {
       setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== prevFormularios.length - 1));
-    }else{
+    } else {
       setFormularios(prevFormularios => prevFormularios.filter(formulario => formulario.atleta.id !== user.id));
     }
   };
@@ -131,16 +132,39 @@ const Atleta = () => {
   });
 
   const handleAddAtleta = () => {
-    setFormularios(prevFormularios => [...prevFormularios, { isMinimized: false }]);
+    setFormId(prevFormId => prevFormId + 1);
+    setFormularios(prevFormularios => [...prevFormularios, { id: formId, isMinimized: false }]);
   };
 
-  const handleEditAtleta = (atleta) => {
+  const handleEditAtleta = (atleta, e) => {
     setIsLoading(true);
+    var y = e.clientY;
+    var windowHeight = window.innerHeight;
+    var middleY = windowHeight;
+
+    // console.log('middleY', middleY);
+    // console.log("window scrollWidth ->" + document.documentElement.scrollWidth)
+    // console.log("window scrollHeight -> " + document.documentElement.scrollHeight)
+    // console.log("Y: " + y); 
+
+    if (y > (middleY / 4) * 3) {
+      setValorY(200);
+    }
+    else {
+      setValorY(50)
+    }
+
+    const verificaUsuarioAberto = formularios.some(formulario => formulario.atleta && formulario.atleta.id === atleta.id);
+    if (verificaUsuarioAberto) {
+      alert('O usuario já está aberto!');
+      setIsLoading(false);
+      return;
+    }
     listarUsuario(atleta.id)
       .then(response => {
-        // Atualiza o estado do formulário
-        setFormularios(prevFormularios => [...prevFormularios, { isMinimized: false, atleta: response.data }]);
-  
+        setFormId(prevFormId => prevFormId + 1);
+        setFormularios(prevFormularios => [...prevFormularios, { id: formId, isMinimized: false, atleta: response.data }]);
+
         // Atualiza o estado do tipoUsuario
         let tipo;
         switch (response.data.tipoUsuario) {
@@ -175,7 +199,7 @@ const Atleta = () => {
   return (
     <div className='principal-atleta'>
       <div className="atletaPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
-      {isLoading && <Loading />}
+        {isLoading && <Loading />}
         <ThemeProvider theme={theme}>
           <div className='pesquisar'>
             <TextField
@@ -190,8 +214,8 @@ const Atleta = () => {
               {isTableView ? <FaTableCells /> : <GrTable />}
             </Fab >
             <Fab className='botao-novo' aria-label="add" onClick={handleAddAtleta}>
-          <AddIcon />
-        </Fab>
+              <AddIcon />
+            </Fab>
           </div>
         </ThemeProvider>
 
@@ -200,11 +224,13 @@ const Atleta = () => {
             key={formulario.atleta ? formulario.atleta.id : index} // Colocado index como chave se atleta for undefined
             formulario={formulario}
             index={index}
+            valorY={valorY}
             toggleMinimize={toggleMinimize}
             handleClose={handleClose}
             tipoUsuario={tipoUsuario}
             isMinimized={isMinimized}
             ativo={ativo}
+            setFormularios={setFormularios}
 
           />
         ))}
@@ -221,15 +247,15 @@ const Atleta = () => {
                 },
               }}
 
-              onRowClick={(params) => handleEditAtleta(params.row)}
+              onRowClick={(params, e) => handleEditAtleta(params.row, e)}
             />
             <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
           </div>
         ) : (
           <div>
             <div className="cardContainer">
-              {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => (
-                <AtletaCard ativo={ativo} atleta={atleta} handleEditAtleta={handleEditAtleta} />
+              {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta, index) => (
+                <AtletaCard key={index} ativo={ativo} atleta={atleta} handleEditAtleta={handleEditAtleta} />
               ))}
             </div>
             <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />

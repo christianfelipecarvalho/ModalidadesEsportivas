@@ -17,16 +17,6 @@ const Login = ({ setIsLoggedIn }) => {
   const source = axios.CancelToken.source();
   const [loadingForgotPassword, setLoadingForgotPassword] = useState(false); 
 
-  // React.useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((prevProgress) => (prevProgress >= 95 ? 0 : prevProgress + 20));
-  //   }, 800);
-
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
-
   useEffect(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
@@ -63,7 +53,6 @@ const Login = ({ setIsLoggedIn }) => {
       else if (userType === '"ATLETA"') {
         navigate('/agenda');
       }
-      // navigate('/home');
       setIsLoggedIn(true, token, refreshToken);
     } catch (error) {
       if (axios.isCancel(error)) {

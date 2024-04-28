@@ -8,12 +8,13 @@ import PrivateRoute from "./components/PrivateRoute";
 import ThemeToggle from "./components/ThemeToggle";
 import { CollapsedContext } from './contexts/CollapsedContext';
 import Agenda from "./pages/Agenda/Agenda";
-import Agendamentos from "./pages/Agendamentos/Agendamentos";
 import Atleta from "./pages/Atleta/Atleta";
+import Configuracoes from "./pages/Configuracoes/Configuracoes";
 import Confirmacao from "./pages/Forgot/Confirmacao";
 import Forgot from "./pages/Forgot/Forgot";
 import RedefinirSenha from "./pages/Forgot/RedefinirSenha";
 import Login from "./pages/Login/Login";
+import Relatorios from "./pages/Relatorios/Relatorios";
 
 export const ThemeContext = createContext(null);
 
@@ -46,7 +47,8 @@ function App() {
               <Route path='/home' element={<PrivateRoute><Home /></PrivateRoute>} />
               <Route path='/atleta' element={<PrivateRoute><Atleta /></PrivateRoute>} />
               <Route path='/agenda' element={<PrivateRoute><Agenda /></PrivateRoute>} />
-              <Route path='/agendamentos' element={<PrivateRoute><Agendamentos /></PrivateRoute> } />
+              <Route path='/relatorios' element={<PrivateRoute><Relatorios /></PrivateRoute> } />
+              <Route path='/configuracoes' element={<PrivateRoute><Configuracoes /></PrivateRoute> } />
               <Route path='/forgot' element={ <Forgot />} />
               <Route path='/confirmacao' element={ <Confirmacao />} />
               <Route path='/redefinirsenha' element={ <RedefinirSenha />} />

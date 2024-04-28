@@ -1,0 +1,8 @@
+.relatorios-div{
+    height: 100vh;
+    margin-left: 18%;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    flex-direction: column;
+}

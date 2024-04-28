@@ -13,13 +13,14 @@ const AtletaCard = ({ atleta, handleEditAtleta, ativo }) => {
     console.log("entrei ativo atleta " + atleta.id);
     await inativarUsuario(atleta.id);
     window.location.reload();
+    alert("Usuário inativado com sucesso!");
     setIsLoading(false);
   };
   
   return (
     <Card key={atleta.id} className={atleta.ativo ? "card" : "card-inativo"}>
       {isLoading && <Loading />}
-      <CardContent onClick={() => handleEditAtleta(atleta)}>
+      <CardContent onClick={(e) => handleEditAtleta(atleta, e)}>
         <Typography className='nome-imagem' variant="h5">
           <CardMedia
             component="img"

@@ -37,3 +37,9 @@ export const uploadFiles = () =>{
 export const inativarUsuario = (id) =>{
   return axios.put(`${API_URL}/Usuario/InativarUsuario/${id}`);
 }
+
+export const anexarArquivo = (arquivo, headers) => {
+  return axios.post(`${API_URL}/usuario/uploadDocumento`, arquivo, {
+    headers: headers
+  });
+};

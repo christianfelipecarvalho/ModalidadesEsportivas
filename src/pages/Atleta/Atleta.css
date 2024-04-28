@@ -4,10 +4,17 @@ div .principal-atleta{
 .cardContainer {
   display: flex;
   flex-wrap: wrap;
-   justify-content:center; /*arruma o espaçamento entre os cards */
+  justify-content:center; /*arruma o espaçamento entre os cards */
   margin-top: 20px;
 }
 
+.imagem-atleta {
+  transition: opacity .3s ease-in-out;
+}
+
+.imagem-atleta:hover {
+  opacity: 0.5;
+}
 #light .card {
   margin: 20px;
   width: 300px; /*muda o tamanho dos cards*/
