@@ -13,6 +13,7 @@ import Configuracoes from "./pages/Configuracoes/Configuracoes";
 import Confirmacao from "./pages/Forgot/Confirmacao";
 import Forgot from "./pages/Forgot/Forgot";
 import RedefinirSenha from "./pages/Forgot/RedefinirSenha";
+import Local from "./pages/Local/Local";
 import Login from "./pages/Login/Login";
 import Relatorios from "./pages/Relatorios/Relatorios";
 
@@ -47,6 +48,7 @@ function App() {
               <Route path='/home' element={<PrivateRoute><Home /></PrivateRoute>} />
               <Route path='/atleta' element={<PrivateRoute><Atleta /></PrivateRoute>} />
               <Route path='/agenda' element={<PrivateRoute><Agenda /></PrivateRoute>} />
+              <Route path='/local' element={<PrivateRoute><Local /></PrivateRoute> } />
               <Route path='/relatorios' element={<PrivateRoute><Relatorios /></PrivateRoute> } />
               <Route path='/configuracoes' element={<PrivateRoute><Configuracoes /></PrivateRoute> } />
               <Route path='/forgot' element={ <Forgot />} />

@@ -1,0 +1,161 @@
+.local-div{
+    height: 100vh;
+    margin-left: 18%;
+    display: flex;
+    align-items: center;
+    justify-content:top;
+    flex-direction: column;
+}
+    
+.div-tabela-local{
+      /* margin-left: 1%; */
+      margin-top:8%;
+      width: 100%;
+      overflow-x:auto;
+}
+
+
+.formulario-campos-local{
+    flex: 1 0 33%; 
+    margin: 15px!important;
+}
+.div-botoes-local{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.botao-salvar{
+    margin: 20px; 
+    position: relative;
+    width: 25%;
+    display: flex!important;
+    top: 100%;
+    background-color: #41a56d!important;
+    font-weight: bold;
+    font-size: 16px;
+}
+.MuiButton-text{
+  margin: 15px;
+}
+.botao-fechar{
+    margin: 20px; 
+    position: relative;
+    width: 25%;
+    display: flex!important;
+    top: 100%;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.input-div {
+    display: flex;
+    position: relative;
+    top: 12px;
+    justify-content: center!important;
+    width: 100%;
+  }
+
+#light .botao-novo-local{
+    display: flex!important;
+    background: #41a56d!important;
+    color: rgb(255, 255, 255)!important;
+    font-weight: bold;
+    position:fixed!important;
+    /* top: 5% !important; */
+    top: 2% !important;
+    left: 93%  !important;
+}
+#dark .botao-novo-local{
+    display: flex!important;
+    background: #41a56d;
+    font-weight: bold;
+    color: white!important;
+    position:fixed!important;
+    /* top: 5% !important; */
+    left: 90%  !important;
+  }
+  
+  .forms-tabela-local{
+    display: flex;
+    flex-direction: column;
+    max-height: 90%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+
+  
+/* ajustar estilos da tabela daqui para baixo*/
+#light .forms-tabela-local .MuiDataGrid-cell {
+    color: black;
+    font-weight:300; /* Cor do texto das células */
+    border-color: #393939a5;
+  }
+  #light .forms-tabela-local .MuiDataGrid-columnHeader {
+    background-color: #393939a5;
+    color: #fff; /* Cor de fundo do cabeçalho */
+    font-size: 18px;
+  }
+  
+  #light .forms-tabela-local .MuiDataGrid-row:nth-child(odd) {
+    background-color: #f4f4f4; /* Cor de fundo das linhas ímpares */
+  }
+  #light .forms-tabela-local .MuiDataGrid-row:nth-child(even) {
+    background-color: #f4f4f4; /* Cor de fundo das linhas pares*/
+  }
+  #dark .forms-tabela-local .MuiDataGrid-cell {
+    color: white;
+    font-weight:400; /* Cor do texto das células */
+    border-color: white;
+  }
+  #dark .forms-tabela-local .MuiDataGrid-columnHeader {
+    background-color: #41a56d;
+    color: rgb(255, 255, 255); /* Cor de fundo do cabeçalho */
+    font-size: 18px;
+    font-weight: bold!important;
+  }
+  
+  #dark .forms-tabela-local .MuiDataGrid-row:nth-child(odd) {
+    background-color: #464646; /* Cor de fundo das linhas ímpares */
+  }
+  #dark .forms-tabela-local .MuiDataGrid-row:nth-child(even) {
+    background-color: #393939; /* Cor de fundo das linhas pares*/
+  }
+  
+  #light .forms-tabela-local .MuiDataGrid-row:hover {
+    background-color: #41a56d; /* Cor de fundo quando o mouse passa por cima no tema claro */
+  }
+  
+  #dark .forms-tabela-local .MuiDataGrid-row:hover {
+    background-color: #41a56d; /* Cor de fundo quando o mouse passa por cima no tema escuro */
+  }
+  
+  #light .botao-salvar{
+    margin: 20px; 
+    position: relative;
+    width: 25%;
+    display: flex!important;
+    top: 100%;
+    background-color: #41a56d!important;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  #dark .botao-salvar{
+    margin: 20px; 
+    position: relative;
+    width: 25%;
+    display: flex!important;
+    top: 100%;
+    background-color: #41a56d!important;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+#light .MuiToolbar-root, .MuiToolbar-gutters, .MuiToolbar-regular, .MuiTablePagination-toolbar, .css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar, .MuiTablePagination-actions{
+    color: #464646!important;
+  }
+  #dark .MuiToolbar-root, .MuiToolbar-gutters, .MuiToolbar-regular, .MuiTablePagination-toolbar, .css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar, .MuiTablePagination-actions{
+    color: #fff!important;
+  }

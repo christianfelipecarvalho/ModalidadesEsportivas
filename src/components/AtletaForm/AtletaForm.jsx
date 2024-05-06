@@ -6,10 +6,10 @@ import { Rnd } from 'react-rnd';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import { alterarUsuario, anexarArquivo, inativarUsuario, salvarUsuario } from '../../services/UsuarioService';
 import Loading from '../Loading/Loading';
-import MyDialogComponent from './AtletaFormModal';
+import AtletaFormModal from './AtletaFormModal';
 
 
-const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuario, isMinimized, ativo, valorY, setFormularios }) => {
+const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuario, isMinimized, ativo, valorY, setAlertMensagem, setTipoUsuario }) => {
 
     const [value, setValue] = React.useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +50,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
 
     const handleSave = () => {
         setIsLoading(true);
-        console.log("entrei aqui handleSave");
         const reader = new FileReader();
         reader.onloadend = () => {
             const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
@@ -70,7 +69,9 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
             anexarArquivo(fileData, { 'Content-Type': 'application/json' })
                 .then(response => {
                     console.log(response.data);
+                    setAlertMensagem({ severity: "success", title: "Sucesso!", message: response.data });
                     handleCloseModalFiles();
+
                     setIsLoading(false);
                 })
                 .catch(error => {
@@ -104,9 +105,13 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         setFileName(event.target.files[0].name);
     };
     const handleTrocaFotoPerfil = () => {
-        fileInput.current.click();
-        // Agora você pode usar o arquivo selecionado
-        
+        try {
+            fileInput.current.click();
+        } catch (error) {
+            console.error(error);
+            setAlertMensagem({ severity: "error", title: "Erro!", message: "Funcionalidade disponivel apenas para WEB" });
+        }
+        // fileInput.current.click();
     };
     const handleChamaTrocaFoto = (event) => {
         const file = event.target.files[0];
@@ -117,7 +122,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         reader.onloadend = () => {
             const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
             console.log("Passeifile.name ->" + file.name)
-            
+
             const fileData = {
                 data: base64String,
                 nomeArquivo: file.name,
@@ -125,10 +130,9 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 codigoUsuario: formulario.atleta.id,
                 imagemPerfil: true
             };
-    
+
             setFileData(fileData);
-    
-            console.log("Passei1748")
+
             console.log("Passei")
             if (fileData) {
                 console.log("Passei 2")
@@ -136,13 +140,14 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 anexarArquivo(fileData, { 'Content-Type': 'application/json' })
                     .then(response => {
                         console.log(response.data);
-                        alert('Imagem alterada com sucesso, atualize a pagina para carregar!!!')
                         setIsLoading(false);
+                        setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Imagem alterada com sucesso, atualize a pagina para carregar!!!" });
                     })
                     .catch(error => {
                         console.log("Passei")
-                        console.error(error);
                         setIsLoading(false);
+                        setAlertMensagem({ severity: "error", title: "Erro!", message: "Ocorreu um erro ao alterar imagem, recarregue a pagina tente novamente!" });
+                        console.error(error);
                     });
             }
             console.log("Passei 14655")
@@ -150,19 +155,20 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         };
         reader.readAsDataURL(file);
     };
-    
+
     const handleToggle = async (event) => {
         setIsLoading(true);
         if (formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined) {
             setIsLoading(false);
-            return alert("Usuario não pode ser cadastrado inativado");
+            console.log("entrei ativo atleta ")
+            setAlertMensagem({ severity: "warning", title: "ATENÇÃO!", message: "Usuario não pode ser cadastrado inativado!!!" });
+            return;
         }
         console.log("event.target.checked " + event.target.checked);
         await inativarUsuario(formulario.atleta.id);
         location.reload();
-        alert("Usuario inativado com sucesso");
-
         setIsLoading(false);
+        setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
     };
 
     const handleFormSubmit = (event) => {
@@ -181,7 +187,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         const subCategoria = document.getElementById('subCategoria').value;
         const federacao = document.getElementById('federacao').value;
         const ativo = formulario.atleta ? formulario.atleta.ativo : true;
-        // const documentoUsuario = document.getElementById('documentoUsuario').value;
         const tipoUsuario = document.getElementById('tipoUsuario').value;
         let tipoUsuarioValor;
         switch (tipoUsuario) {
@@ -212,7 +217,6 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
             federacao,
             tipoUsuario: tipoUsuarioValor,
             ativo,
-            // documentoUsuario
         };
         console.log("atelta id " + formulario.atleta);
         if (formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined) {
@@ -220,30 +224,40 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
             salvarUsuario(atleta)
                 .then(response => {
                     console.log(response.data);
-                    alert("Usuário salvo com sucesso!")
-                    location.reload();
+                    setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário salvo com sucesso!" });
+                    handleClose(formulario.atleta);
+                    window.location.reload();
                     setIsLoading(false);
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    setAlertMensagem({ severity: "error", title: "Erro!", message: error.message });
                     setIsLoading(false);
                 });
         } else {
             alterarUsuario(atleta)
                 .then(response => {
                     console.log(response.data);
-                    alert("Usuário alterado com sucesso!")
+                    setIsLoading(false);
+                    setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário alterado com sucesso!" });
+                    console.log(formulario.atleta.id)
+                    handleClose(formulario.atleta);
+
                     setIsLoading(false);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     setIsLoading(false);
+                    setAlertMensagem({ severity: "error", title: "Erro!", message: "Ocorreu um erro ao alterar usuário, recarregue a pagina tente novamente!" });
+                    // setShowAlert(true);
                 });
         }
     };
+
+
     if (isMobile) {
         return (
-            <MyDialogComponent
+            <AtletaFormModal
                 tipoUsuario={tipoUsuario}
                 handleSave={handleSave}
                 fileName={fileName}
@@ -252,10 +266,15 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 ativo={ativo}
                 formulario={formulario}
                 handleFormSubmit={handleFormSubmit}
+                setTipoUsuario={setTipoUsuario}
+                imagemPerfil={imagemPerfil}
+                handleCheckBoxImagemPerfil={handleCheckBoxImagemPerfil}
+                setAlertMensagem={setAlertMensagem}
             />
         );
     } else {
         return (
+
             <Rnd
                 style={{ zIndex: 300 }}
                 key={index}
@@ -278,6 +297,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 }}
             >
                 {isLoading && <Loading />}
+                {/* {showAlert && <AlertMessage {...alertMensagem} />}  */}
                 <div className='botoes-modal' >
                     <Button>
                         <IconButton className='icone-minimizar' edge="end" color="inherit" onClick={() => toggleMinimize(index)} aria-label="minimizar">
@@ -332,28 +352,32 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                                 </div>
                                 <h4 style={{ marginLeft: '15px' }}>Arquivos</h4>
                                 {formulario.atleta &&
-                                    <table className='tabela-documentos' border="1" style={{ width: '90%', margin: '3%' }}>
-                                        <thead>
-                                            <tr>
-                                                <th className='coluna-documentos'>Id</th>
-                                                <th className='coluna-documentos'>Nome</th>
-                                                {/* <th className='coluna-documentos'>Chave</th> */}
-                                                <th className='coluna-documentos'>Perfil</th>
-                                                <th className='coluna-documentos'>Baixar</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {formulario.atleta.documentoUsuario.map((documento) => (
-                                                <tr key={documento.id}>
-                                                    <td className='coluna-documentos'>{documento.id}</td>
-                                                    <td className='coluna-documentos'>{documento.nomeDocumento}</td>
-                                                    {/* <td className='coluna-documentos'>{documento.guidDocumento}</td> */}
-                                                    <td className='coluna-documentos'>{documento.imagemPerfil ? 'Sim' : 'Não'}</td>
-                                                    <td className='coluna-documentos'>Baixar</td>
+                                    (formulario.atleta.documentoUsuario.length > 0 ? (
+                                        <table className='tabela-documentos' border="1" style={{ width: '90%', margin: '3%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th className='coluna-documentos'>Id</th>
+                                                    <th className='coluna-documentos'>Nome</th>
+                                                    <th className='coluna-documentos'>Perfil</th>
+                                                    <th className='coluna-documentos'>Baixar</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>}
+                                            </thead>
+                                            <tbody>
+                                                {formulario.atleta.documentoUsuario.map((documento) => (
+                                                    <tr key={documento.id}>
+                                                        <td className='coluna-documentos'>{documento.id}</td>
+                                                        <td className='coluna-documentos'>{documento.nomeDocumento}</td>
+                                                        <td className='coluna-documentos'>{documento.imagemPerfil ? 'Sim' : 'Não'}</td>
+                                                        <td className='coluna-documentos'>Baixar</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <p>Nenhum arquivo salvo.</p>
+                                    ))
+                                }
+
 
                                 <Dialog open={open} onClose={handleCloseModalFiles} aria-labelledby="form-dialog-title">
                                     <DialogTitle id="form-dialog-title">Upload File</DialogTitle>

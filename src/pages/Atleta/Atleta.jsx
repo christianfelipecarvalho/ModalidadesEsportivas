@@ -7,6 +7,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import React, { useContext, useEffect, useState } from 'react';
 import { FaTableCells } from "react-icons/fa6";
 import { GrTable } from "react-icons/gr";
+import AlertMessage from '../../components/AlertMessage/AlertMessage';
 import AtletaCard from '../../components/AtletaCard/AtletaCard';
 import AtletaForm from '../../components/AtletaForm/AtletaForm';
 import Loading from '../../components/Loading/Loading';
@@ -21,13 +22,14 @@ const Atleta = () => {
   const [formularios, setFormularios] = useState([]);
   const [pagina, setPagina] = useState(1);
   const matches = useMediaQuery('(max-width:891px)');
-  const itemsPorPagina = matches ? 4 : 8;
+  const itemsPorPagina = matches ? 4 : 10;
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('');
   const [ativo, setAtivo] = useState(formularios.atleta);
   const [formId, setFormId] = useState(0);
   const [valorY, setValorY] = useState(0);
+  const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
 
   const columns = [
     { field: 'nome', headerName: 'Nome', minWidth: 350 },
@@ -68,20 +70,17 @@ const Atleta = () => {
   }));
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = () => {
-    setIsLoading(true);
-    setIsLoading(false);
-  };
-
   useEffect(() => {
     setIsLoading(true);
     listarTodosUsuarios()
       .then(response => {
         setAtletas(response.data);
+        // setAlertMensagem({ severity: "success", title: "Sucesso", message: "A operação foi concluída com sucesso!" }); 
         setIsLoading(false);
       })
       .catch(error => {
         console.error('Error:', error);
+        setAlertMensagem({ severity: "error", title: "Erro", message: "Houve um erro ao carregar os usuários, favor recarregar a pagina ou entrar em contato com o administrador!" }); 
         setIsLoading(false);
       });
   }, []);
@@ -156,7 +155,7 @@ const Atleta = () => {
 
     const verificaUsuarioAberto = formularios.some(formulario => formulario.atleta && formulario.atleta.id === atleta.id);
     if (verificaUsuarioAberto) {
-      alert('O usuario já está aberto!');
+      setAlertMensagem({ severity: "warning", title: "Erro", message: "O usuário já está aberto!" });
       setIsLoading(false);
       return;
     }
@@ -181,6 +180,7 @@ const Atleta = () => {
             tipo = '';
         }
         setTipoUsuario(tipo);
+        setAlertMensagem({ severity: "success", title: "Sucesso", message: "Operação realizada com sucesso!" });
         setIsLoading(false);
       })
       .catch(error => {
@@ -200,6 +200,7 @@ const Atleta = () => {
     <div className='principal-atleta'>
       <div className="atletaPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
         {isLoading && <Loading />}
+        {alertMensagem.message && <AlertMessage {...alertMensagem} />}
         <ThemeProvider theme={theme}>
           <div className='pesquisar'>
             <TextField
@@ -231,7 +232,9 @@ const Atleta = () => {
             isMinimized={isMinimized}
             ativo={ativo}
             setFormularios={setFormularios}
-
+            setAlertMensagem={setAlertMensagem}
+            handleEditAtleta={handleEditAtleta}
+            setTipoUsuario={setTipoUsuario}
           />
         ))}
 
@@ -255,7 +258,7 @@ const Atleta = () => {
           <div>
             <div className="cardContainer">
               {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta, index) => (
-                <AtletaCard key={index} ativo={ativo} atleta={atleta} handleEditAtleta={handleEditAtleta} />
+                <AtletaCard key={index} atleta={atleta} handleEditAtleta={handleEditAtleta} setAlertMensagem={setAlertMensagem}  />
               ))}
             </div>
             <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />

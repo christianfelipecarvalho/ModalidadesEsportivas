@@ -1,5 +1,5 @@
 import { default as React, useContext, useState } from 'react';
-import { FaBackward, FaCalendarAlt, FaChartPie, FaCog, FaForward, FaHome, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { FaBackward, FaCalendarAlt, FaChartPie, FaCog, FaForward, FaHome, FaLocationArrow, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../App';
 import { CollapsedContext } from '../contexts/CollapsedContext';
@@ -44,6 +44,7 @@ const NavBar = () => {
         )}
           {userType !== '"ATLETA"' &&<NavLink onClick={() => handleNavLinkClick('/home')} className='nav-link' to="/home" >{collapsed ? <FaHome /> : <> <FaHome /> <span>Home</span> </> } </NavLink>}
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/atleta')} className='nav-link' to="/atleta">{collapsed ? <FaUser /> : <> <FaUser /> <span>Usuarios</span> </>}</NavLink>}
+          <NavLink onClick={() => handleNavLinkClick('/local')} className='nav-link' to="/local">{collapsed ? <FaLocationArrow   /> : <> <FaLocationArrow  /> <span>Local</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/agenda')} className='nav-link' to="/agenda">{collapsed ? <FaCalendarAlt /> : <> <FaCalendarAlt /> <span>Agenda</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/relatorios')} className='nav-link' to="/relatorios">{collapsed ? <FaChartPie   /> : <> <FaChartPie  /> <span>Relatorios</span> </>}</NavLink>
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/configuracoes')} className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Configurações</span> </>}</NavLink>}

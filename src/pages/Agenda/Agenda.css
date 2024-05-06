@@ -55,6 +55,11 @@
 .calendario-datetimepicker{
 	margin-left: 20px!important;
 }
+.div-calendario-datetimepicker{
+	display: flex;
+	justify-content: center;
+
+}
 .botao-salvar{
 	background-color: #41a56d!important;
 	color: white!important;

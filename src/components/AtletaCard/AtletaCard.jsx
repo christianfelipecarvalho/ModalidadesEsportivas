@@ -4,29 +4,32 @@ import ImagemPadrao from '../../assets/ImagemPadrao.jpg';
 import { inativarUsuario } from '../../services/UsuarioService';
 import Loading from '../Loading/Loading';
 
-const AtletaCard = ({ atleta, handleEditAtleta, ativo }) => {
+const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const isMobile = window.innerWidth <= 768;
 
   const handleToggle = async (event) => {
     setIsLoading(true);
-    console.log("entrei ativo atleta " + atleta.id);
+    console.log("entrei ativo atleta " + atleta.id); 
     await inativarUsuario(atleta.id);
-    window.location.reload();
-    alert("Usuário inativado com sucesso!");
     setIsLoading(false);
+    setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   };
-  
+
   return (
     <Card key={atleta.id} className={atleta.ativo ? "card" : "card-inativo"}>
       {isLoading && <Loading />}
-      <CardContent onClick={(e) => handleEditAtleta(atleta, e)}>
+      <CardContent 
+       onClick={isMobile ? (e) => handleEditAtleta(atleta, e) : null}
+       onDoubleClick={isMobile ? null : (e) => handleEditAtleta(atleta, e)}>
         <Typography className='nome-imagem' variant="h5">
           <CardMedia
             component="img"
             alt={atleta.nome}
             height="140"
-            // image={atleta.imagemPerfilBase64 || ImagemPadrao}
             image={atleta.imagemPerfilBase64 ? `data:image/jpeg;base64,${atleta.imagemPerfilBase64}` : ImagemPadrao}
             title={atleta.nome}
             style={{ borderRadius: '50%', maxHeight: '75px', maxWidth: '75px', marginRight: '10px', marginBottom: '10px' }}
