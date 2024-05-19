@@ -19,6 +19,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
     const [imagemPerfil, setImagemPerfil] = useState(false);
     const [pos, setPos] = useState({ x: 350, y: valorY });
     const [size, setSize] = useState({ width: 150, height: 10 });
+    // const [tipoUsuario, setTipoUsuario] = useState('');
     const isMobile = window.innerWidth <= 768;
     const fileInput = useRef(null);
 
@@ -171,7 +172,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
     };
 
-    const handleFormSubmit = (event) => {
+    const handleSalvaUsuario = (event) => {
         event.preventDefault();
         setIsLoading(true);
         // Coleta os dados do formulário
@@ -188,6 +189,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
         const federacao = document.getElementById('federacao').value;
         const ativo = formulario.atleta ? formulario.atleta.ativo : true;
         const tipoUsuario = document.getElementById('tipoUsuario').value;
+        console.log("tipoUsuario " + tipoUsuario);
         let tipoUsuarioValor;
         switch (tipoUsuario) {
             case 'ADMINISTRADOR':
@@ -200,7 +202,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 tipoUsuarioValor = 1;
                 break;
             default:
-                tipoUsuarioValor = 1;
+                tipoUsuarioValor = 2;
         }
         // Cria o objeto com os dados do atleta
         const atleta = {
@@ -265,7 +267,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                 handleToggle={handleToggle}
                 ativo={ativo}
                 formulario={formulario}
-                handleFormSubmit={handleFormSubmit}
+                handleFormSubmit={handleSalvaUsuario}
                 setTipoUsuario={setTipoUsuario}
                 imagemPerfil={imagemPerfil}
                 handleCheckBoxImagemPerfil={handleCheckBoxImagemPerfil}
@@ -319,7 +321,7 @@ const AtletaForm = ({ formulario, index, toggleMinimize, handleClose, tipoUsuari
                             <Tab label="Documentos" />
                             {/* <Tab label="Jogos" /> */}
                         </Tabs>
-                        <form className='formulario' onSubmit={handleFormSubmit}>
+                        <form className='formulario' onSubmit={handleSalvaUsuario}>
 
                             <CardMedia
                                 className='imagem-atleta'
