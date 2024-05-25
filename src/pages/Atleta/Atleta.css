@@ -95,6 +95,7 @@ div .principal-atleta{
 
 #light .searchField {
   width: 40%;
+  margin-left: 20px;
 }
 #light .pesquisar {
   display: flex;
@@ -106,14 +107,25 @@ div .principal-atleta{
 #dark .searchField {
   width: 40%;
   color: #fff!important;
-  
+  /* margin-left: 80px; */
+  position: relative;
+  left:8%;  
 }
 #dark .pesquisar {
-  display: flex;
+  /* display: flex;
   position: relative;
   top: 12px;
-  justify-content: center!important;
+  justify-content: center!important;*/
   width: 100%;
+  background-color: #232323!important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex!important;
+  color: rgb(255, 255, 255)!important;
+  font-weight: bold;
+  position:fixed!important;
+  /* top: 5% !important; */
+  z-index: 200;
 }
 
 #light .botao-novo{
@@ -244,6 +256,8 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
 #dark .ViewTable{
   margin-left: 20px;
+  position: relative;
+  left: 27%;
 }
 
 /* ajustar estilos da tabela daqui para baixo*/

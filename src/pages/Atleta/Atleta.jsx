@@ -96,39 +96,39 @@ const Atleta = () => {
     setPesquisaAtleta(event.target.value);
   };
 
-  const theme = createTheme({
-    overrides: {
-      MuiOutlinedInput: {
-        root: {
-          '& $notchedOutline': {
-            borderColor: '#41a56d', // Cor da borda em todos os estados
-          },
-          '&:hover $notchedOutline': {
-            borderColor: '#41a56d', // Cor da borda quando o mouse passa por cima
-          },
-          '&$focused $notchedOutline': {
-            borderColor: '#41a56d', // Cor da borda quando o TextField está focado
-          },
-        },
-        input: {
-          color: '#41a56d', // Cor do texto dentro do campo de entrada
-        },
-      },
-      MuiFormLabel: {
-        root: {
-          color: '#41a56d',
-          '&$focused': {
-            color: '#41a56d',
-          },
-        },
-      },
-    },
-    palette: {
-      primary: {
-        main: '#41a56d',
-      },
-    },
-  });
+  // const theme = createTheme({
+    // overrides: {
+    //   MuiOutlinedInput: {
+    //     root: {
+    //       '& $notchedOutline': {
+    //         borderColor: '#fff', // Cor da borda em todos os estados
+    //       },
+    //       '&:hover $notchedOutline': {
+    //         borderColor: '#fff', // Cor da borda quando o mouse passa por cima
+    //       },
+    //       '&$focused $notchedOutline': {
+    //         borderColor: '#fff', // Cor da borda quando o TextField está focado
+    //       },
+    //     },
+    //     input: {
+    //       color: '#fff', // Cor do texto dentro do campo de entrada
+    //     },
+    //   },
+    //   MuiFormLabel: {
+    //     root: {
+    //       color: '#fff',
+    //       '&$focused': {
+    //         color: '#fff',
+    //       },
+    //     },
+    //   },
+    // },
+    // palette: {
+    //   primary: {
+    //     main: '#232323',
+    //   },
+    // },
+  // });
 
   const handleAddAtleta = () => {
     setFormId(prevFormId => prevFormId + 1);
@@ -201,12 +201,12 @@ const Atleta = () => {
       <div className="atletaPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
         {isLoading && <Loading />}
         {alertMensagem.message && <AlertMessage {...alertMensagem} />}
-        <ThemeProvider theme={theme}>
+        {/* <ThemeProvider theme={theme}> */}
           <div className='pesquisar'>
             <TextField
               id="search"
               label="Pesquisar"
-              variant="outlined"
+              variant="filled"
               value={pesquisaAtleta}
               onChange={handleSearchChange}
               className="searchField"
@@ -218,7 +218,7 @@ const Atleta = () => {
               <AddIcon />
             </Fab>
           </div>
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
 
         {formularios.map((formulario, index) => (
           <AtletaForm
