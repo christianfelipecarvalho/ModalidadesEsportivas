@@ -14,7 +14,7 @@ const Local = () => {
   const [codigoLocal, setCodigoLocal] = useState(null);
   const [descricao, setDescricao] = useState("");
   const [rua, setRua] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(true);
   const [cidade, setCidade] = useState("");
   const [cep, setCep] = useState("");
   const [complemento, setComplemento] = useState("");
