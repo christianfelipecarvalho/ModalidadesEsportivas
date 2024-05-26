@@ -14,8 +14,25 @@ const NavBar = () => {
   const { theme } = useContext(ThemeContext);
   const userType = localStorage.getItem('roles');
   const navigate = useNavigate();
+  const [isResponsivo, setIsResponsivo] = useState(window.innerWidth <= 810);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsResponsivo(window.innerWidth <= 810);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isResponsivo) {
+      setCollapsed(true);
+    }
+  }, [isResponsivo]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,7 +45,6 @@ const NavBar = () => {
 
     fetchUser();
   }, []);
-
 
   const toggle = () => {
     setCollapsed(!collapsed);
@@ -53,20 +69,20 @@ const NavBar = () => {
       {isLoading && <Loading />}
       <div className={`sidebar${collapsed ? 'collapsed' : ''}`} >
         <nav className={`nav-cab${collapsed ? 'collapsed' : ''}`}>
-          {!collapsed && (
+          {!collapsed && !isResponsivo && (
+            
             <button onClick={toggle} className="aside-button">
               {/* Ícone de fechar */}
               <FaBackward />
-
             </button>
-          )}
+          ) }
           {user ? (
             <div className={!collapsed ? 'div-usuario-logado' : 'div-usuario-logado-colapsado'}>
               <img className='img-usuario-logado' src={user.imagemPerfilBase64 ? `data:image/jpeg;base64,${user.imagemPerfilBase64}` : ImagemPadrao} alt={user.nome} />
-              {!collapsed && <span>{user.nome}</span>}
+              {!collapsed ? <span>{user.nome}</span> : null}
             </div>
           ) : (
-            // Você pode adicionar um carregador aqui ou retornar null se não quiser renderizar nada enquanto o usuário está sendo carregado
+            //verificar para adicionar um loading aqui ou talvez uma imagemPadrao para depois renderizar a imagem do usuario
             null
           )}
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/home')} className='nav-link' to="/home" >{collapsed ? <FaHome /> : <> <FaHome /> <span>Home</span> </>} </NavLink>}
@@ -77,7 +93,7 @@ const NavBar = () => {
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/configuracoes')} className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Configurações</span> </>}</NavLink>}
           <NavLink onClick={handleLogout} className='nav-link' to="/">{collapsed ? <FaSignOutAlt /> : <> <FaSignOutAlt /> <span>Sair</span> </>}</NavLink>
         </nav>
-        {collapsed && (
+        {collapsed && !isResponsivo &&  (
           <button onClick={toggle} className="toggle-button">
             <FaForward />
           </button>
