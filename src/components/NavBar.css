@@ -129,3 +129,36 @@
   align-items: center;
   position: relative;
 }
+
+.img-usuario-logado, .img-usuario-logado-colapssed{
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+#dark .div-usuario-logado{
+  display: flex;
+  background-color: #93939330;
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 10px;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+#light .div-usuario-logado{
+  display: flex;
+  background-color: #93939330;
+  border-radius: 10px;
+  color: #000000;
+  padding: 10px;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Trebuchet MS', sans-serif;
+}
