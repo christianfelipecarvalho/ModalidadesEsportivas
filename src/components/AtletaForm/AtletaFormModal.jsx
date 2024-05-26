@@ -4,40 +4,118 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import { anexarArquivo } from '../../services/UsuarioService';
 
 import { Box, CardMedia, Checkbox, FormControlLabel, IconButton, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
+import axios from 'axios';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
+import CPFField from '../../utils/CpfMascara';
+import TelefoneField from '../../utils/TelefoneMascara';
 
-function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, handleFileChange, fileName, handleSave, tipoUsuario, setTipoUsuario, handleTrocaFotoPerfil, imagemPerfil, handleCheckBoxImagemPerfil, setAlertMensagem }) {
+function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, handleFileChange, fileName, handleSave, tipoUsuario, setTipoUsuario, imagemPerfil, handleCheckBoxImagemPerfil, setAlertMensagem }) {
   const [open, setOpen] = React.useState(true);
   const [openFileEdit, setOpenFileEdit] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const fileInput = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fileData, setFileData] = useState(null);
 
   const handleClickAbrirModalEdicaoArquivos = () => {
     setOpenFileEdit(true);
   };
   const handleFecharModalAnexarArquivos = () => {
     setOpenFileEdit(false);
-    // setFileData(null);
-    // setFileName('');s
   };
-  const handleTrocaFotoPerfilMobile = () => {
-    setAlertMensagem({ severity: "warning", title: "Atenção!", message: "Funcionalidade disponivel apenas para Web." });
-  };
+  // const handleTrocaFotoPerfilMobile = () => {
+  //   setAlertMensagem({ severity: "warning", title: "Atenção!", message: "Funcionalidade disponivel apenas para Web." });
+  // };
 
   const handleFecharModalUsuario = () => {
     setOpen(false);
   };
+//Inicialll
+const handleTrocaFotoPerfil = () => {
+  if (fileInput.current) {
+    try {
+      fileInput.current.click();
+    } catch (error) {
+      console.error(error);
+      setAlertMensagem({ severity: "error", title: "Erro!", message: "Funcionalidade disponivel apenas para WEB" });
+    }
+  } else {
+    console.error('fileInput.current é null');
+  }
+};
+const handleChamaTrocaFoto = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    setIsLoading(true);
+    console.log("entrei aqui handleChamaTrocaFoto");
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+        console.log("Passeifile.name ->" + file.name)
 
+        const fileData = {
+            data: base64String,
+            nomeArquivo: file.name,
+            extencao: '.' + file.name.split('.').pop(),
+            codigoUsuario: formulario.atleta.id,
+            imagemPerfil: true
+        };
+
+        setFileData(fileData);
+
+        console.log("Passei")
+        if (fileData) {
+            console.log("Passei 2")
+            setIsLoading(true);
+            anexarArquivo(fileData, { 'Content-Type': 'application/json' })
+                .then(response => {
+                    console.log(response.data);
+                    setIsLoading(false);
+                    setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Imagem alterada com sucesso!!!" });
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.log("Passei")
+                    setIsLoading(false);
+                    setAlertMensagem({ severity: "error", title: "Erro!", message: "Ocorreu um erro ao alterar imagem, recarregue a página e tente novamente!" });
+                    console.error(error);
+                });
+        }
+        console.log("Passei 14655")
+        setIsLoading(false);
+    };
+    reader.readAsDataURL(file);
+};
+
+// fim aqui 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  const handleBaixarDocumento = async (id, event) => {
+    event.preventDefault();
+    console.log('Baixar documento', id);
+    try {
+      const response = await axios.post(`https://geresportes.azurewebsites.net/Usuario/DownloadArquivo/${id}`, {}, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', ''); // Deixe vazio para baixar o arquivo com o nome original
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error('Erro ao fazer download do arquivo', error);
+    }
+  };
+  
   return (
     <div>
-      <Dialog open={open} onClose={handleFecharModalUsuario} aria-labelledby="form-dialog-title" style={{zIndex: 200}}>
+      <Dialog open={open} onClose={handleFecharModalUsuario} aria-labelledby="form-dialog-title" style={{ zIndex: 200 }}>
         <DialogContent>
           <div className='formulario-modal-responsivo'  >
             <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
@@ -51,9 +129,15 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
                 className='imagem-atleta'
                 component="img"
                 height="200"
-                onClick={handleTrocaFotoPerfilMobile}
+                onClick={handleTrocaFotoPerfil}
                 image={formulario.atleta ? formulario.atleta.imagemPerfilBase64 ? `data:image/jpeg;base64,${formulario.atleta.imagemPerfilBase64}` : imagemPadrao : imagemPadrao}
               />
+              <input
+                                type="file"
+                                ref={fileInput}
+                                style={{ display: 'none' }}
+                                onChange={handleChamaTrocaFoto}
+                            />
               <Typography>Ativo:
                 <Switch
                   style={{ color: (!formulario.atleta || formulario.atleta.ativo) ? '#41a56d' : '#ff0000ae' }}
@@ -64,10 +148,10 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
                 />
               </Typography>
               <Box hidden={value !== 2} className='campos-container'>
-              <div style={{ display: 'flex', margin: '15px' }}> <h3>Anexar novo: </h3>
-                <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickAbrirModalEdicaoArquivos}>
-                  <AttachFileIcon />
-                </IconButton>
+                <div style={{ display: 'flex', margin: '15px' }}> <h3>Anexar novo: </h3>
+                  <IconButton className='icone-fechar' edge="end" color="inherit" onClick={handleClickAbrirModalEdicaoArquivos}>
+                    <AttachFileIcon />
+                  </IconButton>
                 </div>
                 <h4 style={{ marginLeft: '15px' }}>Arquivos: </h4>
                 {formulario.atleta &&
@@ -87,7 +171,11 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
                             <td className='coluna-documentos'>{documento.id}</td>
                             <td className='coluna-documentos'>{documento.nomeDocumento}</td>
                             <td className='coluna-documentos'>{documento.imagemPerfil ? 'Sim' : 'Não'}</td>
-                            <td className='coluna-documentos'>Baixar</td>
+                            <td className='coluna-documentos'>
+                            <a href="#" onClick={(event) => handleBaixarDocumento(documento.id, event)} style={{ textDecoration: 'none', display: 'inline-block', color: 'black', borderRadius: '5px' }}>Baixar</a>
+                            {/* <a href={`https://geresportes.azurewebsites.net/Usuario/DownloadArquivo/${documento.id}`}>Baixar</a> */}
+
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -96,12 +184,10 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
                     <p>Nenhum arquivo salvo.</p>
                   ))
                 }
-
-
                 <Dialog open={openFileEdit} onClose={handleFecharModalAnexarArquivos} aria-labelledby="form-dialog-title">
                   <DialogTitle id="form-dialog-title">Upload File</DialogTitle>
                   <DialogContent>
-                    <Button variant="contained" component="label" color='primary'>
+                    <Button className='botao-anexararquivo' variant="contained" component="label" color='primary'>
                       Anexar arquivos
                       <input type="file" hidden onChange={handleFileChange} />
                     </Button>
@@ -131,11 +217,10 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
                   </DialogContent>
 
                   <DialogActions>
-
-                    <Button onClick={handleSave} color="primary">
+                    <Button className='botao-salvar' onClick={handleSave} color="primary">
                       Salvar
                     </Button>
-                    <Button onClick={handleFecharModalAnexarArquivos} color="primary">
+                    <Button className='fechar-modal-responsivo' onClick={handleFecharModalAnexarArquivos} color="primary">
                       Cancelar
                     </Button>
 
@@ -144,12 +229,11 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
               </Box>
               <Box hidden={value !== 0} className='campos-container'>
                 <div className='campos-container-div-responsivo'>
-                  <TextField className='formulario-campos-responsivo' id="nome" label="Nome" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
-                  {/* <TextField className='formulario-campos-responsivo' id="senha" label="Senha" variant="outlined" type="password" defaultValue={formulario.atleta ? formulario.atleta.senha : ''} /> */}
-                  <TextField className='formulario-campos-responsivo' id="idade" label="Idade" variant="outlined" type="number" defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
-                  <TextField className='formulario-campos-responsivo' id="telefone" label="Telefone" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
-                  <TextField className='formulario-campos-responsivo' id="documento" label="Documento" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.documento : ''} />
-                  <TextField className='formulario-campos-responsivo' id="email" label="Email" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
+                  <TextField className='formulario-campos-responsivo' id="nome" label="Nome" variant="outlined" required defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
+                  <TextField className='formulario-campos-responsivo' id="idade" label="Idade" variant="outlined" type="number" required defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
+                  <TelefoneField className='formulario-campos-responsivo' id="telefone" label="Telefone" variant="outlined" required defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
+                  <CPFField className='formulario-campos-responsivo' id="cpfRg" label="CPF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cpfRg : ''} />
+                  <TextField className='formulario-campos-responsivo' id="email" label="Email" variant="outlined" required defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
 
                 </div>
               </Box>
@@ -157,7 +241,7 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
                 <div className='campos-container-div-responsivo'>
                   <TextField className='formulario-campos-responsivo' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
                   <TextField className='formulario-campos-responsivo' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
-                  <TextField className='formulario-campos-responsivo' id="subCategoria" label="Subcategoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
+                  <TextField className='formulario-campos-responsivo' id="subCategoria" label="Categoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
                   <TextField className='formulario-campos-responsivo' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
                   <Select
                     value={tipoUsuario}
@@ -173,16 +257,18 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
                   </Select>
                 </div>
               </Box>
-              <Button className='botao-salvar' type="submit" variant="contained" color="primary">
-                Salvar
-              </Button>
+              <div className='div-botoes-modal'>
+                <Button className='botao-salvar' type="submit" variant="contained" color="primary">
+                  Salvar
+                </Button>
+                <Button className='fechar-modal-responsivo' onClick={handleFecharModalUsuario} color="primary">
+                  Fechar
+                </Button>
+              </div>
             </form>
           </div>
         </DialogContent>
         <DialogActions >
-          <Button className='fechar-modal-responsivo' onClick={handleFecharModalUsuario} color="primary">
-            Fechar
-          </Button>
         </DialogActions>
       </Dialog>
     </div>

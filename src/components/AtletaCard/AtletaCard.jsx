@@ -23,8 +23,8 @@ const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
     <Card key={atleta.id} className={atleta.ativo ? "card" : "card-inativo"}>
       {isLoading && <Loading />}
       <CardContent 
-       onClick={isMobile ? (e) => handleEditAtleta(atleta, e) : null}
-       onDoubleClick={isMobile ? null : (e) => handleEditAtleta(atleta, e)}>
+       onClick={isMobile ? (e) => handleEditAtleta(atleta, e) : (e) => handleEditAtleta(atleta, e)}
+      >
         <Typography className='nome-imagem' variant="h5">
           <CardMedia
             component="img"
@@ -36,7 +36,7 @@ const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
           />{atleta.nome}</Typography>
         <Typography>Email: {atleta.email}</Typography>
         <Typography>Idade: {atleta.idade}</Typography>
-        <Typography>Subcategoria: {atleta.subCategoria}</Typography>
+        <Typography>Categoria: {atleta.subCategoria}</Typography>
         <Typography>Ativo: 
           <Switch
             style={{ color: atleta.ativo ? '#41a56d' : '#ff0000ae' }}

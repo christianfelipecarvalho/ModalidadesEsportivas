@@ -1,8 +1,9 @@
-import { Fab, TextField } from '@material-ui/core';
-import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { Fab, IconButton, InputBase, Paper } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Pagination from '@material-ui/lab/Pagination';
 import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useContext, useEffect, useState } from 'react';
 import { FaTableCells } from "react-icons/fa6";
@@ -22,7 +23,8 @@ const Atleta = () => {
   const [formularios, setFormularios] = useState([]);
   const [pagina, setPagina] = useState(1);
   const matches = useMediaQuery('(max-width:891px)');
-  const itemsPorPagina = matches ? 4 : 10;
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const itemsPorPagina = matches ? 10 : 24;
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('');
@@ -75,12 +77,11 @@ const Atleta = () => {
     listarTodosUsuarios()
       .then(response => {
         setAtletas(response.data);
-        // setAlertMensagem({ severity: "success", title: "Sucesso", message: "A operação foi concluída com sucesso!" }); 
         setIsLoading(false);
       })
       .catch(error => {
         console.error('Error:', error);
-        setAlertMensagem({ severity: "error", title: "Erro", message: "Houve um erro ao carregar os usuários, favor recarregar a pagina ou entrar em contato com o administrador!" }); 
+        setAlertMensagem({ severity: "error", title: "Erro", message: "Houve um erro ao carregar os usuários, favor recarregar a pagina ou entrar em contato com o administrador!" });
         setIsLoading(false);
       });
   }, []);
@@ -96,39 +97,7 @@ const Atleta = () => {
     setPesquisaAtleta(event.target.value);
   };
 
-  const theme = createTheme({
-    overrides: {
-      MuiOutlinedInput: {
-        root: {
-          '& $notchedOutline': {
-            borderColor: '#41a56d', // Cor da borda em todos os estados
-          },
-          '&:hover $notchedOutline': {
-            borderColor: '#41a56d', // Cor da borda quando o mouse passa por cima
-          },
-          '&$focused $notchedOutline': {
-            borderColor: '#41a56d', // Cor da borda quando o TextField está focado
-          },
-        },
-        input: {
-          color: '#41a56d', // Cor do texto dentro do campo de entrada
-        },
-      },
-      MuiFormLabel: {
-        root: {
-          color: '#41a56d',
-          '&$focused': {
-            color: '#41a56d',
-          },
-        },
-      },
-    },
-    palette: {
-      primary: {
-        main: '#41a56d',
-      },
-    },
-  });
+
 
   const handleAddAtleta = () => {
     setFormId(prevFormId => prevFormId + 1);
@@ -141,10 +110,6 @@ const Atleta = () => {
     var windowHeight = window.innerHeight;
     var middleY = windowHeight;
 
-    // console.log('middleY', middleY);
-    // console.log("window scrollWidth ->" + document.documentElement.scrollWidth)
-    // console.log("window scrollHeight -> " + document.documentElement.scrollHeight)
-    // console.log("Y: " + y); 
 
     if (y > (middleY / 4) * 3) {
       setValorY(200);
@@ -153,12 +118,7 @@ const Atleta = () => {
       setValorY(50)
     }
 
-    const verificaUsuarioAberto = formularios.some(formulario => formulario.atleta && formulario.atleta.id === atleta.id);
-    if (verificaUsuarioAberto) {
-      setAlertMensagem({ severity: "warning", title: "Erro", message: "O usuário já está aberto!" });
-      setIsLoading(false);
-      return;
-    }
+
     listarUsuario(atleta.id)
       .then(response => {
         setFormId(prevFormId => prevFormId + 1);
@@ -201,25 +161,32 @@ const Atleta = () => {
       <div className="atletaPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
         {isLoading && <Loading />}
         {alertMensagem.message && <AlertMessage {...alertMensagem} />}
-        <ThemeProvider theme={theme}>
-          <div className='pesquisar'>
-            <TextField
-              id="search"
-              label="Pesquisar"
-              variant="outlined"
-              value={pesquisaAtleta}
-              onChange={handleSearchChange}
-              className="searchField"
-            />
-            <Fab className='ViewTable' color="primary" onClick={() => setIsTableView(!isTableView)}>
-              {isTableView ? <FaTableCells /> : <GrTable />}
-            </Fab >
-            <Fab className='botao-novo' aria-label="add" onClick={handleAddAtleta}>
-              <AddIcon />
-            </Fab>
-          </div>
-        </ThemeProvider>
+        <div className='pesquisar'>
+          {isSearchOpen ? (
+            <Paper component="form" className='searchField'>
+              <InputBase
+                id="search"
+                value={pesquisaAtleta}
+                onChange={handleSearchChange}
+                placeholder="Pesquisar"
+              />
+              <IconButton className='botao-pesquisar-cominput' onClick={(event) => { event.preventDefault();  setIsSearchOpen(false)}}>
+                <ZoomOutIcon />
+              </IconButton>
 
+            </Paper>
+          ) : (
+            <IconButton className='botao-pesquisar' onClick={() => setIsSearchOpen(true)}>
+              <SearchIcon />
+            </IconButton>
+          )}
+          <Fab className='botao-transforma-tabela' color="primary" onClick={() => setIsTableView(!isTableView)}>
+            {isTableView ? <FaTableCells /> : <GrTable />}
+          </Fab >
+          <Fab className='botao-novo' aria-label="add" onClick={handleAddAtleta}>
+            <AddIcon />
+          </Fab>
+        </div>
         {formularios.map((formulario, index) => (
           <AtletaForm
             key={formulario.atleta ? formulario.atleta.id : index} // Colocado index como chave se atleta for undefined
@@ -258,7 +225,7 @@ const Atleta = () => {
           <div>
             <div className="cardContainer">
               {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta, index) => (
-                <AtletaCard key={index} atleta={atleta} handleEditAtleta={handleEditAtleta} setAlertMensagem={setAlertMensagem}  />
+                <AtletaCard key={index} atleta={atleta} handleEditAtleta={handleEditAtleta} setAlertMensagem={setAlertMensagem} />
               ))}
             </div>
             <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />

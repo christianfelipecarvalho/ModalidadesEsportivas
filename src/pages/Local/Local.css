@@ -14,6 +14,17 @@
       overflow-x:auto;
 }
 
+.botao-fechar{
+  color: #FFF!important;
+  background-color: #393939!important;
+  margin-left: 20px!important; 
+  position: relative;
+  width: 25%;
+  display: flex!important;
+  top: 100%;
+  font-weight: bold;
+  font-size: 16px;
+}
 
 .formulario-campos-local{
     flex: 1 0 33%; 
@@ -79,12 +90,10 @@
     display: flex;
     flex-direction: column;
     max-height: 90%;
-    align-items: center;
+    /* align-items: center; */
     justify-content: center;
-    margin-top: 20px;
+    margin-right: 1%;
   }
-
-
   
 /* ajustar estilos da tabela daqui para baixo*/
 #light .forms-tabela-local .MuiDataGrid-cell {

@@ -1,6 +1,8 @@
-import { Button, Dialog, DialogContent, DialogTitle, Fab } from '@material-ui/core';
+import { Button, Dialog, DialogContent, DialogTitle, Fab, IconButton, InputBase, Paper } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useContext, useEffect, useState } from 'react';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
@@ -12,6 +14,7 @@ const Local = () => {
   const [codigoLocal, setCodigoLocal] = useState(null);
   const [descricao, setDescricao] = useState("");
   const [rua, setRua] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [cidade, setCidade] = useState("");
   const [cep, setCep] = useState("");
   const [complemento, setComplemento] = useState("");
@@ -40,14 +43,14 @@ const Local = () => {
     (local.numero && local.numero.toLowerCase().includes(pesquisaLocal.toLowerCase()))
   );
   const columns = [
-    { field: 'codigoLocal', headerName: 'Código ', minWidth: 100 },
-    { field: 'rua', headerName: 'Rua', minWidth: 200 },
-    { field: 'descricao', headerName: 'descricao', minWidth: 200 },
+    { field: 'codigoLocal', headerName: 'Código ', minWidth: 150 },
+    { field: 'rua', headerName: 'Rua', minWidth: 400 },
+    { field: 'descricao', headerName: 'descricao', minWidth: 300 },
     { field: 'cidade', headerName: 'Cidade', minWidth: 160 },
     { field: 'cep', headerName: 'Cep', minWidth: 170 },
     { field: 'complemento', headerName: 'Complemento', minWidth: 170 },
     { field: 'numero', headerName: 'Numero', minWidth: 100 },
-    { field: 'ativo', headerName: 'Ativo', minWidth: 100 },
+    { field: 'ativo', headerName: 'Ativo', minWidth: 150 },
   ];
   const rows = filteredLocal.map((local) => ({
     codigoLocal: local.codigoLocal,
@@ -136,6 +139,30 @@ const Local = () => {
   return (
     <div style={{ marginLeft: collapsed ? '60px' : '19%' }} className='local-div'>
       <div className='input-div'>
+          {isSearchOpen ? (
+            <Paper component="form" className='searchField'>
+              <InputBase
+                id="search"
+                value={pesquisaLocal}
+                onChange={handleSearchChange}
+                placeholder="Pesquisar"
+              />
+              <IconButton className='botao-pesquisar-cominput' onClick={(event) => { event.preventDefault();  setIsSearchOpen(false)}}>
+                <ZoomOutIcon />
+              </IconButton>
+
+            </Paper>
+          ) : (
+            <IconButton className='botao-pesquisar' onClick={() => setIsSearchOpen(true)}>
+              <SearchIcon />
+            </IconButton>
+          )}
+          <Fab className='botao-novo' aria-label="add" onClick={handleNovoLocal}>
+            <AddIcon />
+          </Fab> 
+        {/* </div>
+
+      {/* <div className='input-div'>
         <TextField
           id="search"
           label="Pesquisar"
@@ -146,7 +173,8 @@ const Local = () => {
         />
         <Fab className='botao-novo-local' aria-label="add" onClick={handleNovoLocal}>
           <AddIcon />
-        </Fab>
+        </Fab> */}
+
 
         <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}> {/* Adicionado */}
           <DialogTitle id="form-dialog-title">Local</DialogTitle>

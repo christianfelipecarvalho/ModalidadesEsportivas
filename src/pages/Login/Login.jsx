@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../../services/LoginService';
 import './Login.css';
 
-import { Card } from '@material-ui/core';
+import { Card, Switch } from '@material-ui/core';
 import Loading from '../../components/Loading/Loading';
 
 const Login = ({ setIsLoggedIn }) => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(localStorage.getItem('rememberMe') === 'true');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -54,6 +55,13 @@ const Login = ({ setIsLoggedIn }) => {
         navigate('/agenda');
       }
       setIsLoggedIn(true, token, refreshToken);
+
+      if (rememberMe) {
+        localStorage.setItem('username', username);
+      } else {
+        localStorage.removeItem('username');
+      }
+      localStorage.setItem('rememberMe', rememberMe);
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log('Request canceled', error.message);
@@ -87,10 +95,10 @@ const Login = ({ setIsLoggedIn }) => {
   return (
     <div className='principal'>
       <div className="main">
-        {/* <img className='logo' src='./src/assets/Geresportes-sem-fundo-redimensionada.png' width={50} height={50}></img> */}
         <p className="entrar" align="center">
           Login
         </p>
+        {/* <img className='logo' src='./src/assets/Geresportes-sem-fundo-redimensionada.png' width={50} height={50}></img> */}
         <form className="form1" onSubmit={handleLogin}>
           <input
             className="username"
@@ -108,11 +116,17 @@ const Login = ({ setIsLoggedIn }) => {
             required 
             onChange={(e) => setPassword(e.target.value)}
           />
+          <div className='div-lembrar-me'>
+            <label className='label-lembrar-me'>
+              Lembrar-me
+              <Switch className='switch-lembrar-me' checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} style={{ color: rememberMe ? '#57c95f' : '#858585' }} />
+            </label>
+          </div>
        <button type="submit" className="submit" disabled={loading}>
           {loading ? <CircularProgress size={30} style={{ color: 'grey' }} />  : 'Entrar'}
           </button>
           <p className="forgot" align="center" onClick={handleRecuperacaoSenha}>
-            <a href="#">Esqueceu a senha? </a>
+            <a className='forgot-letras' href="#">Esqueceu a senha? </a>
           </p>
         </form>
       </div>

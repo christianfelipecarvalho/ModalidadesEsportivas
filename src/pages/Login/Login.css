@@ -21,7 +21,35 @@
   #dark .entrar {
     color: #ffffff;
   }
+
+  #light .label-lembrar-me{
+    font-size: 14px;
+    padding: 10px;
+  }
   
+  #dark .label-lembrar-me{
+    font-size: 14px;
+    color: #ffffff;
+    padding-bottom: 10px;
+  }
+/* 
+  .MuiSwitch-thumb{
+    color: #57c95f;
+  } */
+ 
+ .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
+    background-color: #858585!important;
+}
+.MuiSwitch-track{
+  background-color: #858585!important;
+}
+.div-lembrar-me{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
   .username {
     width: 76%;
     font-weight: 700;
@@ -103,6 +131,10 @@
     color: #70df82;
     padding-top: 15px;
   }
+
+  .forgot-letras:hover {
+    color: #fdfdfd!important;
+  }
   
   a {
     text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
@@ -121,11 +153,12 @@
     transition: transform 0.9s ease-out;
   }
   .forgot:active {
-    transform: scale(1.3);
+    transform: scale(1.8  );
   }
   .forgot{
     transition: transform 0.9s ease-out;
   }
+  
   .main {
     font-family: "Ubuntu", sans-serif;
     width: 100vw;
@@ -137,8 +170,7 @@
   }
   body .main {
     width: 400px;
-    height: 400px;
-  
+    height: 450px;
     border-radius: 1.5em;
     box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
   }
@@ -169,6 +201,7 @@
   color: white;
 }
 
-.logo {
-  margin-top: 10px; /* Adiciona uma margem abaixo da imagem */
-}
+/* .logo {
+  width: 60px;
+  height: 60px;
+} */

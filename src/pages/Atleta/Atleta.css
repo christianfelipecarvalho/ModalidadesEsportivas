@@ -46,16 +46,16 @@ div .principal-atleta{
   /* box-shadow: rgba(226, 0, 0, 0.34) 0 0 10px; */
 }
 #light .card-inativo:hover {
-  background-color: #ff00006e; 
+  background-color: #1a10106e; 
 }
 #dark .card-inativo:hover {
-  background-color: #ff0000ae; 
+  background-color: #535353; 
 }
 #light .card:hover {
   background-color: #ccc; 
 }
 #dark .card:hover {
-  background-color: #41a56d; 
+  background-color: #535353; 
 }
 #dark .card {
   margin: 20px;
@@ -67,6 +67,26 @@ div .principal-atleta{
   border-radius: 8%;
   box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
+
+
+/*COR DA LETRA DENTRO DO INPUT TEXTFIELD*/
+.MuiInputBase-root, .MuiOutlinedInput-root, .MuiInputBase-formControl{
+color: #393939!important;
+
+}
+/*COR DA LETRA DENTRO DO INPUT TEXTFIELD*/
+
+/*COR DO NOME DO TEXTINPUT E COR DO EFEITO */
+.MuiFormLabel-root, .MuiInputLabel-root, .MuiInputLabel-formControl, .MuiInputLabel-animated, .MuiInputLabel-shrink, .MuiInputLabel-outlined, .MuiFormLabel-filled, .Mui-required, .Mui-required{
+  color: #393939!important;
+}
+/*COR DO NOME DO TEXTINPUT E COR DO EFEITO */
+
+/*COR DA BORDA DO TEXTFIELD */
+.MuiOutlinedInput-notchedOutline {
+    border-color: #393939!important;
+}
+/*COR DA BORDA DO TEXTFIELD */
 
 @keyframes minhaAnimacao {
   50% {
@@ -93,20 +113,50 @@ div .principal-atleta{
   overflow-y: auto;
 }
 
-#light .searchField {
+/* #light .searchField {
   width: 40%;
+   margin-left: 20px;
 }
+#dark .searchField {
+  width: 40%;
+  color: #fff!important;
+  
+} */
+
+.searchField {
+  /* width: 35%; */
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 5px;
+  /* border: 1px solid #41a56d; */
+  color: #393939a5;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.searchField::placeholder {
+  color: #41a56d;
+}
+
+.searchField:focus {
+  outline: none;
+  border-color: #41a56d;
+}
+.botao-pesquisar-cominput{
+  justify-content: flex-end!important;
+  margin-left: 50px!important;
+  /* background-color: #41a56d!important; */
+  /* color: #fff!important; */
+}
+
+
+
 #light .pesquisar {
   display: flex;
   position: relative;
   top: 12px;
   justify-content: center!important;
   width: 100%;
-}
-#dark .searchField {
-  width: 40%;
-  color: #fff!important;
-  
 }
 #dark .pesquisar {
   display: flex;
@@ -122,8 +172,9 @@ div .principal-atleta{
   color: rgb(255, 255, 255)!important;
   font-weight: bold;
   position:fixed!important;
-  /* top: 5% !important; */
-  left: 92%  !important;
+  top: 11% !important;
+  right: 3%  !important;
+  z-index: 200;
 }
 #dark .botao-novo{
   display: flex!important;
@@ -131,8 +182,54 @@ div .principal-atleta{
   font-weight: bold;
   color: white!important;
   position:fixed!important;
+  top: 11% !important;
+  right: 3%  !important;
+  z-index: 200;
+}
+#light .botao-pesquisar{
+  display: flex!important;
+  background: #41a56d!important;
+  color: rgb(255, 255, 255)!important;
+  font-weight: bold;
+  width:  56px;
+  height: 56px;
+  position:fixed!important;
   /* top: 5% !important; */
-  left: 92%  !important;
+  right: 3%  !important;
+  z-index: 200;
+}
+#dark .botao-pesquisar{
+  display: flex!important;
+  background: #41a56d;
+  font-weight: bold;
+  width:  56px;
+  height: 56px;
+  color: white!important;
+  position:fixed!important;
+  /* top: 5% !important; */
+  right: 3%  !important;
+  z-index: 200;
+}
+#light .botao-transforma-tabela{
+  display: flex!important;
+  background: #41a56d!important;
+  color: rgb(255, 255, 255)!important;
+  font-weight: bold;
+  position:fixed!important;
+  top: 21% !important;
+  right: 3%  !important;
+  z-index: 200;
+}
+#dark .botao-transforma-tabela{
+  display: flex!important;
+  background: #41a56d;
+  font-weight: bold;
+  flex-direction: column;
+  color: white!important;
+  position:fixed!important;
+  top: 21% !important;
+  right: 3%  !important;
+  z-index: 200;
 }
 .nome-imagem{
 display: flex!important;
@@ -334,20 +431,21 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
 
 /* Estilizando a barra de rolagem */
-.formulario-modal::-webkit-scrollbar {
-  width: 17px;
+/* Isso afetará todas as barras de rolagem do seu aplicativo */
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.formulario-modal::-webkit-scrollbar-track {
-  background: #f1f1f1;
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #41a56d; 
 }
 
-.formulario-modal::-webkit-scrollbar-thumb {
-  background: #41a56d;
-}
-
-.formulario-modal::-webkit-scrollbar-thumb:hover {
-  background: #54ca6c;
+::-webkit-scrollbar-thumb:hover {
+  background: #41a56d; 
 }
 
 
@@ -406,12 +504,29 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 /* DESIGN RESPONSIVO PAGINA DE USUARIOS - INICIO*/
 
 .fechar-modal-responsivo{
-  color: #ccc!important;
-  position: relative;
-  width: 35%!important;
-  display: flex!important;
+  color: #FFF!important;
   background-color: #393939!important;
-  font-size: 16px!important;
+  margin-left: 20px!important; 
+  position: relative;
+  width: 25%;
+  display: flex!important;
+  top: 100%;
+  font-weight: bold;
+  font-size: 16px;
+}
+.botao-anexararquivo{
+  color: #ffffff!important;
+  background-color: #000000!important;
+  width: 50%;
+  display: flex!important;
+  font-size: 16px;
+}
+.div-botoes-modal{
+  width: 100%!important;
+  align-items: center!important;
+  justify-content: center!important;
+  display: flex!important;
+  padding: 10px;
 }
 
 
@@ -437,15 +552,19 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   justify-content: center;
   margin-top: 20px;
 }
-
+/*MUDA O TAMANHO DOS INPUTS NO MODAL*/
 .formulario-campos-responsivo{
-  flex: 1 0 90%; 
+  /* flex: 1 0 90%;  */ /*AQUI FICA APENAS COM 1 POR LINHA*/
+  flex: 1 0 33%; /*MUDA O TAMANHO DOS INPUTS NO MODAL*/
   margin: 10px!important; 
   margin-top: 20px;
   margin-left: 50px;
   /* color: #fff!important; */
 }
 
+.PrivateTabIndicator-colorSecondary-11, .PrivateTabIndicator-colorSecondary-7 {
+  background-color: #41a56d!important;
+}
 
 
 /* DESIGN RESPONSIVO PAGINA DE USUARIOS - FIIMM*/
