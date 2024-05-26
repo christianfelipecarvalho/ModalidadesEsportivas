@@ -20,7 +20,7 @@ const NavBar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const userId = localStorage.getItem('codigoUsuario');
-      const response = await listarUsuario(userId);
+      const response = await listarUsuario(16);
       console.log(response);
       const userData = response.data; // Ajuste isso com base na estrutura dos dados retornados
       setUser(userData);
