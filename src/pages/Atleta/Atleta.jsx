@@ -31,6 +31,7 @@ const Atleta = () => {
   const [ativo, setAtivo] = useState(formularios.atleta);
   const [formId, setFormId] = useState(0);
   const [valorY, setValorY] = useState(0);
+  const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
   const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
 
   const columns = [
@@ -74,7 +75,8 @@ const Atleta = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    listarTodosUsuarios()
+    // const codigoUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
+    listarTodosUsuarios(codigoUsuarioLogado)
       .then(response => {
         setAtletas(response.data);
         setIsLoading(false);

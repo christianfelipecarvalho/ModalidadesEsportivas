@@ -42,6 +42,8 @@ const Login = ({ setIsLoggedIn }) => {
       const token = response.data.token;
       const refreshToken = response.data.refreshToken;
       const roles = response.data.userAuth.roles[0];
+      const userId = response.data.userAuth.id;
+      window.localStorage.setItem('codigoUsuarioLogado', userId);
       window.localStorage.setItem('token', token);
       window.localStorage.setItem('refreshToken', refreshToken);
       window.localStorage.setItem('roles', JSON.stringify(roles));
@@ -70,9 +72,10 @@ const Login = ({ setIsLoggedIn }) => {
         setErrorMessage('Erro! Usuário e senha Inválidos ');
         console.error('Erro ao fazer login', error);
       }
-    } finally {
-      setLoading(false);
-    }
+    } 
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   useEffect(() => {
