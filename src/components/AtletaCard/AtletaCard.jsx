@@ -7,11 +7,12 @@ import Loading from '../Loading/Loading';
 const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
   const [isLoading, setIsLoading] = useState(false);
   const isMobile = window.innerWidth <= 768;
+  const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
 
   const handleToggle = async (event) => {
     setIsLoading(true);
-    console.log("entrei ativo atleta " + atleta.id); 
-    await inativarUsuario(atleta.id);
+    console.log("entrei ativo atleta " + atleta.id);
+    await inativarUsuario(atleta.id, codigoUsuarioLogado);
     setIsLoading(false);
     setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
     setTimeout(() => {
@@ -22,8 +23,8 @@ const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
   return (
     <Card key={atleta.id} className={atleta.ativo ? "card" : "card-inativo"}>
       {isLoading && <Loading />}
-      <CardContent 
-       onClick={isMobile ? (e) => handleEditAtleta(atleta, e) : (e) => handleEditAtleta(atleta, e)}
+      <CardContent
+        onClick={isMobile ? (e) => handleEditAtleta(atleta, e) : (e) => handleEditAtleta(atleta, e)}
       >
         <Typography className='nome-imagem' variant="h5">
           <CardMedia
@@ -33,19 +34,19 @@ const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
             image={atleta.imagemPerfilBase64 ? `data:image/jpeg;base64,${atleta.imagemPerfilBase64}` : ImagemPadrao}
             title={atleta.nome}
             style={{ borderRadius: '50%', maxHeight: '75px', maxWidth: '75px', marginRight: '10px', marginBottom: '10px' }}
-          />{atleta.nome}</Typography>
-        <Typography>Email: {atleta.email}</Typography>
-        <Typography>Idade: {atleta.idade}</Typography>
-        <Typography>Categoria: {atleta.subCategoria}</Typography>
-        <Typography>Ativo: 
-          <Switch
-            style={{ color: atleta.ativo ? '#41a56d' : '#ff0000ae' }}
-            checked={atleta.ativo}
-            onChange={handleToggle}
-            name="checkedB"
-            color="default"
-          />
-        </Typography>
+          /><span className="nome-negrito">{atleta.nome}</span></Typography>
+        <Typography className='cards-fonts'><b>Email:</b> {atleta.email}</Typography>
+        <Typography className='cards-fonts'><b>Idade:</b> {atleta.idade}</Typography>
+        <Typography className='cards-fonts'><b>Categoria:</b> {atleta.categoria}</Typography>
+          <Typography className='cards-fonts'><b>Ativo:</b> 
+            <Switch
+              style={{ color: atleta.ativo ? '#41a56d' : '#ff0000ae' }}
+              checked={atleta.ativo}
+              onChange={handleToggle}
+              name="checkedB"
+              color="default"
+            />
+          </Typography>
       </CardContent>
     </Card>
   );

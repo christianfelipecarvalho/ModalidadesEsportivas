@@ -42,7 +42,7 @@ const Atleta = () => {
     { field: 'telefone', headerName: 'Telefone', minWidth: 170 },
     { field: 'cref', headerName: 'CREF', minWidth: 170 },
     { field: 'documento', headerName: 'Documento', minWidth: 170 },
-    { field: 'subCategoria', headerName: 'Subcategoria', minWidth: 170 },
+    { field: 'categoria', headerName: 'Categoria', minWidth: 170 },
     { field: 'federacao', headerName: 'Federação', minWidth: 170 },
     { field: 'tipoUsuario', headerName: 'Tipo de Usuário', minWidth: 170 },
     { field: 'ativo', headerName: 'Ativo', minWidth: 170 },
@@ -52,7 +52,6 @@ const Atleta = () => {
   const filteredAtletas = atletas.filter((atleta) =>
     (atleta.nome && atleta.nome.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
     (atleta.email && atleta.email.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
-    (atleta.subcategoria && atleta.subcategoria.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
     (atleta.ativo === pesquisaAtletaBoolean) // Compara o valor booleano
   );
 
@@ -65,7 +64,7 @@ const Atleta = () => {
     telefone: atleta.telefone,
     cref: atleta.cref,
     documento: atleta.cpfRg,
-    subCategoria: atleta.subCategoria,
+    categoria: atleta.categoria,
     federacao: atleta.federacao,
     tipoUsuario: atleta.tipoUsuario === 1 ? 'Atleta' : atleta.tipoUsuario === 0 ? 'Técnico' : 'Administrador',
     documentoUsuario: atleta.documentoUsuario,

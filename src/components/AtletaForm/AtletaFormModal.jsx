@@ -241,7 +241,7 @@ const handleChamaTrocaFoto = (event) => {
                 <div className='campos-container-div-responsivo'>
                   <TextField className='formulario-campos-responsivo' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
                   <TextField className='formulario-campos-responsivo' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
-                  <TextField className='formulario-campos-responsivo' id="subCategoria" label="Categoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.subCategoria : ''} />
+                  <TextField className='formulario-campos-responsivo' id="categoria" label="Categoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.categoria : ''} />
                   <TextField className='formulario-campos-responsivo' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
                   <Select
                     value={tipoUsuario}

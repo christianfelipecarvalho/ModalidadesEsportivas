@@ -10,6 +10,7 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
     const [file, setFile] = useState(null);
     const [imagemPerfil, setImagemPerfil] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
 
     const handleSave = () => {
         setIsLoading(true);
@@ -74,7 +75,7 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
             return;
         }
         console.log("event.target.checked " + event.target.checked);
-        await inativarUsuario(formulario.atleta.id);
+        await inativarUsuario(formulario.atleta.id, codigoUsuarioLogado);
         location.reload();
         setIsLoading(false);
         setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
@@ -86,14 +87,14 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
         // Coleta os dados do formulário
         const codigoUsuario = formulario.atleta ? formulario.atleta.id : null;
         const nome = document.getElementById('nome').value;
-        const senha = '123456';
         const email = document.getElementById('email').value;
         const idade = document.getElementById('idade').value;
         const cargo = document.getElementById('cargo').value;
         const telefone = document.getElementById('telefone').value;
         const cref = document.getElementById('cref').value;
         const cpfRg = document.getElementById('cpfRg').value;
-        const subCategoria = document.getElementById('subCategoria').value;
+        const categoria = 1;
+        const modalidade = 0;
         const federacao = document.getElementById('federacao').value;
         const ativo = formulario.atleta ? formulario.atleta.ativo : true;
         const tipoUsuario = document.getElementById('tipoUsuario').value;
@@ -116,14 +117,14 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
         const atleta = {
             codigoUsuario,
             nome,
-            senha,
             email,
             idade,
             cargo,
             telefone,
             cref,
             cpfRg,
-            subCategoria,
+            categoria,
+            modalidade,
             federacao,
             tipoUsuario: tipoUsuarioValor,
             ativo,
@@ -131,7 +132,7 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
         console.log("atelta id " + formulario.atleta);
         if (formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined) {
             // salva o atleta novo se não existir
-            salvarUsuario(atleta)
+            salvarUsuario(atleta, codigoUsuarioLogado)
                 .then(response => {
                     console.log(response.data);
                     setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário salvo com sucesso!" });
@@ -145,7 +146,7 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
                     setIsLoading(false);
                 });
         } else {
-            alterarUsuario(atleta)
+            alterarUsuario(atleta,codigoUsuarioLogado)
                 .then(response => {
                     console.log(response.data);
                     setIsLoading(false);
@@ -159,7 +160,7 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
                 .catch(error => {
                     console.error('Error:', error);
                     setIsLoading(false);
-                    setAlertMensagem({ severity: "error", title: "Erro!", message: "Ocorreu um erro ao alterar usuário, recarregue a pagina tente novamente!" });
+                    setAlertMensagem({ severity: "error", title: "Erro!", message: error.message });
                 });
         }
     };

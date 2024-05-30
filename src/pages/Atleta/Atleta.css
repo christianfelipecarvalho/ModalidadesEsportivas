@@ -297,7 +297,9 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   .cardContainer{
       margin-top: 10px;
   }
-  
+  .formulario-campos-responsivo{
+    flex: 1 0 90%!important;
+  }
 
 
 }
@@ -568,3 +570,23 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 
 
 /* DESIGN RESPONSIVO PAGINA DE USUARIOS - FIIMM*/
+
+
+#dark .cards-fonts{
+  font-size: 15px;
+  font-family: 'Segoe UI'!important;
+}
+#light .cards-fonts{
+  font-size: 15px;
+  font-family: 'Segoe UI'!important;
+  color: #212121;
+}
+#light .nome-negrito {
+  font-weight: bold;
+  color: #212121;
+  font-family: 'Segoe UI'!important;
+}
+#dark .nome-negrito {
+  font-weight: bold;
+  font-family: 'Segoe UI'!important;
+}
