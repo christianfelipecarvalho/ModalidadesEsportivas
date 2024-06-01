@@ -86,7 +86,7 @@ const NavBar = () => {
             null
           )}
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/home')} className='nav-link' to="/home" >{collapsed ? <FaHome /> : <> <FaHome /> <span>Home</span> </>} </NavLink>}
-          {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/atleta')} className='nav-link' to="/atleta">{collapsed ? <FaUser /> : <> <FaUser /> <span>Usuarios</span> </>}</NavLink>}
+          {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/usuario')} className='nav-link' to="/usuario">{collapsed ? <FaUser /> : <> <FaUser /> <span>Usuarios</span> </>}</NavLink>}
           <NavLink onClick={() => handleNavLinkClick('/local')} className='nav-link' to="/local">{collapsed ? <FaLocationArrow /> : <> <FaLocationArrow /> <span>Local</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/agenda')} className='nav-link' to="/agenda">{collapsed ? <FaCalendarAlt /> : <> <FaCalendarAlt /> <span>Agenda</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/relatorios')} className='nav-link' to="/relatorios">{collapsed ? <FaChartPie /> : <> <FaChartPie /> <span>Relatorios</span> </>}</NavLink>

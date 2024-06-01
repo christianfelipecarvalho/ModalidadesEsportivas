@@ -1,12 +1,11 @@
 .home-geresports{
     height: 100vh;
     margin-left: 18%;
-    display: flex;
-    align-items: center;
-    justify-content:center;
-    flex-direction: column;
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content:center; */
 }
-.cards-container-home {
+/* .cards-container-home {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -41,5 +40,23 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
+  } */
   
+  .grafico-pizza {
+    margin-top: 20px !important;
+    margin-left: 20px !important;
+    width: 50%;
+    height: 60%;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    flex-wrap: wrap;
+    /* align-content: flex-start; */
+}
+  .grafico{
+    display: flex;
+    flex-direction: column;
+    margin-left: 70px;
+  }

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { alterarUsuario, anexarArquivo, inativarUsuario, salvarUsuario } from '../../services/UsuarioService';
-import AtletaFormModal from './AtletaFormModal';
+import { formatarDataParaEnvio } from '../../utils/FormataData';
+import UsuarioFormModal from './UsuarioFormModal';
 
 
-const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMensagem, setTipoUsuario }) => {
+const UsuarioForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMensagem, setTipoUsuario }) => {
 
     const [fileName, setFileName] = useState('');
     const [fileData, setFileData] = useState(null);
+    const [categoria, setCategoria] = useState(formulario.usuario ? formulario.usuario.categoria : '');
+    const [modalidade, setModalidade] = useState(formulario.usuario ? formulario.usuario.modalidade : '');
     const [file, setFile] = useState(null);
     const [imagemPerfil, setImagemPerfil] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +25,7 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
                 data: base64String,
                 nomeArquivo: fileName,
                 extencao: '.' + file.name.split('.').pop(),
-                codigoUsuario: formulario.atleta.id,
+                codigoUsuario: formulario.usuario.id,
                 imagemPerfil: imagemPerfil
             });
         };
@@ -68,14 +71,14 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
 
     const handleToggle = async (event) => {
         setIsLoading(true);
-        if (formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined) {
+        if (formulario.usuario === null || formulario.usuario === '' || formulario.usuario === undefined) {
             setIsLoading(false);
-            console.log("entrei ativo atleta ")
+            console.log("entrei ativo usuario ")
             setAlertMensagem({ severity: "warning", title: "ATENÇÃO!", message: "Usuario não pode ser cadastrado inativado!!!" });
             return;
         }
         console.log("event.target.checked " + event.target.checked);
-        await inativarUsuario(formulario.atleta.id, codigoUsuarioLogado);
+        await inativarUsuario(formulario.usuario.id, codigoUsuarioLogado);
         location.reload();
         setIsLoading(false);
         setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
@@ -85,18 +88,20 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
         event.preventDefault();
         setIsLoading(true);
         // Coleta os dados do formulário
-        const codigoUsuario = formulario.atleta ? formulario.atleta.id : null;
+        const codigoUsuario = formulario.usuario ? formulario.usuario.id : null;
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
-        const idade = document.getElementById('idade').value;
+        const dataNascimento = formatarDataParaEnvio(document.getElementById('dataNascimento').value);
         const cargo = document.getElementById('cargo').value;
         const telefone = document.getElementById('telefone').value;
         const cref = document.getElementById('cref').value;
         const cpfRg = document.getElementById('cpfRg').value;
-        const categoria = 1;
-        const modalidade = 0;
+        const categoria = formulario.usuario ? formulario.usuario.categoria : '';
+        console.log("categoria " + event);
+        const modalidade = document.getElementById('modalidade').value;
+        console.log("modalidade " + modalidade);
         const federacao = document.getElementById('federacao').value;
-        const ativo = formulario.atleta ? formulario.atleta.ativo : true;
+        const ativo = formulario.usuario ? formulario.usuario.ativo : true;
         const tipoUsuario = document.getElementById('tipoUsuario').value;
         console.log("tipoUsuario " + tipoUsuario);
         let tipoUsuarioValor;
@@ -113,12 +118,12 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
             default:
                 tipoUsuarioValor = 2;
         }
-        // Cria o objeto com os dados do atleta
-        const atleta = {
+        // Cria o objeto com os dados do usuario
+        const usuario = {
             codigoUsuario,
             nome,
             email,
-            idade,
+            dataNascimento,
             cargo,
             telefone,
             cref,
@@ -129,15 +134,15 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
             tipoUsuario: tipoUsuarioValor,
             ativo,
         };
-        console.log("atelta id " + formulario.atleta);
-        if (formulario.atleta === null || formulario.atleta === '' || formulario.atleta === undefined) {
-            // salva o atleta novo se não existir
-            salvarUsuario(atleta, codigoUsuarioLogado)
+        console.log("atelta id " + formulario.usuario);
+        if (formulario.usuario === null || formulario.usuario === '' || formulario.usuario === undefined) {
+            // salva o usuario novo se não existir
+            salvarUsuario(usuario, codigoUsuarioLogado)
                 .then(response => {
                     console.log(response.data);
                     setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário salvo com sucesso!" });
-                    window.location.reload();
-                    handleClose(formulario.atleta);
+                    // window.location.reload();
+                    handleClose(formulario.usuario);
                     setIsLoading(false);
                 })
                 .catch(error => {
@@ -146,14 +151,14 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
                     setIsLoading(false);
                 });
         } else {
-            alterarUsuario(atleta,codigoUsuarioLogado)
+            alterarUsuario(usuario,codigoUsuarioLogado)
                 .then(response => {
                     console.log(response.data);
                     setIsLoading(false);
                     setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário alterado com sucesso!" });
-                    console.log(formulario.atleta.id)
-                    window.location.reload();
-                    handleClose(formulario.atleta);
+                    console.log(formulario.usuario.id)
+                    // window.location.reload();
+                    handleClose(formulario.usuario);
 
                     setIsLoading(false);
                 })
@@ -165,7 +170,7 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
         }
     };
         return (
-            <AtletaFormModal
+            <UsuarioFormModal
                 tipoUsuario={tipoUsuario}
                 handleSave={handleSave}
                 fileName={fileName}
@@ -178,8 +183,12 @@ const AtletaForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMe
                 imagemPerfil={imagemPerfil}
                 handleCheckBoxImagemPerfil={handleCheckBoxImagemPerfil}
                 setAlertMensagem={setAlertMensagem}
+                setCategoria={setCategoria}
+                setModalidade={setModalidade} 
+                categoria={categoria}
+                modalidade={modalidade}
             />
         );
     
 }
-export default AtletaForm;
+export default UsuarioForm;

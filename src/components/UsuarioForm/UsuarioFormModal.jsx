@@ -12,15 +12,20 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
 import CPFField from '../../utils/CpfMascara';
+import { FormataDataParaVisualizacao } from '../../utils/FormataData';
 import TelefoneField from '../../utils/TelefoneMascara';
 
-function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, handleFileChange, fileName, handleSave, tipoUsuario, setTipoUsuario, imagemPerfil, handleCheckBoxImagemPerfil, setAlertMensagem }) {
+function UsuarioFormModal({ formulario, handleFormSubmit, ativo, handleToggle, handleFileChange, fileName, handleSave, tipoUsuario, setTipoUsuario, imagemPerfil, handleCheckBoxImagemPerfil, setAlertMensagem, setCategoria, setModalidade, categoria, modalidade}) {
   const [open, setOpen] = React.useState(true);
   const [openFileEdit, setOpenFileEdit] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const fileInput = useRef(null);
+ 
   const [isLoading, setIsLoading] = useState(false);
   const [fileData, setFileData] = useState(null);
+
+  const categorias = ['SUB10', 'SUB20', 'SUB15'];
+  const modalidades = ['FUTSAL', 'BASKET', 'VOLEI'];
 
   const handleClickAbrirModalEdicaoArquivos = () => {
     setOpenFileEdit(true);
@@ -28,71 +33,68 @@ function AtletaFormModal({ formulario, handleFormSubmit, ativo, handleToggle, ha
   const handleFecharModalAnexarArquivos = () => {
     setOpenFileEdit(false);
   };
-  // const handleTrocaFotoPerfilMobile = () => {
-  //   setAlertMensagem({ severity: "warning", title: "Atenção!", message: "Funcionalidade disponivel apenas para Web." });
-  // };
 
   const handleFecharModalUsuario = () => {
     setOpen(false);
   };
-//Inicialll
-const handleTrocaFotoPerfil = () => {
-  if (fileInput.current) {
-    try {
-      fileInput.current.click();
-    } catch (error) {
-      console.error(error);
-      setAlertMensagem({ severity: "error", title: "Erro!", message: "Funcionalidade disponivel apenas para WEB" });
+  //Inicialll
+  const handleTrocaFotoPerfil = () => {
+    if (fileInput.current) {
+      try {
+        fileInput.current.click();
+      } catch (error) {
+        console.error(error);
+        setAlertMensagem({ severity: "error", title: "Erro!", message: "Funcionalidade disponivel apenas para WEB" });
+      }
+    } else {
+      console.error('fileInput.current é null');
     }
-  } else {
-    console.error('fileInput.current é null');
-  }
-};
-const handleChamaTrocaFoto = (event) => {
+  };
+  const handleChamaTrocaFoto = (event) => {
     const file = event.target.files[0];
     console.log(file);
     setIsLoading(true);
     console.log("entrei aqui handleChamaTrocaFoto");
     const reader = new FileReader();
     reader.onloadend = () => {
-        const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
-        console.log("Passeifile.name ->" + file.name)
+      const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+      console.log("Passeifile.name ->" + file.name)
 
-        const fileData = {
-            data: base64String,
-            nomeArquivo: file.name,
-            extencao: '.' + file.name.split('.').pop(),
-            codigoUsuario: formulario.atleta.id,
-            imagemPerfil: true
-        };
+      const fileData = {
+        data: base64String,
+        nomeArquivo: file.name,
+        extencao: '.' + file.name.split('.').pop(),
+        codigoUsuario: formulario.usuario.id,
+        imagemPerfil: true
+      };
 
-        setFileData(fileData);
+      setFileData(fileData);
 
-        console.log("Passei")
-        if (fileData) {
-            console.log("Passei 2")
-            setIsLoading(true);
-            anexarArquivo(fileData, { 'Content-Type': 'application/json' })
-                .then(response => {
-                    console.log(response.data);
-                    setIsLoading(false);
-                    setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Imagem alterada com sucesso!!!" });
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.log("Passei")
-                    setIsLoading(false);
-                    setAlertMensagem({ severity: "error", title: "Erro!", message: "Ocorreu um erro ao alterar imagem, recarregue a página e tente novamente!" });
-                    console.error(error);
-                });
-        }
-        console.log("Passei 14655")
-        setIsLoading(false);
+      console.log("Passei")
+      if (fileData) {
+        console.log("Passei 2")
+        setIsLoading(true);
+        anexarArquivo(fileData, { 'Content-Type': 'application/json' })
+          .then(response => {
+            console.log(response.data);
+            setIsLoading(false);
+            setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Imagem alterada com sucesso!!!" });
+            window.location.reload();
+          })
+          .catch(error => {
+            console.log("Passei")
+            setIsLoading(false);
+            setAlertMensagem({ severity: "error", title: "Erro!", message: "Ocorreu um erro ao alterar imagem, recarregue a página e tente novamente!" });
+            console.error(error);
+          });
+      }
+      console.log("Passei 14655")
+      setIsLoading(false);
     };
     reader.readAsDataURL(file);
-};
+  };
 
-// fim aqui 
+  // fim aqui 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -112,7 +114,7 @@ const handleChamaTrocaFoto = (event) => {
       console.error('Erro ao fazer download do arquivo', error);
     }
   };
-  
+
   return (
     <div>
       <Dialog open={open} onClose={handleFecharModalUsuario} aria-labelledby="form-dialog-title" style={{ zIndex: 200 }}>
@@ -126,22 +128,22 @@ const handleChamaTrocaFoto = (event) => {
             </Tabs>
             <form className='formulario-responsivo' onSubmit={handleFormSubmit}>
               <CardMedia
-                className='imagem-atleta'
+                className='imagem-usuario'
                 component="img"
                 height="200"
                 onClick={handleTrocaFotoPerfil}
-                image={formulario.atleta ? formulario.atleta.imagemPerfilBase64 ? `data:image/jpeg;base64,${formulario.atleta.imagemPerfilBase64}` : imagemPadrao : imagemPadrao}
+                image={formulario.usuario ? formulario.usuario.imagemPerfilBase64 ? `data:image/jpeg;base64,${formulario.usuario.imagemPerfilBase64}` : imagemPadrao : imagemPadrao}
               />
               <input
-                                type="file"
-                                ref={fileInput}
-                                style={{ display: 'none' }}
-                                onChange={handleChamaTrocaFoto}
-                            />
+                type="file"
+                ref={fileInput}
+                style={{ display: 'none' }}
+                onChange={handleChamaTrocaFoto}
+              />
               <Typography>Ativo:
                 <Switch
-                  style={{ color: (!formulario.atleta || formulario.atleta.ativo) ? '#41a56d' : '#ff0000ae' }}
-                  checked={!formulario.atleta || formulario.atleta.ativo ? true : formulario.atleta.ativo}
+                  style={{ color: (!formulario.usuario || formulario.usuario.ativo) ? '#41a56d' : '#ff0000ae' }}
+                  checked={!formulario.usuario || formulario.usuario.ativo ? true : formulario.usuario.ativo}
                   onChange={handleToggle}
                   name="checkedB"
                   color="default"
@@ -154,8 +156,8 @@ const handleChamaTrocaFoto = (event) => {
                   </IconButton>
                 </div>
                 <h4 style={{ marginLeft: '15px' }}>Arquivos: </h4>
-                {formulario.atleta &&
-                  (formulario.atleta.documentoUsuario.length > 0 ? (
+                {formulario.usuario &&
+                  (formulario.usuario.documentoUsuario.length > 0 ? (
                     <table className='tabela-documentos' border="1" style={{ width: '90%', margin: '3%' }}>
                       <thead>
                         <tr>
@@ -166,14 +168,14 @@ const handleChamaTrocaFoto = (event) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {formulario.atleta.documentoUsuario.map((documento) => (
+                        {formulario.usuario.documentoUsuario.map((documento) => (
                           <tr key={documento.id}>
                             <td className='coluna-documentos'>{documento.id}</td>
                             <td className='coluna-documentos'>{documento.nomeDocumento}</td>
                             <td className='coluna-documentos'>{documento.imagemPerfil ? 'Sim' : 'Não'}</td>
                             <td className='coluna-documentos'>
-                            <a href="#" onClick={(event) => handleBaixarDocumento(documento.id, event)} style={{ textDecoration: 'none', display: 'inline-block', color: 'black', borderRadius: '5px' }}>Baixar</a>
-                            {/* <a href={`https://geresportes.azurewebsites.net/Usuario/DownloadArquivo/${documento.id}`}>Baixar</a> */}
+                              <a href="#" onClick={(event) => handleBaixarDocumento(documento.id, event)} style={{ textDecoration: 'none', display: 'inline-block', color: 'black', borderRadius: '5px' }}>Baixar</a>
+                              {/* <a href={`https://geresportes.azurewebsites.net/Usuario/DownloadArquivo/${documento.id}`}>Baixar</a> */}
 
                             </td>
                           </tr>
@@ -229,20 +231,49 @@ const handleChamaTrocaFoto = (event) => {
               </Box>
               <Box hidden={value !== 0} className='campos-container'>
                 <div className='campos-container-div-responsivo'>
-                  <TextField className='formulario-campos-responsivo' id="nome" label="Nome" variant="outlined" required defaultValue={formulario.atleta ? formulario.atleta.nome : ''} />
-                  <TextField className='formulario-campos-responsivo' id="idade" label="Idade" variant="outlined" type="number" required defaultValue={formulario.atleta ? formulario.atleta.idade : ''} />
-                  <TelefoneField className='formulario-campos-responsivo' id="telefone" label="Telefone" variant="outlined" required defaultValue={formulario.atleta ? formulario.atleta.telefone : ''} />
-                  <CPFField className='formulario-campos-responsivo' id="cpfRg" label="CPF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cpfRg : ''} />
-                  <TextField className='formulario-campos-responsivo' id="email" label="Email" variant="outlined" required defaultValue={formulario.atleta ? formulario.atleta.email : ''} />
+                  <TextField className='formulario-campos-responsivo' id="nome" label="Nome" variant="outlined" required defaultValue={formulario.usuario ? formulario.usuario.nome : ''} />
+                  <TextField className='formulario-campos-responsivo' id="dataNascimento" label="dataNascimento" variant="outlined" type="date" required defaultValue={formulario.usuario ? FormataDataParaVisualizacao(formulario.usuario.dataNascimento) : ''} />
+                  <TelefoneField className='formulario-campos-responsivo' id="telefone" label="Telefone" variant="outlined" required defaultValue={formulario.usuario ? formulario.usuario.telefone : ''} />
+                  <CPFField className='formulario-campos-responsivo' id="cpfRg" label="CPF" variant="outlined" defaultValue={formulario.usuario ? formulario.usuario.cpfRg : ''} />
+                  <TextField className='formulario-campos-responsivo' id="email" label="Email" variant="outlined" required defaultValue={formulario.usuario ? formulario.usuario.email : ''} />
 
                 </div>
               </Box>
               <Box hidden={value !== 1} className='campos-container'>
                 <div className='campos-container-div-responsivo'>
-                  <TextField className='formulario-campos-responsivo' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cargo : ''} />
-                  <TextField className='formulario-campos-responsivo' id="cref" label="CREF" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.cref : ''} />
-                  <TextField className='formulario-campos-responsivo' id="categoria" label="Categoria" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.categoria : ''} />
-                  <TextField className='formulario-campos-responsivo' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.atleta ? formulario.atleta.federacao : ''} />
+                  <TextField className='formulario-campos-responsivo' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.usuario ? formulario.usuario.cargo : ''} />
+                  <TextField className='formulario-campos-responsivo' id="cref" label="CREF" variant="outlined" defaultValue={formulario.usuario ? formulario.usuario.cref : ''} />
+                  <TextField className='formulario-campos-responsivo' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.usuario ? formulario.usuario.federacao : ''} />
+                  <Select
+                    id="categoria"
+                    label="Categoria"
+                    variant="outlined"
+                    className='formulario-campos-responsivo'
+                    value={categoria}
+                    onChange={(categoria) => setCategoria(categoria)}
+                  >
+                    {categorias.map((categoria, index) => (
+                      <MenuItem key={index} value={categoria}>
+                        {categoria}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  <Select
+                    id="modalidade"
+                    label="Modalidade"
+                    variant="outlined"
+                    className='formulario-campos-responsivo'
+                    value={modalidade}
+                    onChange={(event) => setModalidade(event.target.value)}
+                  >
+                    {modalidades.map((modalidade) => (
+                      <MenuItem key={modalidade} value={modalidade}>
+                        {modalidade}
+                      </MenuItem>
+                    ))}
+                  </Select> 
+
                   <Select
                     value={tipoUsuario}
                     onChange={(event) => setTipoUsuario(event.target.value)}
@@ -275,4 +306,4 @@ const handleChamaTrocaFoto = (event) => {
   );
 }
 
-export default AtletaFormModal;
+export default UsuarioFormModal;

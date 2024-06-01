@@ -9,17 +9,17 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FaTableCells } from "react-icons/fa6";
 import { GrTable } from "react-icons/gr";
 import AlertMessage from '../../components/AlertMessage/AlertMessage';
-import AtletaCard from '../../components/AtletaCard/AtletaCard';
-import AtletaForm from '../../components/AtletaForm/AtletaForm';
 import Loading from '../../components/Loading/Loading';
+import UsuarioCard from '../../components/UsuarioCard/UsuarioCard';
+import UsuarioForm from '../../components/UsuarioForm/UsuarioForm';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
 import { listarTodosUsuarios, listarUsuario } from '../../services/UsuarioService';
-import './Atleta.css';
+import './Usuario.css';
 
-const Atleta = () => {
+const Usuario = () => {
   const { collapsed } = useContext(CollapsedContext);
-  const [atletas, setAtletas] = useState([]);
-  const [pesquisaAtleta, setPesquisaAtleta] = useState('');
+  const [usuarios, setUsuarios] = useState([]);
+  const [pesquisaUsuario, setPesquisaUsuario] = useState('');
   const [formularios, setFormularios] = useState([]);
   const [pagina, setPagina] = useState(1);
   const matches = useMediaQuery('(max-width:891px)');
@@ -28,7 +28,7 @@ const Atleta = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('');
-  const [ativo, setAtivo] = useState(formularios.atleta);
+  const [ativo, setAtivo] = useState(formularios.usuario);
   const [formId, setFormId] = useState(0);
   const [valorY, setValorY] = useState(0);
   const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
@@ -47,28 +47,28 @@ const Atleta = () => {
     { field: 'tipoUsuario', headerName: 'Tipo de Usuário', minWidth: 170 },
     { field: 'ativo', headerName: 'Ativo', minWidth: 170 },
   ];
-  const pesquisaAtletaBoolean = pesquisaAtleta.toLowerCase() === 'true'; // Converte a pesquisa para booleano
+  const pesquisaUsuarioBoolean = pesquisaUsuario.toLowerCase() === 'true'; // Converte a pesquisa para booleano
 
-  const filteredAtletas = atletas.filter((atleta) =>
-    (atleta.nome && atleta.nome.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
-    (atleta.email && atleta.email.toLowerCase().includes(pesquisaAtleta.toLowerCase())) ||
-    (atleta.ativo === pesquisaAtletaBoolean) // Compara o valor booleano
+  const filteredUsuarios = usuarios.filter((usuario) =>
+    (usuario.nome && usuario.nome.toLowerCase().includes(pesquisaUsuario.toLowerCase())) ||
+    (usuario.email && usuario.email.toLowerCase().includes(pesquisaUsuario.toLowerCase())) ||
+    (usuario.ativo === pesquisaUsuarioBoolean) // Compara o valor booleano
   );
 
-  const rows = filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta) => ({
-    id: atleta.id,
-    nome: atleta.nome,
-    email: atleta.email,
-    idade: atleta.idade,
-    cargo: atleta.cargo,
-    telefone: atleta.telefone,
-    cref: atleta.cref,
-    documento: atleta.cpfRg,
-    categoria: atleta.categoria,
-    federacao: atleta.federacao,
-    tipoUsuario: atleta.tipoUsuario === 1 ? 'Atleta' : atleta.tipoUsuario === 0 ? 'Técnico' : 'Administrador',
-    documentoUsuario: atleta.documentoUsuario,
-    ativo: atleta.ativo
+  const rows = filteredUsuarios.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((usuario) => ({
+    id: usuario.id,
+    nome: usuario.nome,
+    email: usuario.email,
+    idade: usuario.idade,
+    cargo: usuario.cargo,
+    telefone: usuario.telefone,
+    cref: usuario.cref,
+    documento: usuario.cpfRg,
+    categoria: usuario.categoria,
+    federacao: usuario.federacao,
+    tipoUsuario: usuario.tipoUsuario === 1 ? 'Usuario' : usuario.tipoUsuario === 0 ? 'Técnico' : 'Administrador',
+    documentoUsuario: usuario.documentoUsuario,
+    ativo: usuario.ativo
   }));
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,7 +77,7 @@ const Atleta = () => {
     // const codigoUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
     listarTodosUsuarios(codigoUsuarioLogado)
       .then(response => {
-        setAtletas(response.data);
+        setUsuarios(response.data);
         setIsLoading(false);
       })
       .catch(error => {
@@ -90,22 +90,22 @@ const Atleta = () => {
     if (user === undefined) {
       setFormularios(prevFormularios => prevFormularios.filter((_, i) => i !== prevFormularios.length - 1));
     } else {
-      setFormularios(prevFormularios => prevFormularios.filter(formulario => formulario.atleta.id !== user.id));
+      setFormularios(prevFormularios => prevFormularios.filter(formulario => formulario.usuario.id !== user.id));
     }
   };
 
   const handleSearchChange = (event) => {
-    setPesquisaAtleta(event.target.value);
+    setPesquisaUsuario(event.target.value);
   };
 
 
 
-  const handleAddAtleta = () => {
+  const handleAddUsuario = () => {
     setFormId(prevFormId => prevFormId + 1);
     setFormularios(prevFormularios => [...prevFormularios, { id: formId, isMinimized: false }]);
   };
 
-  const handleEditAtleta = (atleta, e) => {
+  const handleEditUsuario = (usuario, e) => {
     setIsLoading(true);
     var y = e.clientY;
     var windowHeight = window.innerHeight;
@@ -120,10 +120,10 @@ const Atleta = () => {
     }
 
 
-    listarUsuario(atleta.id)
+    listarUsuario(usuario.id)
       .then(response => {
         setFormId(prevFormId => prevFormId + 1);
-        setFormularios(prevFormularios => [...prevFormularios, { id: formId, isMinimized: false, atleta: response.data }]);
+        setFormularios(prevFormularios => [...prevFormularios, { id: formId, isMinimized: false, usuario: response.data }]);
 
         // Atualiza o estado do tipoUsuario
         let tipo;
@@ -158,8 +158,8 @@ const Atleta = () => {
   };
 
   return (
-    <div className='principal-atleta'>
-      <div className="atletaPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
+    <div className='principal-usuario'>
+      <div className="usuarioPage" style={{ marginLeft: collapsed ? '50px' : '18%' }}>
         {isLoading && <Loading />}
         {alertMensagem.message && <AlertMessage {...alertMensagem} />}
         <div className='pesquisar'>
@@ -167,7 +167,7 @@ const Atleta = () => {
             <Paper component="form" className='searchField'>
               <InputBase
                 id="search"
-                value={pesquisaAtleta}
+                value={pesquisaUsuario}
                 onChange={handleSearchChange}
                 placeholder="Pesquisar"
               />
@@ -184,13 +184,13 @@ const Atleta = () => {
           <Fab className='botao-transforma-tabela' color="primary" onClick={() => setIsTableView(!isTableView)}>
             {isTableView ? <FaTableCells /> : <GrTable />}
           </Fab >
-          <Fab className='botao-novo' aria-label="add" onClick={handleAddAtleta}>
+          <Fab className='botao-novo' aria-label="add" onClick={handleAddUsuario}>
             <AddIcon />
           </Fab>
         </div>
         {formularios.map((formulario, index) => (
-          <AtletaForm
-            key={formulario.atleta ? formulario.atleta.id : index} // Colocado index como chave se atleta for undefined
+          <UsuarioForm
+            key={formulario.usuario ? formulario.usuario.id : index} // Colocado index como chave se usuario for undefined
             formulario={formulario}
             index={index}
             valorY={valorY}
@@ -201,8 +201,12 @@ const Atleta = () => {
             ativo={ativo}
             setFormularios={setFormularios}
             setAlertMensagem={setAlertMensagem}
-            handleEditAtleta={handleEditAtleta}
+            handleEditUsuario={handleEditUsuario}
             setTipoUsuario={setTipoUsuario}
+            // setCategoria={setCategoria}
+            // setModalidade={setModalidade} 
+            // categoria={categoria}
+            // modalidade={modalidade}
           />
         ))}
 
@@ -218,18 +222,18 @@ const Atleta = () => {
                 },
               }}
 
-              onRowClick={(params, e) => handleEditAtleta(params.row, e)}
+              onRowClick={(params, e) => handleEditUsuario(params.row, e)}
             />
-            <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
+            <Pagination count={Math.ceil(filteredUsuarios.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
           </div>
         ) : (
           <div>
             <div className="cardContainer">
-              {filteredAtletas.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((atleta, index) => (
-                <AtletaCard key={index} atleta={atleta} handleEditAtleta={handleEditAtleta} setAlertMensagem={setAlertMensagem} />
+              {filteredUsuarios.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((usuario, index) => (
+                <UsuarioCard key={index} usuario={usuario} handleEditUsuario={handleEditUsuario} setAlertMensagem={setAlertMensagem} />
               ))}
             </div>
-            <Pagination count={Math.ceil(filteredAtletas.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
+            <Pagination count={Math.ceil(filteredUsuarios.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
 
           </div>
         )}
@@ -239,4 +243,4 @@ const Atleta = () => {
   );
 };
 
-export default Atleta;
+export default Usuario;

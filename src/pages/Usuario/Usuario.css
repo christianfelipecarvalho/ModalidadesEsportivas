@@ -1,4 +1,4 @@
-div .principal-atleta{
+div .principal-usuario{
   height: 100vh;
 }
 .cardContainer {
@@ -8,11 +8,11 @@ div .principal-atleta{
   margin-top: 20px;
 }
 
-.imagem-atleta {
+.imagem-usuario {
   transition: opacity .3s ease-in-out;
 }
 
-.imagem-atleta:hover {
+.imagem-usuario:hover {
   opacity: 0.5;
 }
 #light .card {
@@ -107,7 +107,7 @@ color: #393939!important;
 } 
 
 
-.atletaPage {
+.usuarioPage {
   transition: margin-left 0.3s ease;
   height: 100%; 
   overflow-y: auto;
@@ -397,7 +397,7 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
  width: 90%;
 }
 
-.imagem-atleta{
+.imagem-usuario{
   border-radius: 50%;
   max-height: 120px;
   max-width: 120px;
@@ -532,7 +532,7 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
 
 
-.imagem-atleta-responsivo{
+.imagem-usuario-responsivo{
   border-radius: 50%;
   max-height: 120px;
   max-width: 120px;

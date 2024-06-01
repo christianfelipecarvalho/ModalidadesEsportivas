@@ -2,17 +2,18 @@ import { Card, CardContent, CardMedia, Switch, Typography } from '@material-ui/c
 import React, { useState } from 'react';
 import ImagemPadrao from '../../assets/ImagemPadrao.jpg';
 import { inativarUsuario } from '../../services/UsuarioService';
+import { calcularIdade } from '../../utils/DataNascimentoCalculo';
 import Loading from '../Loading/Loading';
 
-const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
+const UsuarioCard = ({ usuario, handleEditUsuario, setAlertMensagem }) => {
   const [isLoading, setIsLoading] = useState(false);
   const isMobile = window.innerWidth <= 768;
   const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
 
   const handleToggle = async (event) => {
     setIsLoading(true);
-    console.log("entrei ativo atleta " + atleta.id);
-    await inativarUsuario(atleta.id, codigoUsuarioLogado);
+    console.log("entrei ativo usuario " + usuario.id);
+    await inativarUsuario(usuario.id, codigoUsuarioLogado);
     setIsLoading(false);
     setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
     setTimeout(() => {
@@ -21,27 +22,28 @@ const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
   };
 
   return (
-    <Card key={atleta.id} className={atleta.ativo ? "card" : "card-inativo"}>
+    <Card key={usuario.id} className={usuario.ativo ? "card" : "card-inativo"}>
       {isLoading && <Loading />}
       <CardContent
-        onClick={isMobile ? (e) => handleEditAtleta(atleta, e) : (e) => handleEditAtleta(atleta, e)}
+        onClick={isMobile ? (e) => handleEditUsuario(usuario, e) : (e) => handleEditUsuario(usuario, e)}
       >
         <Typography className='nome-imagem' variant="h5">
           <CardMedia
             component="img"
-            alt={atleta.nome}
+            alt={usuario.nome}
             height="140"
-            image={atleta.imagemPerfilBase64 ? `data:image/jpeg;base64,${atleta.imagemPerfilBase64}` : ImagemPadrao}
-            title={atleta.nome}
+            image={usuario.imagemPerfilBase64 ? `data:image/jpeg;base64,${usuario.imagemPerfilBase64}` : ImagemPadrao}
+            title={usuario.nome}
             style={{ borderRadius: '50%', maxHeight: '75px', maxWidth: '75px', marginRight: '10px', marginBottom: '10px' }}
-          /><span className="nome-negrito">{atleta.nome}</span></Typography>
-        <Typography className='cards-fonts'><b>Email:</b> {atleta.email}</Typography>
-        <Typography className='cards-fonts'><b>Idade:</b> {atleta.idade}</Typography>
-        <Typography className='cards-fonts'><b>Categoria:</b> {atleta.categoria}</Typography>
+          /><span className="nome-negrito">{usuario.nome}</span></Typography>
+        <Typography className='cards-fonts'><b>E-mail:</b> {usuario.email}</Typography>
+        {/* <Typography className='cards-fonts'><b>Idade:</b> {usuario.dataNascimento}</Typography> */}
+        <Typography className='cards-fonts'><b>Idade:</b> {calcularIdade(usuario.dataNascimento)}</Typography>
+        <Typography className='cards-fonts'><b>Categoria:</b> {usuario.categoria}</Typography>
           <Typography className='cards-fonts'><b>Ativo:</b> 
             <Switch
-              style={{ color: atleta.ativo ? '#41a56d' : '#ff0000ae' }}
-              checked={atleta.ativo}
+              style={{ color: usuario.ativo ? '#41a56d' : '#ff0000ae' }}
+              checked={usuario.ativo}
               onChange={handleToggle}
               name="checkedB"
               color="default"
@@ -52,4 +54,4 @@ const AtletaCard = ({ atleta, handleEditAtleta, setAlertMensagem }) => {
   );
 };
 
-export default AtletaCard;
+export default UsuarioCard;
