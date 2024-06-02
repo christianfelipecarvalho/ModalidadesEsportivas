@@ -1,9 +1,12 @@
-import React from 'react';
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, Tooltip, XAxis, YAxis } from 'recharts';
+import { Card } from 'antd';
+import React, { useContext } from 'react';
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { CollapsedContext } from '../../contexts/CollapsedContext';
 import './Home.css';
 
 const Home = () => {
   const theme = localStorage.getItem('theme');
+  const { collapsed } = useContext(CollapsedContext);
 
   const dataPie = [
     { name: 'Basket', value: 50 },
@@ -19,43 +22,118 @@ const Home = () => {
     { name: 'Inativo', value: 200 },
   ];
 
+  const dataIdade = [
+    { name: 'Basket', value: 20 },
+    { name: 'Volei', value: 22 },
+    { name: 'Futsal', value: 21 },
+    { name: 'Handeibol', value: 23 },
+  ];
+
+  const dataMulheres = [
+    { name: 'Basket', SUB20: 30, SUB17: 20 },
+    { name: 'Volei', SUB20: 40, SUB17: 10 },
+    { name: 'Futsal', SUB20: 20, SUB17: 30 },
+    { name: 'Handeibol', SUB20: 25, SUB17: 15 },
+  ];
+
+  // Substitua esses valores pelos seus dados reais
+  const totalAtletas = 800;
+  const porcentagemMulheres = 40;
+  const porcentagemHomens = 60;
+  const idadeMedia = 22;
+
   return (
-    <div className='home-geresports'>
-      <div className='grafico-pizza'>
-        <h2>Quantidade de Atletas por Modalidade</h2>
-        <PieChart width={300} height={300}>
-          <Pie
-            data={dataPie}
-            cx={'50%'}
-            cy={'50%'}
-            labelLine={false}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {
-              dataPie.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-            }
-          </Pie>
-          <Tooltip />
-        </PieChart>
-        <div className='grafico'>
-        <h2>Quantidade de Usuários Ativos e Inativos</h2>
-        <BarChart
-          width={500}
-          height={300}
-          data={dataBar}
-          margin={{
-            top: 5, right: 30, left: 20, bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="value" fill="#8884d8" />
-        </BarChart>
+    <div className='home-geresports' style={{ marginLeft: collapsed ? '30px' : '11%' }}>
+      <div className='dashboard'>
+        <div className='resumos-div'>
+          <Card title="Médias" className='resumo'>
+            {/* <div className='numeros-grandes'> */}
+              <div className='numeros-grandes'>
+                <h1>{totalAtletas}</h1>
+                <p>Total de Atletas</p>
+              </div>
+              <div className='numeros-grandes'>
+                <h1>{idadeMedia}</h1>
+                <p>Idade Média</p>
+              </div>
+            {/* </div> */}
+          </Card>
+          <Card title="Porcentagens" className='resumo'>
+            <div className='numeros-grandes'>
+              <h1>{porcentagemHomens}%</h1>
+              <p>Atletas Homens</p>
+            </div>
+            <div className='numeros-grandes'>
+              <h1>{porcentagemMulheres}%</h1>
+              <p>Atletas Mulheres</p>
+            </div>
+          </Card>
+          <Card title="Atletas por Modalidade" className='grafico-pizza'>
+            <ResponsiveContainer width="100%" height={350}>
+              <PieChart>
+                <Pie
+                  data={dataPie}
+                  cx={'50%'}
+                  cy={'50%'}
+                  labelLine={false}
+                  outerRadius={120}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={({ name }) => name} // Adicionado aqui
+                >
+                  {
+                    dataPie.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                  }
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        </div>
+        <div className='grafico-3' >
+          {/* <div className='grafico' >
+            <Card title="Usuários Ativos e Inativos" className='card-grafico' style={{ marginBottom: '20px' }}>
+              <ResponsiveContainer width="60%" height={250}>
+                <BarChart data={dataBar}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value" fill="#FF6384" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </div> */}
+          <div className='grafico-2' >
+            <Card title="Atletas do Sexo Feminino por Categoria e Modalidade" style={{ marginBottom: '20px' }}>
+              <ResponsiveContainer width="60%" height={250}>
+                <BarChart data={dataMulheres}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="SUB20" fill="#12164a" />
+                  <Bar dataKey="SUB17" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+          <div className='grafico-media-idade' >
+            <Card title="Idade Média por Modalidade" style={{ marginBottom: '20px' }}>
+              <ResponsiveContainer width="60%" height={250}>
+                <BarChart data={dataIdade}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import './Login.css';
 
 import { Card, Switch } from '@material-ui/core';
 import Loading from '../../components/Loading/Loading';
+import ThemeToggle from '../../components/ThemeToggle';
 
 const Login = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
@@ -98,6 +99,7 @@ const Login = ({ setIsLoggedIn }) => {
   return (
     <div className='principal'>
       <div className="main">
+      <ThemeToggle />
         <p className="entrar" align="center">
           Login
         </p>

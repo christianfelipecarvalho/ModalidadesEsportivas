@@ -1,62 +1,83 @@
 .home-geresports{
-    height: 100vh;
-    margin-left: 18%;
-    /* display: flex; */
-    /* align-items: center; */
-    /* justify-content:center; */
+  height: 130vh;
 }
-/* .cards-container-home {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-  }
-  
-  .card-home {
-    width: 200px;
-    height: 200px;
-    margin: 20px;
-    background-size: cover;
-    background-position: center;
-    color: white;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-  }
-  
-  .card-home:hover {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  }
-  
-  .card-hp,e:active {
-    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.13);
-  }
-  
-  .card-content-home {
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  } */
-  
-  .grafico-pizza {
-    margin-top: 20px !important;
-    margin-left: 20px !important;
-    width: 50%;
-    height: 60%;
-    display: flex;
-    /* justify-content: center; */
-    align-items: center;
-    flex-direction: column;
-    position: absolute;
-    flex-wrap: wrap;
-    /* align-content: flex-start; */
+.dashboard{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
 }
-  .grafico{
-    display: flex;
+.resumo, .grafico{
+  width: 80%;
+}
+.resumo{
+  width: 20%;
+  margin-right: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.resumos-div{
+  display: flex;
+  width: 80%;
+}
+.grafico-pizza{
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.grafico-3{
+  display: flex;
+  width: 80%;
+}
+.grafico{
+  display: flex;
+  width: 25%;
+}
+.card-grafico{
+  width: 100%;
+  margin-right: 20px;
+}
+
+.grafico-2, .grafico-media-idade{
+  width: 50%;
+}
+.grafico-2{
+  margin-right: 10px;
+}
+
+.numeros-grandes{
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 120%;
+}
+
+@media (max-width: 768px) {
+  .dashboard{
     flex-direction: column;
-    margin-left: 70px;
   }
+  .resumo, .grafico{
+    width: 100%;
+  }
+
+  .resumos-div{
+    flex-direction: column;
+  }
+  .grafico-3{
+    flex-direction: column;
+  }
+ 
+  .grafico-2, .grafico-media-idade{
+    width: 100%;
+  }
+  .home-geresports{
+    height: 330vh;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-geresports{
+    height: 300vh;
+  }
+}

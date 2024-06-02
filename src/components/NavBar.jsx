@@ -90,7 +90,7 @@ const NavBar = () => {
           <NavLink onClick={() => handleNavLinkClick('/local')} className='nav-link' to="/local">{collapsed ? <FaLocationArrow /> : <> <FaLocationArrow /> <span>Local</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/agenda')} className='nav-link' to="/agenda">{collapsed ? <FaCalendarAlt /> : <> <FaCalendarAlt /> <span>Agenda</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/relatorios')} className='nav-link' to="/relatorios">{collapsed ? <FaChartPie /> : <> <FaChartPie /> <span>Relatorios</span> </>}</NavLink>
-          {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/configuracoes')} className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Configurações</span> </>}</NavLink>}
+          {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/configuracoes')} className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Preferências</span> </>}</NavLink>}
           <NavLink onClick={handleLogout} className='nav-link' to="/">{collapsed ? <FaSignOutAlt /> : <> <FaSignOutAlt /> <span>Sair</span> </>}</NavLink>
         </nav>
         {collapsed && !isResponsivo &&  (

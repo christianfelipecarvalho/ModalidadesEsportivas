@@ -4,5 +4,10 @@
     display: flex;
     align-items: center;
     justify-content:center;
-    flex-direction: column;
+    flex-direction: row;
+}
+.configuracoes-label{
+    font-size: 25px;
+    font-weight: bold;
+    margin-right: 10px;
 }

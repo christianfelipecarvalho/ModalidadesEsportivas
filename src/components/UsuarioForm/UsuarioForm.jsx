@@ -3,7 +3,6 @@ import { alterarUsuario, anexarArquivo, inativarUsuario, salvarUsuario } from '.
 import { formatarDataParaEnvio } from '../../utils/FormataData';
 import UsuarioFormModal from './UsuarioFormModal';
 
-
 const UsuarioForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertMensagem, setTipoUsuario }) => {
 
     const [fileName, setFileName] = useState('');
@@ -67,7 +66,6 @@ const UsuarioForm = ({ formulario,  handleClose, tipoUsuario,  ativo,  setAlertM
         // Define o nome do arquivo com base no arquivo selecionado apenas se o usuário não tiver fornecido um nome
         setFileName(event.target.files[0].name);
     };
-   
 
     const handleToggle = async (event) => {
         setIsLoading(true);

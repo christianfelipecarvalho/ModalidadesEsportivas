@@ -19,7 +19,7 @@ div .principal-usuario{
   margin: 20px;
   width: 300px; /*muda o tamanho dos cards*/
   /* transition: transform 0.1s ease-in-out; aqui faz o card vir para frente quando passa o mouse por cima  */
-  background: #fff;
+  background: #ffffff;
   color: #000;
   border-radius: 8%;
   box-shadow: rgb(163, 163, 163) 0 0 10px;

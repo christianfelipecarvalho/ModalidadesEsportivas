@@ -14,6 +14,7 @@ import UsuarioCard from '../../components/UsuarioCard/UsuarioCard';
 import UsuarioForm from '../../components/UsuarioForm/UsuarioForm';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
 import { listarTodosUsuarios, listarUsuario } from '../../services/UsuarioService';
+import { calcularIdade } from '../../utils/DataNascimentoCalculo';
 import './Usuario.css';
 
 const Usuario = () => {
@@ -30,7 +31,7 @@ const Usuario = () => {
   const [tipoUsuario, setTipoUsuario] = useState('');
   const [ativo, setAtivo] = useState(formularios.usuario);
   const [formId, setFormId] = useState(0);
-  const [valorY, setValorY] = useState(0);
+  // const [valorY, setValorY] = useState(0);
   const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
   const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
 
@@ -43,6 +44,7 @@ const Usuario = () => {
     { field: 'cref', headerName: 'CREF', minWidth: 170 },
     { field: 'documento', headerName: 'Documento', minWidth: 170 },
     { field: 'categoria', headerName: 'Categoria', minWidth: 170 },
+    { field: 'modalidade', headerName: 'Modalidade', minWidth: 170 },
     { field: 'federacao', headerName: 'Federação', minWidth: 170 },
     { field: 'tipoUsuario', headerName: 'Tipo de Usuário', minWidth: 170 },
     { field: 'ativo', headerName: 'Ativo', minWidth: 170 },
@@ -59,12 +61,13 @@ const Usuario = () => {
     id: usuario.id,
     nome: usuario.nome,
     email: usuario.email,
-    idade: usuario.idade,
+    idade: calcularIdade(usuario.dataNascimento),
     cargo: usuario.cargo,
     telefone: usuario.telefone,
     cref: usuario.cref,
     documento: usuario.cpfRg,
     categoria: usuario.categoria,
+    modalidade: usuario.modalidade,
     federacao: usuario.federacao,
     tipoUsuario: usuario.tipoUsuario === 1 ? 'Usuario' : usuario.tipoUsuario === 0 ? 'Técnico' : 'Administrador',
     documentoUsuario: usuario.documentoUsuario,
@@ -96,9 +99,7 @@ const Usuario = () => {
 
   const handleSearchChange = (event) => {
     setPesquisaUsuario(event.target.value);
-  };
-
-
+  };  
 
   const handleAddUsuario = () => {
     setFormId(prevFormId => prevFormId + 1);
@@ -107,23 +108,11 @@ const Usuario = () => {
 
   const handleEditUsuario = (usuario, e) => {
     setIsLoading(true);
-    var y = e.clientY;
-    var windowHeight = window.innerHeight;
-    var middleY = windowHeight;
-
-
-    if (y > (middleY / 4) * 3) {
-      setValorY(200);
-    }
-    else {
-      setValorY(50)
-    }
-
 
     listarUsuario(usuario.id)
       .then(response => {
         setFormId(prevFormId => prevFormId + 1);
-        setFormularios(prevFormularios => [...prevFormularios, { id: formId, isMinimized: false, usuario: response.data }]);
+        setFormularios(prevFormularios => [...prevFormularios, { usuario: response.data }]);
 
         // Atualiza o estado do tipoUsuario
         let tipo;
@@ -141,7 +130,6 @@ const Usuario = () => {
             tipo = '';
         }
         setTipoUsuario(tipo);
-        setAlertMensagem({ severity: "success", title: "Sucesso", message: "Operação realizada com sucesso!" });
         setIsLoading(false);
       })
       .catch(error => {
@@ -190,10 +178,9 @@ const Usuario = () => {
         </div>
         {formularios.map((formulario, index) => (
           <UsuarioForm
-            key={formulario.usuario ? formulario.usuario.id : index} // Colocado index como chave se usuario for undefined
+            key={index} // Colocado index como chave se usuario for undefined
             formulario={formulario}
             index={index}
-            valorY={valorY}
             toggleMinimize={toggleMinimize}
             handleClose={handleClose}
             tipoUsuario={tipoUsuario}
@@ -234,7 +221,6 @@ const Usuario = () => {
               ))}
             </div>
             <Pagination count={Math.ceil(filteredUsuarios.length / itemsPorPagina)} page={pagina} onChange={handleChangePage} />
-
           </div>
         )}
 

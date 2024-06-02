@@ -1,28 +1,27 @@
+import { Box, CardMedia, Checkbox, FormControl, FormControlLabel, IconButton, InputLabel, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import React, { useRef, useState } from 'react';
-import { anexarArquivo } from '../../services/UsuarioService';
-
-import { Box, CardMedia, Checkbox, FormControlLabel, IconButton, MenuItem, Select, Switch, Tab, Tabs, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import axios from 'axios';
+import React, { useRef } from 'react';
 import imagemPadrao from '../../assets/ImagemPadrao.jpg';
+import { anexarArquivo } from '../../services/UsuarioService';
 import CPFField from '../../utils/CpfMascara';
 import { FormataDataParaVisualizacao } from '../../utils/FormataData';
 import TelefoneField from '../../utils/TelefoneMascara';
 
-function UsuarioFormModal({ formulario, handleFormSubmit, ativo, handleToggle, handleFileChange, fileName, handleSave, tipoUsuario, setTipoUsuario, imagemPerfil, handleCheckBoxImagemPerfil, setAlertMensagem, setCategoria, setModalidade, categoria, modalidade}) {
+function UsuarioFormModal({ formulario, handleFormSubmit, ativo, handleToggle, handleFileChange, fileName, handleSave, tipoUsuario, setTipoUsuario, imagemPerfil, handleCheckBoxImagemPerfil, setAlertMensagem, setCategoria, setModalidade, categoria, modalidade }) {
   const [open, setOpen] = React.useState(true);
   const [openFileEdit, setOpenFileEdit] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const fileInput = useRef(null);
- 
-  const [isLoading, setIsLoading] = useState(false);
-  const [fileData, setFileData] = useState(null);
+
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [fileData, setFileData] = useState(null);
 
   const categorias = ['SUB10', 'SUB20', 'SUB15'];
   const modalidades = ['FUTSAL', 'BASKET', 'VOLEI'];
@@ -244,48 +243,61 @@ function UsuarioFormModal({ formulario, handleFormSubmit, ativo, handleToggle, h
                   <TextField className='formulario-campos-responsivo' id="cargo" label="Cargo" variant="outlined" defaultValue={formulario.usuario ? formulario.usuario.cargo : ''} />
                   <TextField className='formulario-campos-responsivo' id="cref" label="CREF" variant="outlined" defaultValue={formulario.usuario ? formulario.usuario.cref : ''} />
                   <TextField className='formulario-campos-responsivo' id="federacao" label="Federação" variant="outlined" defaultValue={formulario.usuario ? formulario.usuario.federacao : ''} />
-                  <Select
-                    id="categoria"
-                    label="Categoria"
-                    variant="outlined"
-                    className='formulario-campos-responsivo'
-                    value={categoria}
-                    onChange={(categoria) => setCategoria(categoria)}
-                  >
-                    {categorias.map((categoria, index) => (
-                      <MenuItem key={index} value={categoria}>
-                        {categoria}
-                      </MenuItem>
-                    ))}
-                  </Select>
-
-                  <Select
-                    id="modalidade"
-                    label="Modalidade"
-                    variant="outlined"
-                    className='formulario-campos-responsivo'
-                    value={modalidade}
-                    onChange={(event) => setModalidade(event.target.value)}
-                  >
-                    {modalidades.map((modalidade) => (
-                      <MenuItem key={modalidade} value={modalidade}>
-                        {modalidade}
-                      </MenuItem>
-                    ))}
-                  </Select> 
-
-                  <Select
-                    value={tipoUsuario}
-                    onChange={(event) => setTipoUsuario(event.target.value)}
-                    className='formulario-campos-responsivo'
-                    id="tipoUsuario"
-                    label="Tipo de Usuário"
-                    variant="outlined"
-                  >
-                    <MenuItem value={'ADMINISTRADOR'}>ADMINISTRADOR</MenuItem>
-                    <MenuItem value={'TECNICO'}>TECNICO</MenuItem>
-                    <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
-                  </Select>
+                  <FormControl fullWidth>
+                    <InputLabel variant="outlined" htmlFor="uncontrolled-native">
+                      Categoria
+                    </InputLabel>
+                    <Select
+                      id="categoria"
+                      label="Categoria"
+                      variant="outlined"
+                      className='formulario-campos-responsivo'
+                      value={categoria}
+                      onChange={(categoria) => setCategoria(event.target.value)}
+                    >
+                      {categorias.map((categoria, index) => (
+                        <MenuItem key={index} value={categoria}>
+                          {categoria}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth>
+                    <InputLabel variant="outlined" htmlFor="uncontrolled-native">
+                      Modalidade
+                    </InputLabel>
+                    <Select
+                      id="modalidade"
+                      label="Modalidade"
+                      variant="outlined"
+                      className='formulario-campos-responsivo'
+                      value={modalidade}
+                      onChange={(event) => setModalidade(event.target.value)}
+                    >
+                      {modalidades.map((modalidade) => (
+                        <MenuItem key={modalidade} value={modalidade}>
+                          {modalidade}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth>
+                    <InputLabel variant="outlined" htmlFor="uncontrolled-native">
+                      Tipo de Usuário
+                    </InputLabel>
+                    <Select
+                      value={tipoUsuario}
+                      onChange={(event) => setTipoUsuario(event.target.value)}
+                      className='formulario-campos-responsivo'
+                      id="tipoUsuario"
+                      label="Tipo de Usuário"
+                      variant="outlined"
+                    >
+                      <MenuItem value={'ADMINISTRADOR'}>ADMINISTRADOR</MenuItem>
+                      <MenuItem value={'TECNICO'}>TECNICO</MenuItem>
+                      <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
+                    </Select>
+                  </FormControl>
                 </div>
               </Box>
               <div className='div-botoes-modal'>
