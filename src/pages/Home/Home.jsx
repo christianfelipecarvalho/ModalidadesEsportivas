@@ -36,7 +36,6 @@ const Home = () => {
     { name: 'Handeibol', SUB20: 25, SUB17: 15 },
   ];
 
-  // Substitua esses valores pelos seus dados reais
   const totalAtletas = 800;
   const porcentagemMulheres = 40;
   const porcentagemHomens = 60;
@@ -47,7 +46,6 @@ const Home = () => {
       <div className='dashboard'>
         <div className='resumos-div'>
           <Card title="Médias" className='resumo'>
-            {/* <div className='numeros-grandes'> */}
               <div className='numeros-grandes'>
                 <h1>{totalAtletas}</h1>
                 <p>Total de Atletas</p>
@@ -56,7 +54,6 @@ const Home = () => {
                 <h1>{idadeMedia}</h1>
                 <p>Idade Média</p>
               </div>
-            {/* </div> */}
           </Card>
           <Card title="Porcentagens" className='resumo'>
             <div className='numeros-grandes'>
@@ -79,7 +76,7 @@ const Home = () => {
                   outerRadius={120}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name }) => name} // Adicionado aqui
+                  label={({ name }) => name} 
                 >
                   {
                     dataPie.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
