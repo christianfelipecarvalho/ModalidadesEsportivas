@@ -74,9 +74,9 @@ const Login = ({ setIsLoggedIn }) => {
         console.error('Erro ao fazer login', error);
       }
     } 
-    // finally {
-    //   setLoading(false);
-    // }
+    finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

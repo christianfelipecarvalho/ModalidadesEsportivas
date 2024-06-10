@@ -67,10 +67,10 @@ body {
 }
 .switch {
   display: flex;
-  position: absolute; 
+  position:fixed;
   bottom: 0; 
   right: 20px; 
-  height: 100px;
+  height: 50px;
   align-items: center;
   justify-content: flex-end; 
   padding-right: 10px; 

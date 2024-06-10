@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, DialogTitle, Fab, IconButton, InputBase, Paper } from '@material-ui/core';
+import { Button, Dialog, DialogContent, DialogTitle, Fab, FormControl, IconButton, InputBase, InputLabel, MenuItem, Paper, Select } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
@@ -6,7 +6,7 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useContext, useEffect, useState } from 'react';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
-import { alterarLocal, listarLocalPorId, listarTodosLocais, salvarLocal } from '../../services/LocalService';
+import { alterarLocal, inativarLocal, listarLocalPorId, listarTodosLocais, salvarLocal } from '../../services/LocalService';
 import './Local.css';
 
 const Local = () => {
@@ -21,6 +21,7 @@ const Local = () => {
   const [numero, setNumero] = useState("");
   const [pesquisaLocal, setPesquisaLocal] = useState('');
   const [locais, setLocais] = useState([]);
+  const [ativo, setAtivo] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -72,7 +73,15 @@ const Local = () => {
     setNumero("");
     setDialogOpen(true);
   }
-  const handleSave = () => {
+  const handleSave = async () => {
+    setIsLoading(true);
+    console.log('codigoLocal ->', codigoLocal);
+    console.log('ativo ->', ativo);
+    if (codigoLocal !== null && codigoLocal !== '') {
+      console.log('codigoLocal ->', codigoLocal);
+        const response = await inativarLocal(codigoLocal);
+        console.log(response);
+    }
     const local = {
       codigoLocal: codigoLocal,
       descricao: descricao,
@@ -80,9 +89,10 @@ const Local = () => {
       cidade: cidade,
       cep: cep,
       complemento: complemento,
+      ativo,
       numero: numero
     };
-
+    setIsLoading(true);
     if (local.codigoLocal) {
       alterarLocal(local)
         .then(response => {
@@ -127,7 +137,7 @@ const Local = () => {
         setCep(response.data.cep);
         setComplemento(response.data.complemento);
         setNumero(response.data.numero);
-
+        setAtivo(response.data.ativo);
         setIsLoading(false);
         setDialogOpen(true);
       })
@@ -136,56 +146,58 @@ const Local = () => {
     setPesquisaLocal(event.target.value);
   };
 
+
   return (
     <div style={{ marginLeft: collapsed ? '60px' : '19%' }} className='local-div'>
       <div className='input-div'>
-          {isSearchOpen ? (
-            <Paper component="form" className='searchField'>
-              <InputBase
-                id="search"
-                value={pesquisaLocal}
-                onChange={handleSearchChange}
-                placeholder="Pesquisar"
-              />
-              <IconButton className='botao-pesquisar-cominput' onClick={(event) => { event.preventDefault();  setIsSearchOpen(false)}}>
-                <ZoomOutIcon />
-              </IconButton>
-
-            </Paper>
-          ) : (
-            <IconButton className='botao-pesquisar' onClick={() => setIsSearchOpen(true)}>
-              <SearchIcon />
+        {isSearchOpen ? (
+          <Paper component="form" className='searchField'>
+            <InputBase
+              id="search"
+              value={pesquisaLocal}
+              onChange={handleSearchChange}
+              placeholder="Pesquisar"
+            />
+            <IconButton className='botao-pesquisar-cominput' onClick={(event) => { event.preventDefault(); setIsSearchOpen(false) }}>
+              <ZoomOutIcon />
             </IconButton>
-          )}
-          <Fab className='botao-novo' aria-label="add" onClick={handleNovoLocal}>
-            <AddIcon />
-          </Fab> 
-        {/* </div>
 
-      {/* <div className='input-div'>
-        <TextField
-          id="search"
-          label="Pesquisar"
-          variant="outlined"
-          value={pesquisaLocal}
-          onChange={handleSearchChange}
-          className="searchField"
-        />
-        <Fab className='botao-novo-local' aria-label="add" onClick={handleNovoLocal}>
+          </Paper>
+        ) : (
+          <IconButton className='botao-pesquisar' onClick={() => setIsSearchOpen(true)}>
+            <SearchIcon />
+          </IconButton>
+        )}
+        <Fab className='botao-novo' aria-label="add" onClick={handleNovoLocal}>
           <AddIcon />
-        </Fab> */}
-
-
+        </Fab>
         <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}> {/* Adicionado */}
           <DialogTitle id="form-dialog-title">Local</DialogTitle>
           <DialogContent >
-            <TextField className='formulario-campos-local' value={codigoLocal ?? ''} onChange={e => setCodigoLocal(e.target.value)} label="Código" variant="outlined" />
-            <TextField className='formulario-campos-local' value={descricao ?? ''} onChange={e => setDescricao(e.target.value)} label="Descrição" variant="outlined" />
+            <TextField className='formulario-campos-local' style={{ maxWidth: '15%' }} value={codigoLocal ?? ''} onChange={e => setCodigoLocal(e.target.value)} label="Código" variant="outlined" disabled />
+            <FormControl fullWidth style={{ maxWidth: '25%' }}>
+              <InputLabel variant="outlined" htmlFor="uncontrolled-native">
+                Ativo
+              </InputLabel>
+              <Select
+                value={ativo}  
+                onChange={(e) => setAtivo(e.target.value)} 
+                className='formulario-campos-local'
+                id="ativo"
+                label="Ativo"
+                variant="outlined"
+              >
+                <MenuItem value={'true'}>Sim</MenuItem>
+                <MenuItem value={'false'}>Não</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField className='formulario-campos-local' value={numero ?? ''} onChange={e => setNumero(e.target.value)} label="Número" variant="outlined" />
             <TextField className='formulario-campos-local' value={cep ?? ''} onChange={e => setCep(e.target.value)} label="CEP" variant="outlined" />
             <TextField className='formulario-campos-local' value={cidade ?? ''} onChange={e => setCidade(e.target.value)} label="Cidade" variant="outlined" />
-            <TextField className='formulario-campos-local' value={numero ?? ''} onChange={e => setNumero(e.target.value)} label="Número" variant="outlined" />
             <TextField className='formulario-campos-local' value={complemento ?? ''} onChange={e => setComplemento(e.target.value)} label="Complemento" variant="outlined" />
             <TextField className='formulario-campos-local' value={rua ?? ''} onChange={e => setRua(e.target.value)} label="Rua" variant="outlined" />
+            <TextField className='formulario-campos-local' style={{ minWidth: '86%' }} value={descricao ?? ''} onChange={e => setDescricao(e.target.value)} label="Descrição" variant="outlined" />
             <div className='div-botoes-local'>
               <Button className='botao-salvar' onClick={handleSave}>Salvar</Button>
               <Button className='botao-fechar' onClick={() => setDialogOpen(false)}>Fechar</Button>

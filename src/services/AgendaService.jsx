@@ -21,3 +21,7 @@ export const SalvarAgenda = (agenda) => {
     }
   });
 }
+
+export const deletarAgenda = (codigoUsuarioLogado, id) => {
+  return axios.delete(`${API_URL}/Agenda/ExcluirAgenda/${codigoUsuarioLogado}/${id}`);
+}

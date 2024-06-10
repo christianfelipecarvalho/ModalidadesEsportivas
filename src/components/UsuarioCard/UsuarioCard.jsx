@@ -25,7 +25,7 @@ const UsuarioCard = ({ usuario, handleEditUsuario, setAlertMensagem }) => {
     <Card key={usuario.id} className={usuario.ativo ? "card" : "card-inativo"}>
       {isLoading && <Loading />}
       <CardContent
-        onClick={isMobile ? (e) => handleEditUsuario(usuario, e) : (e) => handleEditUsuario(usuario, e)}
+        onClick={ (e) => handleEditUsuario(usuario, e)}
       >
         <Typography className='nome-imagem' variant="h5">
           <CardMedia

@@ -16,6 +16,7 @@ import ModalAgenda from '../../components/Agenda/ModalAgenda';
 import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
 import { SalvarAgenda, alterarAgenda, listarTodasAgendas } from '../../services/AgendaService';
+import { modalidadeMapInverso } from '../../utils/EnumModalidade';
 import './Agenda.css';
 
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -32,7 +33,36 @@ const localizer = dateFnsLocalizer({
 
 function Agenda() {
   const [events, setEvents] = useState([]);
+  const [dataInicioAgenda, setDataInicioAgenda] = useState(new Date());
+  const [dataFimAgenda, setDataFimAgenda] = useState(new Date());
+  const [codigoAgenda, setCodigoAgenda] = useState(null); 
+  const [open, setOpen] = useState(false); // Para controlar a abertura/fechamento do modal
+  const [modalidade, setModalidade] = useState("");
+  const [tipoEvento, setTipoEvento] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [local, setLocal] = useState("");
+  const { collapsed } = useContext(CollapsedContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
+ // Verifica se o dispositivo é um celular
+ const isMobile = window.matchMedia('(max-width: 600px)').matches;
 
+ // Define o estado inicial com base no tipo de dispositivo
+ const [view, setView] = useState(isMobile ? 'day' : 'month');
+
+ useEffect(() => {
+   // Atualiza o estado quando a largura da janela muda
+   const handleResize = () => {
+     setView(window.innerWidth <= 600 ? 'day' : 'month');
+   };
+
+   window.addEventListener('resize', handleResize);
+
+   // Limpa o listener quando o componente é desmontado
+   return () => {
+     window.removeEventListener('resize', handleResize);
+   };
+ }, []);
   useEffect(() => {
     setIsLoading(true);
     listarTodasAgendas()
@@ -66,26 +96,15 @@ function Agenda() {
   }, []);
   
   
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [open, setOpen] = useState(false); // Para controlar a abertura/fechamento do modal
-  const [modalidade, setModalidade] = useState("");
-  const [tipoEvento, setTipoEvento] = useState("");
-  const [local, setLocal] = useState("");
-  const { collapsed } = useContext(CollapsedContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
 
-  const handleOpen = (slotInfo) => {
-    setIsLoading(true);
-    if (slotInfo) {
-      setStartDate(slotInfo.start);
-      setEndDate(slotInfo.end);
-    } else {
-      const now = new Date();
-      setStartDate(now);
-      setEndDate(now);
-    }
+  const handleOpen = (e) => {
+    console.log('slotInfo:', e);
+    setCodigoAgenda(e.codigoAgenda);
+    setDataInicioAgenda(e.start);
+    setDataFimAgenda(e.end);
+    setModalidade(e.modalidade);
+    setTipoEvento(e.tipoEvento);
+    setLocal(local);
     setIsLoading(false);
     setOpen(true);
   };
@@ -94,27 +113,18 @@ function Agenda() {
     setOpen(false);
   };
 
-  // const handleSelect = () => {
-  //   setIsLoading(true);
-  //   const title = `${modalidade} - ${tipoEvento} - ${local}`;
-  //   if (title)
-  //     setEvents([...events, { start: startDate, end: endDate, title }]);
-  //   alert('Evento criado com sucesso!');
-  //     setIsLoading(false);
-  // };
-
   const handleSelect = () => {
     setIsLoading(true);
-      console.log('dataInicio:', startDate);
+      console.log('dataInicio:', dataInicioAgenda);
       const newEvent = {
-        modalidade: 0, // Substituir pela modalidade que existe no Enum
-        dataInicio: startDate,
-        dataFim: endDate,
-        tipoEvento: "string", // Substituir pelo valor que contem 
-        codigoLocal: 1,  // Substituir pelo valor do codigo do local
+        modalidade: modalidadeMapInverso[modalidade], // Substituir pela modalidade que existe no Enum
+        dataInicio: dataInicioAgenda,
+        dataFim: dataFimAgenda,
+        tipoEvento: tipoEvento, // Substituir pelo valor que contem 
+        codigoLocal: local,  // Substituir pelo valor do codigo do local
         dataSalvamento: new Date(),
         codigoUsuario: codigoUsuarioLogado, // Substituir pelo codigo usuario logao
-        titulo: "teste titulos"
+        titulo: `${tipoEvento} - ${modalidade}  - ${categoria} `
       };
   
       SalvarAgenda([newEvent])
@@ -135,8 +145,8 @@ function Agenda() {
     const updatedEvent = {
       ...event,
       modalidade: 0, // Substituir pela modalidade que existe no Enum
-      dataInicio: start.toISOString(),
-      dataFim: end.toISOString(),
+      dataInicio: dataInicioAgenda.toISOString(),
+      dataFim: dataFimAgenda.toISOString(),
       tipoEvento: "string", // Substituir pelo valor que contem 
       codigoLocal: 1, // Substituir pelo valor do codigo do local
       dataSalvamento: new Date().toISOString(),
@@ -151,7 +161,8 @@ function Agenda() {
         nextEvents.splice(idx, 1, updatedEvent);
         setEvents(nextEvents);
         alert('Evento DROP alterado com sucesso!');
-        location.reload();
+        listarTodasAgendas()
+        // location.reload();
         setIsLoading(false);
       })
       .catch(error => {
@@ -183,7 +194,8 @@ function Agenda() {
         nextEvents.splice(idx, 1, updatedEvent);
         setEvents(nextEvents);
         alert('Evento resize alterado com sucesso!');
-        location.reload();
+        listarTodasAgendas()
+        // location.reload();
         setIsLoading(false);
       })
       .catch(error => {
@@ -200,7 +212,23 @@ function Agenda() {
         <Fab className='botao-adicionar-evento' onClick={handleOpen} aria-label="add">
           <AddIcon />
         </Fab>
-        <ModalAgenda open={open}  handleClose={handleClose} handleSelect={handleSelect} setModalidade={setModalidade} setTipoEvento={setTipoEvento} setLocal={setLocal} setStartDate={setStartDate} setEndDate={setEndDate} startDate={startDate} endDate={endDate} />
+        <ModalAgenda 
+        open={open}  
+        handleClose={handleClose} 
+        handleSelect={handleSelect} 
+        setModalidade={setModalidade} 
+        modalidade={modalidade}
+        categoria={categoria}
+        setCategoria={setCategoria}
+        setTipoEvento={setTipoEvento} 
+        setLocal={setLocal} 
+        setDataInicioAgenda={setDataInicioAgenda} 
+        setDataFimAgenda={setDataFimAgenda} 
+        dataInicioAgenda={dataInicioAgenda} 
+        dataFimAgenda={dataFimAgenda}
+        setCodigoAgenda={setCodigoAgenda}
+        codigoAgenda={codigoAgenda}
+        />
        
         <DnDCalendar
           className='calendario'
@@ -209,10 +237,10 @@ function Agenda() {
           startAccessor="start"
           endAccessor="end"
           culture='pt'
-          // date={viewDate}
           onEventDrop={onEventDrop}
           onEventResize={onEventResize}
           resizable
+          defaultView={view}
           selectable
           messages={{
             next: "Próximo",
@@ -224,19 +252,22 @@ function Agenda() {
             agenda: "Agenda",
             date: "Data",
             time: "Hora",
-            event: "Evento", // Or anything you want
+            event: "Evento",
             showMore: total => `+ Ver mais (${total})`
             
           }}
-          onSelectEvent={event => {
-            // setStartDate(event.start);
-            // setEndDate(event.end);
-            // setModalidade(event.modalidade);
-            // setTipoEvento(event.tipoEvento);
-            // setLocal(event.local);
-            handleOpen();
+          onSelectEvent={(e) => {
+            
+            handleOpen(e)
           }}
-          onSelectSlot={slotInfo => handleOpen(slotInfo)}
+          // onSelectSlot={e => handleOpen(e)}
+          // eventPropGetter={(event) => {
+          //   const backgroundColor = event.tipoEvento === 'Consulta' ? '#690000' : 
+          //                           event.tipoEvento === 'Treinos' ? '#504aa1' : 
+          //                           event.tipoEvento === 'Jogos' ? '#41a56d' : 
+          //                           '#41a56d';
+          //   return { style: { backgroundColor } };
+          // }}
         />
       </div>
     </div>

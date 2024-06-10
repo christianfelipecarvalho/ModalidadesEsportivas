@@ -1,5 +1,5 @@
 import { default as React, useContext, useEffect, useState } from 'react';
-import { FaBackward, FaCalendarAlt, FaChartPie, FaCog, FaForward, FaHome, FaLocationArrow, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { FaBackward, FaCalendarAlt, FaForward, FaHome, FaLocationArrow, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../App';
 import { CollapsedContext } from '../contexts/CollapsedContext';
@@ -61,7 +61,7 @@ const NavBar = () => {
     localStorage.removeItem('roles');
     setIsLoading(false);
     navigate('/');
-    window.location.reload(); // Redireciona para a página de login
+    window.location.reload(); 
   };
 
   return (
@@ -89,8 +89,8 @@ const NavBar = () => {
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/usuario')} className='nav-link' to="/usuario">{collapsed ? <FaUser /> : <> <FaUser /> <span>Usuarios</span> </>}</NavLink>}
           <NavLink onClick={() => handleNavLinkClick('/local')} className='nav-link' to="/local">{collapsed ? <FaLocationArrow /> : <> <FaLocationArrow /> <span>Local</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/agenda')} className='nav-link' to="/agenda">{collapsed ? <FaCalendarAlt /> : <> <FaCalendarAlt /> <span>Agenda</span> </>}</NavLink>
-          <NavLink onClick={() => handleNavLinkClick('/relatorios')} className='nav-link' to="/relatorios">{collapsed ? <FaChartPie /> : <> <FaChartPie /> <span>Relatorios</span> </>}</NavLink>
-          {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/configuracoes')} className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Preferências</span> </>}</NavLink>}
+          {/* <NavLink onClick={() => handleNavLinkClick('/relatorios')} className='nav-link' to="/relatorios">{collapsed ? <FaChartPie /> : <> <FaChartPie /> <span>Relatorios</span> </>}</NavLink> */}
+          {/* {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/configuracoes')} className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Preferências</span> </>}</NavLink>} */}
           <NavLink onClick={handleLogout} className='nav-link' to="/">{collapsed ? <FaSignOutAlt /> : <> <FaSignOutAlt /> <span>Sair</span> </>}</NavLink>
         </nav>
         {collapsed && !isResponsivo &&  (

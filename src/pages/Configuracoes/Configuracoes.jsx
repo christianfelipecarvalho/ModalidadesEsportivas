@@ -10,8 +10,13 @@ const Configuracoes = () => {
     toggleTheme();
   };
 
+  const handleRightClick = (event) => {
+    event.preventDefault(); // Previne o menu de contexto padrão
+    toggleTheme();
+  };
+
   return (
-    <div className='configuracoes-div'>
+    <div className='configuracoes-div' onContextMenu={handleRightClick}>
       <label className='configuracoes-label'>Tema: </label>
       <Switch
         style={{ marginLeft: '10px'}}

@@ -1,4 +1,3 @@
-import { Button } from 'antd';
 import React, { useContext } from 'react';
 import { HiOutlineMoon, HiOutlineSun } from 'react-icons/hi';
 import { ThemeContext } from '../App';
@@ -9,13 +8,14 @@ const ThemeToggle = () => {
 
   return (
     <div className='switch'>
-      <Button 
+      <a 
       onClick={toggleTheme} 
-      style={{backgroundColor: theme === 'light' ? '#fff' : '#525457'}}>
+      // style={{backgroundColor: theme === 'light' ? '#fff' : '#525457'}}
+      >
         {theme === 'light' 
           ? <HiOutlineSun color="#b5a302" /> 
           : <HiOutlineMoon color="#4083f7" />}
-      </Button>
+      </a>
     </div>
   );
 };

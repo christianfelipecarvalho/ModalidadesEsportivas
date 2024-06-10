@@ -31,7 +31,6 @@ const Usuario = () => {
   const [tipoUsuario, setTipoUsuario] = useState('');
   const [ativo, setAtivo] = useState(formularios.usuario);
   const [formId, setFormId] = useState(0);
-  // const [valorY, setValorY] = useState(0);
   const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
   const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
 
@@ -108,7 +107,7 @@ const Usuario = () => {
 
   const handleEditUsuario = (usuario, e) => {
     setIsLoading(true);
-
+    console.log('usuario', usuario);
     listarUsuario(usuario.id)
       .then(response => {
         setFormId(prevFormId => prevFormId + 1);
@@ -225,6 +224,7 @@ const Usuario = () => {
         )}
 
       </div>
+
     </div>
   );
 };

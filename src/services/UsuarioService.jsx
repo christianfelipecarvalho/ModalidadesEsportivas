@@ -10,7 +10,7 @@ export const listarUsuario = (id) => {
   return axios.get(`${API_URL}/usuario/listarUsuario/${id}`);
 };
 
-export const salvarUsuario = (usuario) => {
+export const salvarUsuario = (usuario,codigoUsuarioLogado) => {
   return axios.post(`${API_URL}/usuario/salvarUsuario/${codigoUsuarioLogado}`, usuario, {
     headers: {
       'Content-Type': 'application/json'
@@ -38,8 +38,12 @@ export const inativarUsuario = (id, codigoUsuarioLogado) =>{
   return axios.put(`${API_URL}/Usuario/InativarUsuario/${id}/${codigoUsuarioLogado}`);
 }
 
-export const anexarArquivo = (arquivo, headers) => {
-  return axios.post(`${API_URL}/usuario/uploadDocumento`, arquivo, {
+export const anexarArquivo = (arquivo, headers,codigoUsuarioLogado) => {
+  return axios.post(`${API_URL}/usuario/uploadDocumento/${codigoUsuarioLogado}`, arquivo, {
     headers: headers
   });
 };
+
+export const deletarArquivo = (id, codigoUsuarioLogado) => {
+  return axios.delete(`${API_URL}/Usuario/deletarArquivo/${id}/${codigoUsuarioLogado}`);
+}

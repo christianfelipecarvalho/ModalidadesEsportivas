@@ -5,6 +5,7 @@ import Home from "../src/pages/Home/Home";
 import './App.css';
 import NavBar from "./components/NavBar";
 import PrivateRoute from "./components/PrivateRoute";
+import ThemeToggle from "./components/ThemeToggle";
 import { CollapsedContext } from './contexts/CollapsedContext';
 import Agenda from "./pages/Agenda/Agenda";
 import Configuracoes from "./pages/Configuracoes/Configuracoes";
@@ -54,7 +55,7 @@ function App() {
               <Route path='/confirmacao' element={ <Confirmacao />} />
               <Route path='/redefinirsenha' element={ <RedefinirSenha />} />
             </Routes>
-            {/* <ThemeToggle /> */} {/* Removido o componente ThemeToggle */}
+             <ThemeToggle /> 
           </div>
         </BrowserRouter>
       </CollapsedContext.Provider> {/* Fecha o contexto CollapsedContext */}

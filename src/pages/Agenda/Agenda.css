@@ -43,10 +43,10 @@
 	padding: 10px;
   }
  
-.modal-agendamento .MuiDialog-paper {
-    width: 80%;  /* ajuste para o tamanho desejado */
-    height: 60%; /* ajuste para o tamanho desejado */
-}
+/* .modal-agendamento .MuiDialog-paper {
+    width: 100%!important;  
+} */
+
 .div-calendario-datetimepicker{
 	margin-top: 20px;
 	align-items: center;
@@ -58,12 +58,17 @@
 .div-calendario-datetimepicker{
 	display: flex;
 	justify-content: center;
-
 }
+
+.MuiDialogActions-root{
+	justify-content: center!important;
+}
+
 .botao-salvar{
 	background-color: #41a56d!important;
 	color: white!important;
 }
+
 .botao-fechar{
 	background-color: #393939a5!important;
 	color: white!important;
