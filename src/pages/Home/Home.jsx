@@ -1,33 +1,56 @@
 import { Card } from 'antd';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
+import { ListarAtletasMediaIdade, ListarMediasPorcentagens, atletasPorModalidade } from '../../services/HomeService';
 import './Home.css';
 
 const Home = () => {
   const theme = localStorage.getItem('theme');
   const { collapsed } = useContext(CollapsedContext);
+  const [dataPie, setDataPie] = useState([]);
+  const [dataIdade, setDataIdade] = useState([]);
+  // const [dataMulheres, setDataMulheres] = useState([]);
+  const [totalAtletas, setTotalAtletas] = useState([]);
+  const [porcentagemMulheres, setPorcentagemMulheres] = useState([]);
+  const [porcentagemHomens, setPorcentagemHomens] = useState([]);
+  const [idadeMedia, setIdadeMedia] = useState([]);
 
-  const dataPie = [
-    { name: 'Basket', value: 50 },
-    { name: 'Volei', value: 150 },
-    { name: 'Futsal', value: 129 },
-    { name: 'Handeibol', value: 138 },
-  ];
+  useEffect(() => {
+    atletasPorModalidade().then(response => {
+      const mappedData = response.data.map(item => ({
+        name: item.nomeModalidade,
+        value: item.quantidadeAtletas
+      }));
+      setDataPie(mappedData);
+    });
+  }, []);
 
   const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'];
 
-  const dataBar = [
-    { name: 'Ativo', value: 500 },
-    { name: 'Inativo', value: 200 },
-  ];
+  // const dataBar = [
+  //   { name: 'Ativo', value: 500 },
+  //   { name: 'Inativo', value: 200 },
+  // ];
+  useEffect(() => {
+    ListarAtletasMediaIdade().then(response => {
+      const mappedData = response.data.map(item => ({
+        name: item.modalidade,
+        value: item.mediaIdade
+      }));
+      setDataIdade(mappedData);
+    });
+  }, []);
 
-  const dataIdade = [
-    { name: 'Basket', value: 20 },
-    { name: 'Volei', value: 22 },
-    { name: 'Futsal', value: 21 },
-    { name: 'Handeibol', value: 23 },
-  ];
+  // useEffect(() => {
+  //   ListarAtletasGeneroFeminino().then(response => {
+  //     const mappedData = response.data.map(item => ({
+  //       name: item.modalidade,
+  //       value: item.mediaIdade
+  //     }));
+  //     setDataIdade(mappedData);
+  //   });
+  // }, []);
 
   const dataMulheres = [
     { name: 'Basket', SUB20: 30, SUB17: 20 },
@@ -36,24 +59,30 @@ const Home = () => {
     { name: 'Handeibol', SUB20: 25, SUB17: 15 },
   ];
 
-  const totalAtletas = 800;
-  const porcentagemMulheres = 40;
-  const porcentagemHomens = 60;
-  const idadeMedia = 22;
+
+  useEffect(() => {
+    ListarMediasPorcentagens().then(response => {
+      setTotalAtletas(response.data.totalAtletas);
+      setIdadeMedia(response.data.mediaIdade);
+      setPorcentagemMulheres(response.data.porcentagemMulheres);
+      setPorcentagemHomens(response.data.porcentagemHomens);
+    });
+  }, []);
+
 
   return (
     <div className='home-geresports' style={{ marginLeft: collapsed ? '30px' : '11%' }}>
       <div className='dashboard'>
         <div className='resumos-div'>
           <Card title="Médias" className='resumo'>
-              <div className='numeros-grandes'>
-                <h1>{totalAtletas}</h1>
-                <p>Total de Atletas</p>
-              </div>
-              <div className='numeros-grandes'>
-                <h1>{idadeMedia}</h1>
-                <p>Idade Média</p>
-              </div>
+            <div className='numeros-grandes'>
+              <h1>{totalAtletas}</h1>
+              <p>Total de Atletas</p>
+            </div>
+            <div className='numeros-grandes'>
+              <h1>{idadeMedia}</h1>
+              <p>Idade Média</p>
+            </div>
           </Card>
           <Card title="Porcentagens" className='resumo'>
             <div className='numeros-grandes'>
@@ -76,7 +105,7 @@ const Home = () => {
                   outerRadius={120}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name }) => name} 
+                  label={({ name }) => name}
                 >
                   {
                     dataPie.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)

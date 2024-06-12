@@ -88,3 +88,7 @@
     height: 300vh;
   }
 }
+
+#dark .ant-card-head-title{
+  color: #fff;
+}
