@@ -35,9 +35,11 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
   };
 
   const handleFecharModalUsuario = () => {
+    setTipoUsuario('');
+    setGenero('')
     setOpen(false);
   };
-  //Inicialll
+  
   const handleTrocaFotoPerfil = () => {
     if (fileInput.current) {
       try {
@@ -51,15 +53,11 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
     }
   };
   const handleChamaTrocaFoto = (event) => {
-    console.log("entrei aqui handleChamaTrocaFoto");
     const file = event.target.files[0];
-    console.log(file);
     setIsLoading(true);
-    console.log("entrei aqui handleChamaTrocaFoto");
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
-      console.log("Passeifile.name ->" + file.name)
 
       const fileData = {
         data: base64String,
@@ -71,9 +69,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
 
       setFileData(fileData);
 
-      console.log("Passei")
       if (fileData) {
-        console.log("Passei 2")
         setIsLoading(true);
         anexarArquivo(fileData, { 'Content-Type': 'application/json' },codigoUsuarioLogado )
           .then(response => {
@@ -83,13 +79,11 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
             window.location.reload();
           })
           .catch(error => {
-            console.log("Passei")
             setIsLoading(false);
             setAlertMensagem({ severity: "error", title: "Erro!", message: "Ocorreu um erro ao alterar imagem, recarregue a página e tente novamente!" });
             console.error(error);
           });
       }
-      console.log("Passei 14655")
       setIsLoading(false);
     };
     reader.readAsDataURL(file);
@@ -152,13 +146,9 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
 
   const handleSave = () => {
     setIsLoading(true);
-    console.log("entrei aqui handleSave");
-    console.log("entrei aqui handleSave 2");
     const idUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
     console.log("idUsuarioLogado ->" + idUsuarioLogado);
-    console.log("----->");
     const reader = new FileReader();
-    console.log("-----> 2");
     console.log("extencao-->" + '.' + file.name.split('.').pop());
     console.log("nomeArquivo-->" + fileName);
     console.log("codigoUsuario-->" + formulario.usuario.id);
@@ -184,8 +174,8 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
           setIsLoading(true);
           console.log(response.data);
           setAlertMensagem({ severity: "success", title: "Sucesso!", message: response.data });
-          window.location.reload();
           handleCloseModalFiles();
+          window.location.reload();
           setIsLoading(false);
         })
         .catch(error => {
@@ -264,7 +254,6 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
     const usuario = {
       codigoUsuario,
       nome,
-      // senha,
       email,
       genero: defineGenero,
       time: defineTime,
@@ -315,7 +304,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
   };
   return (
     <div >
-      <Dialog open={open} onClose={handleFecharModalUsuario} aria-labelledby="form-dialog-title" style={{ zIndex: 200 }}>
+      <Dialog open={open}  aria-labelledby="form-dialog-title" style={{ zIndex: 200 }}>
         <DialogContent>
           <div className='formulario-modal-responsivo'  >
             <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
@@ -375,7 +364,6 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
                             <td className='coluna-documentos'>{documento.imagemPerfil ? 'Sim' : 'Não'}</td>
                             <td className='coluna-documentos'>
                               <a href="#" onClick={(event) => handleMostrarDocumento(documento, event)} style={{  display: 'inline-block',  borderRadius: '5px' }}>Mostrar</a>
-                              {/* <a href={`https://geresportes.azurewebsites.net/Usuario/DownloadArquivo/${documento.id}`}>Baixar</a> */}
 
                             </td>
                             <td className='coluna-documentos'>
@@ -435,7 +423,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
               <Box hidden={value !== 0} className='campos-container'>
                 <div className='campos-container-div-responsivo'>
                   <TextField className='formulario-campos-responsivo' id="nome" label="Nome" variant="outlined" required defaultValue={formulario.usuario ? formulario.usuario.nome : ''} />
-                  <FormControl fullWidth style={{ maxWidth: '30%' }}>
+                  <FormControl fullWidth className='modal-genero-responsivo'>
                     <InputLabel variant="outlined" htmlFor="uncontrolled-native">
                       Genero
                     </InputLabel>
@@ -485,7 +473,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
                       ))}
                     </Select>
                   </FormControl>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth className='select-inputs'>
                     <InputLabel variant="outlined" htmlFor="uncontrolled-native">
                       Modalidade
                     </InputLabel>
@@ -504,7 +492,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
                       ))}
                     </Select>
                   </FormControl>
-                  <FormControl fullWidth style={{ maxWidth: '85%' }}>
+                  <FormControl fullWidth className='modal-tipousuario-responsivo'>
                     <InputLabel variant="outlined" htmlFor="uncontrolled-native">
                       Tipo de Usuário
                     </InputLabel>
@@ -521,7 +509,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
                       <MenuItem value={'ATLETA'}>ATLETA</MenuItem>
                     </Select>
                   </FormControl>
-                  <FormControl fullWidth style={{ maxWidth: '15%' }}>
+                  <FormControl fullWidth className='modal-time-responsivo'>
                     <InputLabel variant="outlined" htmlFor="uncontrolled-native">
                       Time
                     </InputLabel>

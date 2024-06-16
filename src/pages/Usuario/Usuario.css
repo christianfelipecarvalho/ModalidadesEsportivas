@@ -4,8 +4,14 @@ div .principal-usuario{
 .cardContainer {
   display: flex;
   flex-wrap: wrap;
-  justify-content:center; /*arruma o espaçamento entre os cards */
+  justify-content:left; /*arruma o espaçamento entre os cards */
   margin-top: 20px;
+  margin-left: 10.5%;
+}
+@media (max-width: 600px) {
+  .cardContainer {
+       margin-left: 0%;
+  }
 }
 
 .imagem-usuario {
@@ -18,7 +24,6 @@ div .principal-usuario{
 #light .card {
   margin: 20px;
   width: 300px; /*muda o tamanho dos cards*/
-  /* transition: transform 0.1s ease-in-out; aqui faz o card vir para frente quando passa o mouse por cima  */
   background: #ffffff;
   color: #000;
   border-radius: 8%;
@@ -27,12 +32,10 @@ div .principal-usuario{
 #light .card-inativo {
   margin: 20px;
   width: 300px; /*muda o tamanho dos cards*/
-  /* transition: transform 0.1s ease-in-out; aqui faz o card vir para frente quando passa o mouse por cima  */
   background: #ffffff;
   color: #000;
   border-radius: 8%;
   box-shadow: rgb(163, 163, 163) 0 0 10px;
-  /* box-shadow: rgba(253, 0, 0, 0.398) 0 0 10px; */
 }
 #dark .card-inativo {
   margin: 20px;
@@ -43,7 +46,6 @@ div .principal-usuario{
   border: 2px solid #393939; /* Adiciona uma borda verde ao cartão */
   border-radius: 8%;
   box-shadow: rgb(39, 39, 39) 0 0 10px;
-  /* box-shadow: rgba(226, 0, 0, 0.34) 0 0 10px; */
 }
 #light .card-inativo:hover {
   background-color: #1a10106e; 
@@ -113,22 +115,11 @@ color: #393939!important;
   overflow-y: auto;
 }
 
-/* #light .searchField {
-  width: 40%;
-   margin-left: 20px;
-}
-#dark .searchField {
-  width: 40%;
-  color: #fff!important;
-  
-} */
 
 .searchField {
-  /* width: 35%; */
   padding: 5px;
   background-color: #fff;
   border-radius: 5px;
-  /* border: 1px solid #41a56d; */
   color: #393939a5;
   display: flex;
   justify-content: flex-end;
@@ -145,8 +136,6 @@ color: #393939!important;
 .botao-pesquisar-cominput{
   justify-content: flex-end!important;
   margin-left: 50px!important;
-  /* background-color: #41a56d!important; */
-  /* color: #fff!important; */
 }
 
 
@@ -268,7 +257,6 @@ margin-right: 1px;
 #light .formulario-modal{
 background: #f8fff9;
 width: 100%; 
-/* height: 100%; */
 border-bottom-left-radius: 10px; 
 border-bottom-right-radius: 10px;  
 min-width: 0px;
@@ -276,13 +264,10 @@ min-height: none;
 overflow-y: auto;
 overflow-x: auto;
 box-shadow: rgb(163, 163, 163) 0 0 20px;
-/* max-height: 100vh; */
 }
 #dark .formulario-modal{
-/* background: #e0dfdff6; */
 background-color: #555;
 width: 100%; 
-/* height: 100%; */
 border-bottom-left-radius: 10px; 
 border-bottom-right-radius: 10px; 
 min-width: 0px;
@@ -379,7 +364,7 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   background-color: #464646; /* Cor de fundo das linhas ímpares */
 }
 #dark .forms-tabela .MuiDataGrid-row:nth-child(even) {
-  background-color: #393939; /* Cor de fundo das linhas pares*/
+  background-color: #464646; /* Cor de fundo das linhas pares*/
 }
 
 #light .forms-tabela .MuiDataGrid-row:hover {
@@ -433,7 +418,7 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
 
 /* Estilizando a barra de rolagem */
-/* Isso afetará todas as barras de rolagem do seu aplicativo */
+/* Se mexer aqui mexe nas barras de rolagem*/
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -491,7 +476,6 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
 }
 
 .coluna-documentos{
-  /* border: 1px solid black; */
   padding: 5px;
   text-align: left;
 }
@@ -571,9 +555,7 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   background-color: #41a56d!important;
 }
 
-
 /* DESIGN RESPONSIVO PAGINA DE USUARIOS - FIIMM*/
-
 
 #dark .cards-fonts{
   font-size: 15px;
@@ -593,3 +575,27 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   font-weight: bold;
   font-family: 'Segoe UI'!important;
 }
+@media (min-width: 600px){
+  .modal-genero-responsivo{
+    max-width: 30%!important;
+  }
+  .modal-time-responsivo{
+    max-width: 15%!important;
+  }
+  .modal-tipousuario-responsivo{
+    max-width: 85%!important;
+  }
+  
+}
+@media (max-width: 600px){
+  .select-inputs{
+    margin-top: 15px!important;
+  }
+  .modal-tipousuario-responsivo{
+    margin-top: 15px!important;
+  }
+  .modal-time-responsivo{
+    margin-top: 15px!important;
+  }
+}
+

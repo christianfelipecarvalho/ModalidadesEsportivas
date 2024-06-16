@@ -48,12 +48,10 @@ const Usuario = () => {
     { field: 'tipoUsuario', headerName: 'Tipo de Usuário', minWidth: 170 },
     { field: 'ativo', headerName: 'Ativo', minWidth: 170 },
   ];
-  const pesquisaUsuarioBoolean = pesquisaUsuario.toLowerCase() === 'true'; // Converte a pesquisa para booleano
 
   const filteredUsuarios = usuarios.filter((usuario) =>
     (usuario.nome && usuario.nome.toLowerCase().includes(pesquisaUsuario.toLowerCase())) ||
-    (usuario.email && usuario.email.toLowerCase().includes(pesquisaUsuario.toLowerCase())) ||
-    (usuario.ativo === pesquisaUsuarioBoolean) // Compara o valor booleano
+    (usuario.email && usuario.email.toLowerCase().includes(pesquisaUsuario.toLowerCase()))
   );
 
   const rows = filteredUsuarios.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina).map((usuario) => ({
@@ -76,7 +74,6 @@ const Usuario = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    // const codigoUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
     listarTodosUsuarios(codigoUsuarioLogado)
       .then(response => {
         setUsuarios(response.data);
@@ -177,7 +174,7 @@ const Usuario = () => {
         </div>
         {formularios.map((formulario, index) => (
           <UsuarioForm
-            key={index} // Colocado index como chave se usuario for undefined
+            key={index} 
             formulario={formulario}
             index={index}
             toggleMinimize={toggleMinimize}
@@ -189,10 +186,7 @@ const Usuario = () => {
             setAlertMensagem={setAlertMensagem}
             handleEditUsuario={handleEditUsuario}
             setTipoUsuario={setTipoUsuario}
-            // setCategoria={setCategoria}
-            // setModalidade={setModalidade} 
-            // categoria={categoria}
-            // modalidade={modalidade}
+           
           />
         ))}
 

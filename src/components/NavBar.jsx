@@ -39,7 +39,7 @@ const NavBar = () => {
       const userId = localStorage.getItem('codigoUsuarioLogado');
       const response = await listarUsuario(userId);
       console.log(response);
-      const userData = response.data; // Ajuste isso com base na estrutura dos dados retornados
+      const userData = response.data; 
       setUser(userData);
     };
 
@@ -82,15 +82,12 @@ const NavBar = () => {
               {!collapsed ? <span>{user.nome}</span> : null}
             </div>
           ) : (
-            //verificar para adicionar um loading aqui ou talvez uma imagemPadrao para depois renderizar a imagem do usuario
             null
           )}
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/home')} className='nav-link' to="/home" >{collapsed ? <FaHome /> : <> <FaHome /> <span>Home</span> </>} </NavLink>}
           {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/usuario')} className='nav-link' to="/usuario">{collapsed ? <FaUser /> : <> <FaUser /> <span>Usuarios</span> </>}</NavLink>}
           <NavLink onClick={() => handleNavLinkClick('/local')} className='nav-link' to="/local">{collapsed ? <FaLocationArrow /> : <> <FaLocationArrow /> <span>Local</span> </>}</NavLink>
           <NavLink onClick={() => handleNavLinkClick('/agenda')} className='nav-link' to="/agenda">{collapsed ? <FaCalendarAlt /> : <> <FaCalendarAlt /> <span>Agenda</span> </>}</NavLink>
-          {/* <NavLink onClick={() => handleNavLinkClick('/relatorios')} className='nav-link' to="/relatorios">{collapsed ? <FaChartPie /> : <> <FaChartPie /> <span>Relatorios</span> </>}</NavLink> */}
-          {/* {userType !== '"ATLETA"' && <NavLink onClick={() => handleNavLinkClick('/configuracoes')} className='nav-link' to="/configuracoes">{collapsed ? <FaCog /> : <> <FaCog /> <span>Preferências</span> </>}</NavLink>} */}
           <NavLink onClick={handleLogout} className='nav-link' to="/">{collapsed ? <FaSignOutAlt /> : <> <FaSignOutAlt /> <span>Sair</span> </>}</NavLink>
         </nav>
         {collapsed && !isResponsivo &&  (

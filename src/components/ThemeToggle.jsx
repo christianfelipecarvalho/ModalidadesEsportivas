@@ -10,7 +10,6 @@ const ThemeToggle = () => {
     <div className='switch'>
       <a 
       onClick={toggleTheme} 
-      // style={{backgroundColor: theme === 'light' ? '#fff' : '#525457'}}
       >
         {theme === 'light' 
           ? <HiOutlineSun color="#b5a302" /> 

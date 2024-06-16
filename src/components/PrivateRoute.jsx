@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import NavBar from './NavBar';
@@ -15,7 +13,6 @@ const PrivateRoute = ({ children }) => {
     if (userTypeCheck === '"ADMINISTRADOR"' || userTypeCheck === '"TECNICO"') {
       return true;
     } else if (userTypeCheck === '"ATLETA"' && (location.pathname === '/agenda' || location.pathname === '/agendamentos' )) {
-    // } else if (userTypeCheck === '"ATLETA"' && (location.pathname === '/agenda' || location.pathname === '/agendamentos' )) {
       return true;
     }
     
