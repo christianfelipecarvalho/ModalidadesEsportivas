@@ -13,10 +13,11 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalAgenda from '../../components/Agenda/ModalAgenda';
+import AlertMessage from '../../components/AlertMessage/AlertMessage';
 import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
 import { SalvarAgenda, alterarAgenda, listarAgendaPorId, listarTodasAgendas } from '../../services/AgendaService';
-import { categoriaMapInverso } from '../../utils/EnumCategoria';
+import { categoriaMapEnum, categoriaMapInverso } from '../../utils/EnumCategoria';
 import { modalidadeMapInverso } from '../../utils/EnumModalidade';
 import './Agenda.css';
 
@@ -48,6 +49,7 @@ function Agenda() {
   const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
   const isMobile = window.matchMedia('(max-width: 600px)').matches;
   const [view, setView] = useState(isMobile ? 'day' : 'month');
+  const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
 
   useEffect(() => {
     const handleResize = () => {
@@ -69,7 +71,6 @@ function Agenda() {
     setIsLoading(true);
     listarTodasAgendas()
       .then(data => {
-        console.log('Eventos:', data);
         const eventos = data.data.map(evento => ({
           start: new Date(evento.dataInicio),
           end: new Date(evento.dataFim),
@@ -82,28 +83,20 @@ function Agenda() {
           obs: evento.observacao
         }));
         setEvents(eventos);
-        console.log('Eventos:', eventos);
         setIsLoading(false);
+        
       })
       .catch(error => {
         console.error('Erro ao buscar eventos:', error);
         setIsLoading(false);
       });
 
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue = "Você tem certeza que deseja sair da página?";
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
   }, []);
 
   const handleOpen = (e) => {
     console.log('Evento selecionado:', e.codigoAgenda);
     setCodigoAgenda(e.codigoAgenda);
-    // aqui posso definir que sempre será uma alteração de evento.... VERIFICAR POSSIBILIDADE
+    if(e.codigoAgenda !== null && e.codigoAgenda !== undefined){
     listarAgendaPorId(codigoUsuarioLogado, e.codigoAgenda)
       .then(data => {
         console.log('Evento selecionado:', data);
@@ -114,13 +107,19 @@ function Agenda() {
         setCodigoLocal(evento.codigoLocal);
         setDataInicioAgenda(new Date(evento.dataInicio));
         setDataFimAgenda(new Date(evento.dataFim));
-        setObservacao(evento.observacao);
+        setObservacao(evento.obs);
         setCodigoAgenda(e.codigoAgenda);
         setOpen(true);
       })
       .catch(error => {
         console.error('Erro ao buscar evento:', error);
       });
+    }
+    else{
+      setDataInicioAgenda(new Date(e.start));
+      setDataFimAgenda(new Date(e.start));
+      setOpen(true);
+    }
   };
 
   const handleClose = () => {
@@ -137,31 +136,44 @@ function Agenda() {
 
   const handleSelect = async (formData) => {
     setIsLoading(true);
-    console.log('formData:', formData);
-    console.log('dataInicio:', dataInicioAgenda);
+    console.log('formData --> ', formData.observacao.target.value);
+    const observacaoAgenda = formData.observacao.target.value;
+    let descricaoTituloCategoria = '';
+    let categoriaEnum = 0;
+    if(categoria === 0 || categoria === 1 || categoria === 2){
+       descricaoTituloCategoria = categoriaMapEnum[categoria];
+       categoriaEnum = categoria;
+    }
+    else{ 
+       descricaoTituloCategoria = categoria;
+       categoriaEnum = categoriaMapInverso[categoria];
+    }
     const newEvent = {
-      modalidade: modalidadeMapInverso[modalidade], // Substituir pela modalidade que existe no Enum
+      modalidade: modalidadeMapInverso[modalidade], 
       dataInicio: dataInicioAgenda,
       dataFim: dataFimAgenda,
-      tipoEvento: tipoEvento, // Substituir pelo valor que contem 
-      codigoLocal: codigoLocal,  // Substituir pelo valor do codigo do local
+      tipoEvento: tipoEvento,  
+      codigoLocal: codigoLocal,  
       dataSalvamento: new Date(),
       codigoUsuario: codigoUsuarioLogado,
-      obs: "",
-      titulo: `${tipoEvento} - ${modalidade}  - ${categoria} `,
-      categoria: categoriaMapInverso[categoria]
+      obs: observacaoAgenda,
+      titulo: `${tipoEvento} - ${modalidade}  - ${descricaoTituloCategoria} `,
+      categoria: categoriaEnum
     };
-    if(formData.codigoAgenda !== null){
-      alert('codigo ->' , codigoAgenda)
+    if(formData.codigoAgenda !== null && formData.codigoAgenda !== undefined){
       newEvent.codigoAgenda = codigoAgenda;
       alterarAgenda([newEvent])
       .then(() => {
         setEvents([...events, newEvent]);
         alert('Evento alterado com sucesso!');
+        setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Evento alterado com sucesso!" });
+        window.location.reload();
         setIsLoading(false);
       })
       .catch(error => {
         console.error('Erro ao alterar evento:', error);
+        alert('Erro ao alterar evento, verifique se todos os dados foram preenchidos!');
+        setAlertMensagem({ severity: "error", title: "Error!", message: error.message });
         setIsLoading(false);
       });
 
@@ -171,25 +183,27 @@ function Agenda() {
     const response = await SalvarAgenda([newEvent])
       .then(() => {
         setEvents([...events, newEvent]);
-        alert('Evento criado com sucesso!');
+        alert('Evento salvo com sucesso!');
+        window.location.reload();
         setIsLoading(false);
       })
       .catch(error => {
         console.error('Erro ao salvar evento:', error);
+        alert('Erro ao salvar evento, verifique se todos os dados foram preenchidos!');
         setIsLoading(false);
       });
     }
   };
 
-  const onEventDrop = ({ event, start, end }) => {// esse metodo foi testado e está OK falta OBS...
+  const onEventDrop = ({ event, start, end }) => {
     setIsLoading(true);
     const idx = events.indexOf(event);
     const updatedEvent = {
       ...event,
-      modalidade: modalidadeMapInverso[modalidade],
+      modalidade: modalidadeMapInverso[event.modalidade],
       dataInicio: start,
       dataFim: end,
-      tipoEvento: tipoEvento,
+      tipoEvento: event.tipoEvento,
       codigoLocal: event.codigoLocal,
       dataSalvamento: new Date(),
       codigoUsuario: codigoUsuarioLogado,
@@ -203,8 +217,8 @@ function Agenda() {
         const nextEvents = [...events];
         nextEvents.splice(idx, 1, updatedEvent);
         setEvents(nextEvents);
-        alert('Evento DROP alterado com sucesso!');
-        // location.reload();
+        setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Evento DROP alterado com sucesso!" });
+        location.reload();
         setIsLoading(false);
       })
       .catch(error => {
@@ -212,18 +226,16 @@ function Agenda() {
         setIsLoading(false);
       });
   };
-  // esse metodo foi testado e está OK falta OBS...
 
   const onEventResize = ({ event, start, end }) => {
     setIsLoading(true);
     const idx = events.indexOf(event);
     const updatedEvent = {
-      ...event,
-      modalidade: 0, // Substituir pela modalidade que existe no Enum
+      modalidade: modalidadeMapInverso[event.modalidade], 
       dataInicio: start.toISOString(),
       dataFim: end.toISOString(),
-      tipoEvento: event.tipoEvento, // Substituir pelo valor que contem 
-      codigoLocal: codigoLocal,  // Substituir pelo valor do codigo do local
+      tipoEvento: event.tipoEvento,  
+      codigoLocal: event.codigoLocal,  
       dataSalvamento: new Date().toISOString(),
       codigoUsuario: codigoUsuarioLogado,
       titulo: event.title,
@@ -232,14 +244,14 @@ function Agenda() {
       observacao: event.observacao
     };
 
-    alterarAgenda(updatedEvent)
+    alterarAgenda([updatedEvent])
       .then(() => {
         const nextEvents = [...events];
         nextEvents.splice(idx, 1, updatedEvent);
         setEvents(nextEvents);
-        alert('Evento resize alterado com sucesso!');
+        setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Evento Resize alterado com sucesso!" });
         listarTodasAgendas()
-        // location.reload();
+        location.reload();
         setIsLoading(false);
       })
       .catch(error => {
@@ -252,6 +264,7 @@ function Agenda() {
   return (
     <div className='div-geral-calendario' style={{ marginLeft: collapsed ? '30px' : '11%' }}>
       {isLoading && <Loading />}
+      {alertMensagem.message && <AlertMessage {...alertMensagem} />}
       <div className='div-interna-calendario'>
         <Fab className='botao-adicionar-evento' onClick={handleAdicionarNovo} aria-label="add">
           <AddIcon />
@@ -277,7 +290,7 @@ function Agenda() {
           setCodigoAgenda={setCodigoAgenda}
           codigoAgenda={codigoAgenda}
         />
-
+{alertMensagem.message && <AlertMessage {...alertMensagem} />}
         <DnDCalendar
           className='calendario'
           localizer={localizer}

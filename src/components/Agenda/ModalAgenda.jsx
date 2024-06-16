@@ -14,6 +14,7 @@ import { deletarAgenda } from '../../services/AgendaService';
 import { listarTodosLocais } from '../../services/LocalService';
 import { categoriaMap, categoriaMapEnum } from '../../utils/EnumCategoria';
 import { modalidadeMap } from '../../utils/EnumModalidade';
+import AlertMessage from '../AlertMessage/AlertMessage';
 
 
 
@@ -22,7 +23,6 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
     const [locais, setLocais] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
-
 
     useEffect(() => {
         console.log('codigoAgenda:', codigoAgenda);
@@ -42,12 +42,12 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
     const handleDeletarEvento = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        console.log('codigoAgenda:', codigoAgenda);
         const id = codigoAgenda;
         const codigoUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
         try {
           const response = await deletarAgenda(codigoUsuarioLogado, id).then(response => {
             console.log(response);
-            alertMensagem;
             window.location.reload();
           })
           }
@@ -63,6 +63,7 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
 
     return (
         <div>
+        {alertMensagem.message && <AlertMessage {...alertMensagem} />}
             <Dialog className='modal-agendamento' open={open} onClose={handleClose}>
                 <DialogTitle>Adicionar novo evento</DialogTitle>
                 <DeleteOutlinedIcon style={{ display: 'flex', position: 'absolute', right: '20', top: '20', color: 'red' }} onClick={(e) => (handleDeletarEvento(e))} />
@@ -149,7 +150,7 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
 
 
                     </FormControl>
-                    <TextField fullWidth label="Observação" variant="standard" onChange={(e) => setObservacao(e)} />
+                    <TextField fullWidth label="Observação" variant="standard" defaultValue={observacao} onChange={(e) => setObservacao(e)} />
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className='div-calendario-datetimepicker'>
                             <DateTimePicker

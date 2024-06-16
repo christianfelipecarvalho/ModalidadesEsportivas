@@ -1,6 +1,4 @@
-/* .Agenda {
-	text-align: center;
-} */
+
 .div-geral-calendario{
 	display: flex;
 	justify-Content: center;
@@ -11,7 +9,6 @@
 	width: 80%;
 	height: 88%;
 	align-items: center;
-	/* position:static; */
 	overflow-y: auto;
 }
 
@@ -43,9 +40,7 @@
 	padding: 10px;
   }
  
-/* .modal-agendamento .MuiDialog-paper {
-    width: 100%!important;  
-} */
+
 
 .div-calendario-datetimepicker{
 	margin-top: 20px;
