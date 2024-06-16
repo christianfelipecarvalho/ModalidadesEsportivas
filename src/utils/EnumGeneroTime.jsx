@@ -1,6 +1,6 @@
 export const generoMap = {
     'MASCULINO': 'MASCULINO',
-    'FEMININO': 'FEIMININO',
+    'FEMININO': 'FEMININO',
   };
 
   export const generoMapInverso = {

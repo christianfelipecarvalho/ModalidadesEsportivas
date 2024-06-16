@@ -75,7 +75,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
       if (fileData) {
         console.log("Passei 2")
         setIsLoading(true);
-        anexarArquivo(fileData, { 'Content-Type': 'application/json' })
+        anexarArquivo(fileData, { 'Content-Type': 'application/json' },codigoUsuarioLogado )
           .then(response => {
             console.log(response.data);
             setIsLoading(false);
@@ -118,12 +118,15 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
         blob = new Blob([byteArray], { type: 'image/jpeg' });
       } else if (documento.extensao === '.png') {
         blob = new Blob([byteArray], { type: 'image/png' });
+      } else if (documento.extensao === '.doc' || documento.extensao === '.docx') {
+        blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      } else if (documento.extensao === '.xls' || documento.extensao === '.xlsx') {
+        blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       } else {
         blob = new Blob([byteArray], { type: 'application/pdf' });
       }
 
       const url = window.URL.createObjectURL(blob);
-      const img = document.createElement('img');
       window.open(url, '_blank');
     } catch (error) {
       console.error('Erro ao fazer download do arquivo', error);
@@ -227,7 +230,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
   const handleSalvaUsuario = (event) => {
     event.preventDefault();
     setIsLoading(true);
-    // Coleta os dados do formulário
+    console.log("genero ->>>>>>>>",  time)
     const codigoUsuario = formulario.usuario ? formulario.usuario.id : null;
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
@@ -236,11 +239,13 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
     const telefone = document.getElementById('telefone').value;
     const cref = document.getElementById('cref').value;
     const cpfRg = document.getElementById('cpfRg').value;
-    // const senha = formulario.usuario ? formulario.usuario.senha : '123456';
     const federacao = document.getElementById('federacao').value;
     const ativo = formulario.usuario ? formulario.usuario.ativo : true;
-    // const tipoUsuario = document.getElementById('tipoUsuario').value;
-    // console.log("tipoUsuario " + tipoUsuario);
+    const defineGenero = generoMapInverso[genero];
+    if(time === undefined || time === null || time === ''){
+      setTime('MASCULINO') ;
+    }
+    const defineTime = timeMapInverso[time];
     let tipoUsuarioValor;
     switch (tipoUsuario) {
       case 'ADMINISTRADOR':
@@ -261,8 +266,8 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
       nome,
       // senha,
       email,
-      genero: generoMapInverso[genero],
-      time: timeMapInverso[time],
+      genero: defineGenero,
+      time: defineTime,
       dataNascimento,
       cargo,
       telefone,
@@ -274,7 +279,6 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
       tipoUsuario: tipoUsuarioValor,
       ativo,
     };
-    console.log("atelta id " + formulario.usuario);
     if (formulario.usuario === null || formulario.usuario === '' || formulario.usuario === undefined) {
       // salva o usuario novo se não existir
       salvarUsuario(usuario, codigoUsuarioLogado)
@@ -310,7 +314,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
     }
   };
   return (
-    <div>
+    <div >
       <Dialog open={open} onClose={handleFecharModalUsuario} aria-labelledby="form-dialog-title" style={{ zIndex: 200 }}>
         <DialogContent>
           <div className='formulario-modal-responsivo'  >
@@ -356,26 +360,26 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
                     <table className='tabela-documentos' border="1" style={{ width: '90%', margin: '3%' }}>
                       <thead>
                         <tr>
-                          <th className='coluna-documentos'>Id</th>
-                          <th className='coluna-documentos'>Nome</th>
+                          {/* <th className='coluna-documentos'>Id</th> */}
+                          <th className='coluna-documentos'>Descrição</th>
                           <th className='coluna-documentos'>Perfil</th>
-                          <th className='coluna-documentos'>Mostrar</th>
-                          <th className='coluna-documentos'>Excluir</th>
+                          <th className='coluna-documentos'>Visualizar</th>
+                          <th className='coluna-documentos'>Deletar</th>
                         </tr>
                       </thead>
                       <tbody>
                         {formulario.usuario.documentoUsuario.map((documento) => (
                           <tr key={documento.id}>
-                            <td className='coluna-documentos'>{documento.id}</td>
+                            {/* <td className='coluna-documentos'>{documento.id}</td> */}
                             <td className='coluna-documentos'>{documento.nomeDocumento}</td>
                             <td className='coluna-documentos'>{documento.imagemPerfil ? 'Sim' : 'Não'}</td>
                             <td className='coluna-documentos'>
-                              <a href="#" onClick={(event) => handleMostrarDocumento(documento, event)} style={{ textDecoration: 'none', display: 'inline-block', color: 'black', borderRadius: '5px' }}>Mostrar</a>
+                              <a href="#" onClick={(event) => handleMostrarDocumento(documento, event)} style={{  display: 'inline-block',  borderRadius: '5px' }}>Mostrar</a>
                               {/* <a href={`https://geresportes.azurewebsites.net/Usuario/DownloadArquivo/${documento.id}`}>Baixar</a> */}
 
                             </td>
                             <td className='coluna-documentos'>
-                              <a href="#" onClick={(event) => handleExcluirDocumento(documento, event)} style={{ textDecoration: 'none', display: 'inline-block', color: 'black', borderRadius: '5px' }}>Excluir</a>
+                              <a href="#" onClick={(event) => handleExcluirDocumento(documento, event)} style={{ display: 'inline-block',  borderRadius: '5px' }}>Excluir</a>
                             </td>
                           </tr>
                         ))}

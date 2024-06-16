@@ -13,19 +13,24 @@ const UsuarioCard = ({ usuario, handleEditUsuario, setAlertMensagem }) => {
   const handleToggle = async (event) => {
     setIsLoading(true);
     console.log("entrei ativo usuario " + usuario.id);
-    await inativarUsuario(usuario.id, codigoUsuarioLogado);
+    try {
+        await inativarUsuario(usuario.id, codigoUsuarioLogado);
+        setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
+        window.location.reload();
+    } catch (error) {
+        console.error("Erro ao inativar/ativar usuário:", error);
+        setAlertMensagem({ severity: "error", title: "Erro!", message: "Não foi possível inativar/ativar o usuário." });
+    }
     setIsLoading(false);
-    setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-  };
+};
+
 
   return (
     <Card key={usuario.id} className={usuario.ativo ? "card" : "card-inativo"}>
       {isLoading && <Loading />}
       <CardContent
-        onClick={ (e) => handleEditUsuario(usuario, e)}
+         onClick={isMobile ? (e) => handleEditUsuario(usuario, e) : null}
+         onDoubleClick = {!isMobile ?(e) => handleEditUsuario(usuario, e) : null}
       >
         <Typography className='nome-imagem' variant="h5">
           <CardMedia

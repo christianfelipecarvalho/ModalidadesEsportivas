@@ -9,3 +9,9 @@ export const categoriaMap = {
     'SUB20': 1,
     'SUB15': 2,
   };
+
+  export const categoriaMapEnum = {
+    0: 'SUB10',
+    1: 'SUB20',
+    2: 'SUB15',
+  };

@@ -2,7 +2,7 @@ import { Card } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
-import { ListarAtletasMediaIdade, ListarMediasPorcentagens, atletasPorModalidade } from '../../services/HomeService';
+import { ListarAtletasGeneroFeminino, ListarAtletasMediaIdade, ListarMediasPorcentagens, atletasPorModalidade } from '../../services/HomeService';
 import './Home.css';
 
 const Home = () => {
@@ -15,6 +15,7 @@ const Home = () => {
   const [porcentagemMulheres, setPorcentagemMulheres] = useState([]);
   const [porcentagemHomens, setPorcentagemHomens] = useState([]);
   const [idadeMedia, setIdadeMedia] = useState([]);
+  const [dataMulheres, setDataMulheres] = useState([]);
 
   useEffect(() => {
     atletasPorModalidade().then(response => {
@@ -52,14 +53,12 @@ const Home = () => {
   //   });
   // }, []);
 
-  const dataMulheres = [
-    { name: 'Basket', SUB20: 30, SUB17: 20 },
-    { name: 'Volei', SUB20: 40, SUB17: 10 },
-    { name: 'Futsal', SUB20: 20, SUB17: 30 },
-    { name: 'Handeibol', SUB20: 25, SUB17: 15 },
-  ];
-
-
+  // const dataMulheres = [
+  //   { name: 'Basket', SUB20: 30, SUB17: 20 },
+  //   { name: 'Volei', SUB20: 40, SUB17: 10 },
+  //   { name: 'Futsal', SUB20: 20, SUB17: 30 },
+  //   { name: 'Handeibol', SUB20: 25, SUB17: 15 },
+  // ];
   useEffect(() => {
     ListarMediasPorcentagens().then(response => {
       setTotalAtletas(response.data.totalAtletas);
@@ -68,6 +67,37 @@ const Home = () => {
       setPorcentagemHomens(response.data.porcentagemHomens);
     });
   }, []);
+
+
+  useEffect(() => {
+  ListarAtletasGeneroFeminino().then(response => {
+    const todasCategorias = new Set();
+    const transformedData = response.data.map(item => {
+      const transformedItem = { name: item.modalidade };
+
+      item.categoria.forEach(cat => {
+        const [categoria, valor] = cat.split(', ');
+        transformedItem[categoria] = Number(valor);
+        todasCategorias.add(categoria);
+      });
+
+      return transformedItem;
+    });
+
+    transformedData.forEach(item => {
+      todasCategorias.forEach(cat => {
+        if (!(cat in item)) {
+          item[cat] = 0;
+        }
+      });
+    });
+
+    // Atualize o estado com os dados transformados
+    setDataMulheres(transformedData);
+  });
+}, []);
+
+
 
 
   return (
@@ -140,8 +170,15 @@ const Home = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="SUB20" fill="#12164a" />
-                  <Bar dataKey="SUB17" fill="#82ca9d" />
+                  {
+                    // Crie as barras de forma dinâmica
+                    Object.keys(dataMulheres[0] || {}).map((key, index) => {
+                      if (key !== 'name') {
+                        return <Bar key={key} dataKey={key} fill={COLORS[index % COLORS.length]} />;
+                      }
+                      return null;
+                    })
+                  }
                 </BarChart>
               </ResponsiveContainer>
             </Card>

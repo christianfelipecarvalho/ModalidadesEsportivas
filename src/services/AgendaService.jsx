@@ -6,6 +6,11 @@ export const listarTodasAgendas = () => {
   return axios.get(`${API_URL}/Agenda/ListarTodasAgendas`);
 };
 
+export const listarAgendaPorId = (codigoUsuarioLogado, id) => {
+  return axios.get(`${API_URL}/Agenda/ListarAgendasPorId/${codigoUsuarioLogado}/${id}`);
+}
+
+
 export const alterarAgenda = (agenda) => {
   return axios.put(`${API_URL}/Agenda/AlterarAgenda`, agenda, {
     headers: {

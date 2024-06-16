@@ -12,17 +12,22 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { deletarAgenda } from '../../services/AgendaService';
 import { listarTodosLocais } from '../../services/LocalService';
-import { categoriaMap } from '../../utils/EnumCategoria';
+import { categoriaMap, categoriaMapEnum } from '../../utils/EnumCategoria';
 import { modalidadeMap } from '../../utils/EnumModalidade';
 
 
 
-const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidade, setTipoEvento, setLocal, setDataInicioAgenda, dataInicioAgenda, setDataFimAgenda, dataFimAgenda, endDate, setCategoria, categoria, setCodigoAgenda, codigoAgenda }) => {
+const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidade, setTipoEvento, tipoEvento, setCodigoLocal, codigoLocal, setDataInicioAgenda, dataInicioAgenda, setDataFimAgenda, dataFimAgenda,
+    setCategoria, categoria,setCodigoAgenda, codigoAgenda, setObservacao, observacao }) => {
     const [locais, setLocais] = useState([]);
-    const [localSelecionado, setLocalSelecionado] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
+
 
     useEffect(() => {
+        console.log('codigoAgenda:', codigoAgenda);
+        setCodigoAgenda(codigoAgenda);
+        
         listarTodosLocais()
             .then(response => {
                 setLocais(response.data);
@@ -30,61 +35,72 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
             .catch(error => {
                 console.error('Erro ao buscar locais:', error);
             });
-    }, []);
-    
+    }, [codigoLocal, codigoAgenda]);
+
+
+
     const handleDeletarEvento = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         const id = codigoAgenda;
         const codigoUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
         try {
-            const response = await deletarAgenda(codigoUsuarioLogado, id).then(() => {
-                handleClose();
+          const response = await deletarAgenda(codigoUsuarioLogado, id).then(response => {
             console.log(response);
-            });
-        } catch (error) {
-            console.error('Erro ao deletar evento:', error);
+            alertMensagem;
+            window.location.reload();
+          })
+          }
+        catch (error) {
+          console.error('Erro ao deletar evento:', error);
+          setAlertMensagem({ severity: "error", title: "ERRO!", message: "Erro ao deletar evento, tente novamente se o erro persistir entre em contato com o suporte!" });
+        } finally {
+          setIsLoading(false);
         }
-        setIsLoading(false);
-    }
+      };
+      
+
 
     return (
         <div>
             <Dialog className='modal-agendamento' open={open} onClose={handleClose}>
                 <DialogTitle>Adicionar novo evento</DialogTitle>
-                <DeleteOutlinedIcon style={{ display: 'flex', position: 'absolute', right: '20', top: '20' }} onClick={(e) => (handleDeletarEvento(e))} />
+                <DeleteOutlinedIcon style={{ display: 'flex', position: 'absolute', right: '20', top: '20', color: 'red' }} onClick={(e) => (handleDeletarEvento(e))} />
                 <DialogContent >
                     <FormControl fullWidth>
                         <InputLabel variant="standard" htmlFor="uncontrolled-native">
                             Modalidade
                         </InputLabel>
                         <NativeSelect
-                            value={modalidade}
+                            value={modalidade} 
                             onChange={(event) => setModalidade(event.target.value)}
                             inputProps={{
                                 name: 'modalidade',
                                 id: 'uncontrolled-native',
                             }}
                         >
+                            <option value=""></option>
                             {Object.values(modalidadeMap).map((modalidade, index) => (
                                 <option key={index} value={modalidade}>
                                     {modalidade}
                                 </option>
                             ))}
                         </NativeSelect>
+
                     </FormControl>
                     <FormControl fullWidth>
                         <InputLabel variant="standard" htmlFor="uncontrolled-native">
                             Categoria
                         </InputLabel>
                         <NativeSelect
-                            value={categoria}
+                            defaultValue={categoriaMapEnum[categoria]}
                             onChange={(event) => setCategoria(event.target.value)}
                             inputProps={{
                                 name: 'local',
                                 id: 'uncontrolled-native',
                             }}
                         >
+                            <option value=""></option>
                             {Object.values(categoriaMap).map((categoria, index) => (
                                 <option key={index} value={categoria}>
                                     {categoria}
@@ -97,13 +113,14 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
                             Tipo de Evento
                         </InputLabel>
                         <NativeSelect
-                            defaultValue="Treino"
+                            defaultValue={tipoEvento}
                             onChange={(event) => setTipoEvento(event.target.value)}
                             inputProps={{
                                 name: 'tipoEvento',
                                 id: 'uncontrolled-native',
                             }}
                         >
+                            <option value=""></option>
                             <option value="Consultas">Consultas</option>
                             <option value="Treinos">Treinos</option>
                             <option value="Jogo">Jogos</option>
@@ -114,21 +131,25 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
                             Local
                         </InputLabel>
                         <NativeSelect
-                            value={locais.descricao}
-                            onChange={(event) => setLocal(event.target.value)}
+                            defaultValue={codigoLocal}
+                            onChange={(event) => setCodigoLocal(event.target.value)}
                             inputProps={{
                                 name: 'local',
                                 id: 'uncontrolled-native',
                             }}
                         >
+                            <option value=""></option>
                             {locais.map((local, index) => (
+                                
                                 <option key={index} value={local.codigoLocal}>
                                     {local.descricao}
                                 </option>
                             ))}
                         </NativeSelect>
+
+
                     </FormControl>
-                    <TextField fullWidth label="Observação" variant="standard" />
+                    <TextField fullWidth label="Observação" variant="standard" onChange={(e) => setObservacao(e)} />
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className='div-calendario-datetimepicker'>
                             <DateTimePicker
@@ -159,7 +180,20 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
                     </LocalizationProvider>
                 </DialogContent>
                 <DialogActions >
-                    <Button className='botao-salvar' variant="contained" onClick={handleSelect}>SALVAR</Button>
+                    <Button className='botao-salvar' variant="contained" onClick={() => {
+                        const formData = {
+                            modalidade,
+                            tipoEvento,
+                            codigoLocal,
+                            dataInicioAgenda,
+                            dataFimAgenda,
+                            categoria,
+                            codigoAgenda,
+                            observacao
+                        };
+                        handleSelect(formData);
+                    }}>SALVAR</Button>
+
                     <Button className='botao-fechar' variant="outlined" onClick={handleClose}>FECHAR</Button>
                 </DialogActions>
             </Dialog>

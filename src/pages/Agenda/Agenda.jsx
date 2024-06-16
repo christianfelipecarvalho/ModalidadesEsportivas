@@ -15,7 +15,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ModalAgenda from '../../components/Agenda/ModalAgenda';
 import Loading from '../../components/Loading/Loading';
 import { CollapsedContext } from '../../contexts/CollapsedContext';
-import { SalvarAgenda, alterarAgenda, listarTodasAgendas } from '../../services/AgendaService';
+import { SalvarAgenda, alterarAgenda, listarAgendaPorId, listarTodasAgendas } from '../../services/AgendaService';
+import { categoriaMapInverso } from '../../utils/EnumCategoria';
 import { modalidadeMapInverso } from '../../utils/EnumModalidade';
 import './Agenda.css';
 
@@ -33,36 +34,37 @@ const localizer = dateFnsLocalizer({
 
 function Agenda() {
   const [events, setEvents] = useState([]);
+  const [open, setOpen] = useState(false);
   const [dataInicioAgenda, setDataInicioAgenda] = useState(new Date());
   const [dataFimAgenda, setDataFimAgenda] = useState(new Date());
-  const [codigoAgenda, setCodigoAgenda] = useState(null); 
-  const [open, setOpen] = useState(false); // Para controlar a abertura/fechamento do modal
+  const [codigoAgenda, setCodigoAgenda] = useState(null);
   const [modalidade, setModalidade] = useState("");
   const [tipoEvento, setTipoEvento] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [local, setLocal] = useState("");
+  const [observacao, setObservacao] = useState("");
+  const [codigoLocal, setCodigoLocal] = useState("");
   const { collapsed } = useContext(CollapsedContext);
   const [isLoading, setIsLoading] = useState(false);
   const [codigoUsuarioLogado, setCodigoUsuarioLogado] = useState(localStorage.getItem('codigoUsuarioLogado') || 0);
- // Verifica se o dispositivo é um celular
- const isMobile = window.matchMedia('(max-width: 600px)').matches;
+  const isMobile = window.matchMedia('(max-width: 600px)').matches;
+  const [view, setView] = useState(isMobile ? 'day' : 'month');
 
- // Define o estado inicial com base no tipo de dispositivo
- const [view, setView] = useState(isMobile ? 'day' : 'month');
+  useEffect(() => {
+    const handleResize = () => {
+      setView(window.innerWidth <= 600 ? 'day' : 'month');
+    };
 
- useEffect(() => {
-   // Atualiza o estado quando a largura da janela muda
-   const handleResize = () => {
-     setView(window.innerWidth <= 600 ? 'day' : 'month');
-   };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
-   window.addEventListener('resize', handleResize);
+  const handleAdicionarNovo = () => {
+    console.log('Adicionar novo evento');
+    setOpen(true);
+  };
 
-   // Limpa o listener quando o componente é desmontado
-   return () => {
-     window.removeEventListener('resize', handleResize);
-   };
- }, []);
   useEffect(() => {
     setIsLoading(true);
     listarTodasAgendas()
@@ -74,17 +76,20 @@ function Agenda() {
           title: evento.titulo,
           modalidade: evento.modalidade,
           tipoEvento: evento.tipoEvento,
-          local: evento.descricaoLocal,
-          codigoAgenda: evento.id
+          codigoLocal: evento.codigoLocal,
+          codigoAgenda: evento.id,
+          categoria: evento.categoria,
+          obs: evento.observacao
         }));
         setEvents(eventos);
+        console.log('Eventos:', eventos);
         setIsLoading(false);
       })
       .catch(error => {
         console.error('Erro ao buscar eventos:', error);
         setIsLoading(false);
       });
-  
+
     const handleBeforeUnload = (event) => {
       event.preventDefault();
       event.returnValue = "Você tem certeza que deseja sair da página?";
@@ -94,74 +99,111 @@ function Agenda() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
-  
-  
 
   const handleOpen = (e) => {
-    console.log('slotInfo:', e);
+    console.log('Evento selecionado:', e.codigoAgenda);
     setCodigoAgenda(e.codigoAgenda);
-    setDataInicioAgenda(e.start);
-    setDataFimAgenda(e.end);
-    setModalidade(e.modalidade);
-    setTipoEvento(e.tipoEvento);
-    setLocal(local);
-    setIsLoading(false);
-    setOpen(true);
+    // aqui posso definir que sempre será uma alteração de evento.... VERIFICAR POSSIBILIDADE
+    listarAgendaPorId(codigoUsuarioLogado, e.codigoAgenda)
+      .then(data => {
+        console.log('Evento selecionado:', data);
+        const evento = data.data;
+        setModalidade(evento.modalidade);
+        setTipoEvento(evento.tipoEvento);
+        setCategoria(evento.categoria);
+        setCodigoLocal(evento.codigoLocal);
+        setDataInicioAgenda(new Date(evento.dataInicio));
+        setDataFimAgenda(new Date(evento.dataFim));
+        setObservacao(evento.observacao);
+        setCodigoAgenda(e.codigoAgenda);
+        setOpen(true);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar evento:', error);
+      });
   };
 
   const handleClose = () => {
+    setModalidade("");
+    setTipoEvento("");
+    setCodigoLocal("");
+    setDataInicioAgenda(new Date());
+    setDataFimAgenda(new Date());
+    setCategoria("");
+    setObservacao("");
+    setCodigoAgenda(null);
     setOpen(false);
   };
 
-  const handleSelect = () => {
+  const handleSelect = async (formData) => {
     setIsLoading(true);
-      console.log('dataInicio:', dataInicioAgenda);
-      const newEvent = {
-        modalidade: modalidadeMapInverso[modalidade], // Substituir pela modalidade que existe no Enum
-        dataInicio: dataInicioAgenda,
-        dataFim: dataFimAgenda,
-        tipoEvento: tipoEvento, // Substituir pelo valor que contem 
-        codigoLocal: local,  // Substituir pelo valor do codigo do local
-        dataSalvamento: new Date(),
-        codigoUsuario: codigoUsuarioLogado, // Substituir pelo codigo usuario logao
-        titulo: `${tipoEvento} - ${modalidade}  - ${categoria} `
-      };
-  
-      SalvarAgenda([newEvent])
-        .then(() => {
-          setEvents([...events, newEvent]);
-          alert('Evento criado com sucesso!');
-          setIsLoading(false);
-        })
-        .catch(error => {
-          console.error('Erro ao salvar evento:', error);
-          setIsLoading(false);
-        });
+    console.log('formData:', formData);
+    console.log('dataInicio:', dataInicioAgenda);
+    const newEvent = {
+      modalidade: modalidadeMapInverso[modalidade], // Substituir pela modalidade que existe no Enum
+      dataInicio: dataInicioAgenda,
+      dataFim: dataFimAgenda,
+      tipoEvento: tipoEvento, // Substituir pelo valor que contem 
+      codigoLocal: codigoLocal,  // Substituir pelo valor do codigo do local
+      dataSalvamento: new Date(),
+      codigoUsuario: codigoUsuarioLogado,
+      obs: "",
+      titulo: `${tipoEvento} - ${modalidade}  - ${categoria} `,
+      categoria: categoriaMapInverso[categoria]
+    };
+    if(formData.codigoAgenda !== null){
+      alert('codigo ->' , codigoAgenda)
+      newEvent.codigoAgenda = codigoAgenda;
+      alterarAgenda([newEvent])
+      .then(() => {
+        setEvents([...events, newEvent]);
+        alert('Evento alterado com sucesso!');
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Erro ao alterar evento:', error);
+        setIsLoading(false);
+      });
+
+    }
+    else{
+    console.log('newEvent:', newEvent);
+    const response = await SalvarAgenda([newEvent])
+      .then(() => {
+        setEvents([...events, newEvent]);
+        alert('Evento criado com sucesso!');
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Erro ao salvar evento:', error);
+        setIsLoading(false);
+      });
+    }
   };
 
-  const onEventDrop = ({ event, start, end }) => {
+  const onEventDrop = ({ event, start, end }) => {// esse metodo foi testado e está OK falta OBS...
     setIsLoading(true);
     const idx = events.indexOf(event);
     const updatedEvent = {
       ...event,
-      modalidade: 0, // Substituir pela modalidade que existe no Enum
-      dataInicio: dataInicioAgenda.toISOString(),
-      dataFim: dataFimAgenda.toISOString(),
-      tipoEvento: "string", // Substituir pelo valor que contem 
-      codigoLocal: 1, // Substituir pelo valor do codigo do local
-      dataSalvamento: new Date().toISOString(),
+      modalidade: modalidadeMapInverso[modalidade],
+      dataInicio: start,
+      dataFim: end,
+      tipoEvento: tipoEvento,
+      codigoLocal: event.codigoLocal,
+      dataSalvamento: new Date(),
       codigoUsuario: codigoUsuarioLogado,
-      titulo: event.title,
-      codigoAgenda: event.codigoAgenda 
+      obs: "",
+      categoria: event.categoria,
+      titulo: event.title
     };
-  
-    alterarAgenda(updatedEvent)
+
+    alterarAgenda([updatedEvent])
       .then(() => {
         const nextEvents = [...events];
         nextEvents.splice(idx, 1, updatedEvent);
         setEvents(nextEvents);
         alert('Evento DROP alterado com sucesso!');
-        listarTodasAgendas()
         // location.reload();
         setIsLoading(false);
       })
@@ -170,8 +212,8 @@ function Agenda() {
         setIsLoading(false);
       });
   };
-  
-  
+  // esse metodo foi testado e está OK falta OBS...
+
   const onEventResize = ({ event, start, end }) => {
     setIsLoading(true);
     const idx = events.indexOf(event);
@@ -180,14 +222,16 @@ function Agenda() {
       modalidade: 0, // Substituir pela modalidade que existe no Enum
       dataInicio: start.toISOString(),
       dataFim: end.toISOString(),
-      tipoEvento: "string", // Substituir pelo valor que contem 
-      codigoLocal: 1,  // Substituir pelo valor do codigo do local
+      tipoEvento: event.tipoEvento, // Substituir pelo valor que contem 
+      codigoLocal: codigoLocal,  // Substituir pelo valor do codigo do local
       dataSalvamento: new Date().toISOString(),
-      codigoUsuario: codigoUsuarioLogado, 
+      codigoUsuario: codigoUsuarioLogado,
       titulo: event.title,
-      codigoAgenda: event.codigoAgenda
+      codigoAgenda: event.codigoAgenda,
+      categoria: event.categoria,
+      observacao: event.observacao
     };
-  
+
     alterarAgenda(updatedEvent)
       .then(() => {
         const nextEvents = [...events];
@@ -203,33 +247,37 @@ function Agenda() {
         setIsLoading(false);
       });
   };
- 
+
 
   return (
     <div className='div-geral-calendario' style={{ marginLeft: collapsed ? '30px' : '11%' }}>
       {isLoading && <Loading />}
       <div className='div-interna-calendario'>
-        <Fab className='botao-adicionar-evento' onClick={handleOpen} aria-label="add">
+        <Fab className='botao-adicionar-evento' onClick={handleAdicionarNovo} aria-label="add">
           <AddIcon />
         </Fab>
-        <ModalAgenda 
-        open={open}  
-        handleClose={handleClose} 
-        handleSelect={handleSelect} 
-        setModalidade={setModalidade} 
-        modalidade={modalidade}
-        categoria={categoria}
-        setCategoria={setCategoria}
-        setTipoEvento={setTipoEvento} 
-        setLocal={setLocal} 
-        setDataInicioAgenda={setDataInicioAgenda} 
-        setDataFimAgenda={setDataFimAgenda} 
-        dataInicioAgenda={dataInicioAgenda} 
-        dataFimAgenda={dataFimAgenda}
-        setCodigoAgenda={setCodigoAgenda}
-        codigoAgenda={codigoAgenda}
+        <ModalAgenda
+          open={open}
+          handleClose={handleClose}
+          handleSelect={handleSelect}
+          setModalidade={setModalidade}
+          modalidade={modalidade}
+          categoria={categoria}
+          setCategoria={setCategoria}
+          setTipoEvento={setTipoEvento}
+          tipoEvento={tipoEvento}
+          setCodigoLocal={setCodigoLocal}
+          codigoLocal={codigoLocal}
+          setDataInicioAgenda={setDataInicioAgenda}
+          setDataFimAgenda={setDataFimAgenda}
+          dataInicioAgenda={dataInicioAgenda}
+          dataFimAgenda={dataFimAgenda}
+          setObservacao={setObservacao}
+          observacao={observacao}
+          setCodigoAgenda={setCodigoAgenda}
+          codigoAgenda={codigoAgenda}
         />
-       
+
         <DnDCalendar
           className='calendario'
           localizer={localizer}
@@ -254,20 +302,20 @@ function Agenda() {
             time: "Hora",
             event: "Evento",
             showMore: total => `+ Ver mais (${total})`
-            
+
           }}
           onSelectEvent={(e) => {
-            
+
             handleOpen(e)
           }}
-          // onSelectSlot={e => handleOpen(e)}
-          // eventPropGetter={(event) => {
-          //   const backgroundColor = event.tipoEvento === 'Consulta' ? '#690000' : 
-          //                           event.tipoEvento === 'Treinos' ? '#504aa1' : 
-          //                           event.tipoEvento === 'Jogos' ? '#41a56d' : 
-          //                           '#41a56d';
-          //   return { style: { backgroundColor } };
-          // }}
+        onSelectSlot={e => handleOpen(e)}
+        // eventPropGetter={(event) => {
+        //   const color = event.tipoEvento === 'Consultas' ? 'red' : 'black'
+        //                           // event.tipoEvento === 'Treinos' ? '#504aa1' : 
+        //                           // event.tipoEvento === 'Jogos' ? '#41a56d' : 
+        //                           // '#41a56d';
+        //   return { style: { color } };
+        // }}
         />
       </div>
     </div>
