@@ -290,10 +290,9 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
           setIsLoading(false);
           setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário alterado com sucesso!" });
           console.log(formulario.usuario.id)
-          window.location.reload();
           handleClose(formulario.usuario);
-
           setIsLoading(false);
+          window.location.reload();
         })
         .catch(error => {
           console.error('Error:', error);
