@@ -535,7 +535,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
                 <Button className='botao-salvar' type="submit" variant="contained" color="primary">
                   Salvar
                 </Button>
-                <Button className='fechar-modal-responsivo' onClick={handleFecharModalUsuario} color="primary">
+                <Button className='fechar-modal-responsivo' onClick={() => handleClose()} color="primary">
                   Fechar
                 </Button>
               </div>

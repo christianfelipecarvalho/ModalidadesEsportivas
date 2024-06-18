@@ -547,13 +547,12 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   margin-left: 50px;
   /* color: #fff!important; */
 }
-
-.PrivateTabIndicator-colorSecondary-11, .PrivateTabIndicator-colorSecondary-7 {
+ .PrivateTabIndicator-colorSecondary-7 {
   background-color: #41a56d!important;
 }
-.jss11 {
+/* .jss11 {
   background-color: #41a56d!important;
-}
+} */
 
 /* DESIGN RESPONSIVO PAGINA DE USUARIOS - FIIMM*/
 
@@ -598,10 +597,10 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
     margin-top: 15px!important;
   }
 }
-
+/* 
 .jss41 {
   background-color: #41a56d;
-}
+} */
 .MuiTabs-indicator{
   background-color: red;
 }
