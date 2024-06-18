@@ -129,7 +129,7 @@
     background-color: #464646; /* Cor de fundo das linhas ímpares */
   }
   #dark .forms-tabela-local .MuiDataGrid-row:nth-child(even) {
-    background-color: #393939; /* Cor de fundo das linhas pares*/
+    background-color: #464646; /* Cor de fundo das linhas pares*/
   }
   
   #light .forms-tabela-local .MuiDataGrid-row:hover {

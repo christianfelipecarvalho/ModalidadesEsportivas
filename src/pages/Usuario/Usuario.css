@@ -417,7 +417,6 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
   margin-top: 20px;
 }
 
-/* Estilizando a barra de rolagem */
 /* Se mexer aqui mexe nas barras de rolagem*/
 ::-webkit-scrollbar {
   width: 10px;
@@ -550,30 +549,7 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
  .PrivateTabIndicator-colorSecondary-7 {
   background-color: #41a56d!important;
 }
-/* .jss11 {
-  background-color: #41a56d!important;
-} */
 
-/* DESIGN RESPONSIVO PAGINA DE USUARIOS - FIIMM*/
-
-#dark .cards-fonts{
-  font-size: 15px;
-  font-family: 'Segoe UI'!important;
-}
-#light .cards-fonts{
-  font-size: 15px;
-  font-family: 'Segoe UI'!important;
-  color: #212121;
-}
-#light .nome-negrito {
-  font-weight: bold;
-  color: #212121;
-  font-family: 'Segoe UI'!important;
-}
-#dark .nome-negrito {
-  font-weight: bold;
-  font-family: 'Segoe UI'!important;
-}
 @media (min-width: 600px){
   .modal-genero-responsivo{
     max-width: 30%!important;
@@ -597,10 +573,24 @@ box-shadow: rgb(39, 39, 39) 0 0 10px;
     margin-top: 15px!important;
   }
 }
-/* 
-.jss41 {
-  background-color: #41a56d;
-} */
-.MuiTabs-indicator{
-  background-color: red;
+
+/* DESIGN RESPONSIVO PAGINA DE USUARIOS - FIIMM*/
+
+#dark .cards-fonts{
+  font-size: 15px;
+  font-family: 'Segoe UI'!important;
+}
+#light .cards-fonts{
+  font-size: 15px;
+  font-family: 'Segoe UI'!important;
+  color: #212121;
+}
+#light .nome-negrito {
+  font-weight: bold;
+  color: #212121;
+  font-family: 'Segoe UI'!important;
+}
+#dark .nome-negrito {
+  font-weight: bold;
+  font-family: 'Segoe UI'!important;
 }
