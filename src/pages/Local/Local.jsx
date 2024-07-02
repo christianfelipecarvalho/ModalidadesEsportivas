@@ -75,8 +75,6 @@ const Local = () => {
   }
   const handleSave = async () => {
     setIsLoading(true);
-    console.log('codigoLocal ->', codigoLocal);
-    console.log('ativo ->', ativo);
     if (codigoLocal !== null && codigoLocal !== '') {
       console.log('codigoLocal ->', codigoLocal);
         const response = await inativarLocal(codigoLocal);

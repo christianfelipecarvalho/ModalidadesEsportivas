@@ -25,9 +25,7 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
     const [alertMensagem, setAlertMensagem] = useState({ severity: "", title: "", message: "" });
 
     useEffect(() => {
-        console.log('codigoAgenda:', codigoAgenda);
         setCodigoAgenda(codigoAgenda);
-        
         listarTodosLocais()
             .then(response => {
                 setLocais(response.data);
@@ -42,7 +40,6 @@ const ModalAgenda = ({ open, handleClose, handleSelect, setModalidade, modalidad
     const handleDeletarEvento = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        console.log('codigoAgenda:', codigoAgenda);
         const id = codigoAgenda;
         const codigoUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
         try {

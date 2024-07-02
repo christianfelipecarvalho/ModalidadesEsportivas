@@ -136,8 +136,7 @@ function Agenda() {
 
   const handleSelect = async (formData) => {
     setIsLoading(true);
-    console.log('formData --> ', formData.observacao.target.value);
-    const observacaoAgenda = formData.observacao.target.value;
+    let observacaoAgenda = formData.observacao?.target?.value || "";
     let descricaoTituloCategoria = '';
     let categoriaEnum = 0;
     if(categoria === 0 || categoria === 1 || categoria === 2){

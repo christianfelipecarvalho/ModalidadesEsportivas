@@ -12,7 +12,6 @@ const UsuarioCard = ({ usuario, handleEditUsuario, setAlertMensagem }) => {
 
   const handleToggle = async (event) => {
     setIsLoading(true);
-    console.log("entrei ativo usuario " + usuario.id);
     try {
         await inativarUsuario(usuario.id, codigoUsuarioLogado);
         setAlertMensagem({ severity: "success", title: "Sucesso!", message: "Usuário inativado/ativado com sucesso!" });

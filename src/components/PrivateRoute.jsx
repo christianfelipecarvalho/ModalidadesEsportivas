@@ -9,7 +9,6 @@ const PrivateRoute = ({ children }) => {
 
   const checkUserType = () => {
     const userTypeCheck = localStorage.getItem('roles'); 
-    console.log('>>>>>>>>>userTypeCheck >>>', userTypeCheck)
     if (userTypeCheck === '"ADMINISTRADOR"' || userTypeCheck === '"TECNICO"') {
       return true;
     } else if (userTypeCheck === '"ATLETA"' && (location.pathname === '/agenda' || location.pathname === '/agendamentos' )) {

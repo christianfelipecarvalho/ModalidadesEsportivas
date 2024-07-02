@@ -108,7 +108,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
       }
       const byteArray = new Uint8Array(byteNumbers);
       let blob;
-      if (documento.extensao === '.jpg') {
+      if (documento.extensao === '.jpg' || documento.extensao === '.jpeg') {
         blob = new Blob([byteArray], { type: 'image/jpeg' });
       } else if (documento.extensao === '.png') {
         blob = new Blob([byteArray], { type: 'image/png' });
@@ -129,9 +129,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
 
   const handleExcluirDocumento = async (documento, event) => {
     event.preventDefault();
-    console.log('Excluir documento', documento.id);
     const idUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
-    console.log("idUsuarioLogado ->" + idUsuarioLogado);
 
     try {
       const response = await deletarArquivo(documento.id, idUsuarioLogado);
@@ -147,12 +145,7 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
   const handleSave = () => {
     setIsLoading(true);
     const idUsuarioLogado = localStorage.getItem('codigoUsuarioLogado');
-    console.log("idUsuarioLogado ->" + idUsuarioLogado);
     const reader = new FileReader();
-    console.log("extencao-->" + '.' + file.name.split('.').pop());
-    console.log("nomeArquivo-->" + fileName);
-    console.log("codigoUsuario-->" + formulario.usuario.id);
-    console.log("imagemPerfil-->" + imagemPerfil);
 
     reader.onloadend = () => {
       const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
@@ -196,7 +189,6 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
   };
 
   const handleFileChange = (event) => {
-    console.log("entrei aqui");
     setFile(event.target.files[0]);
     // Define o nome do arquivo com base no arquivo selecionado apenas se o usuário não tiver fornecido um nome
     setFileName(event.target.files[0].name);
@@ -206,7 +198,6 @@ const UsuarioForm = ({ formulario, handleClose, tipoUsuario, ativo, setAlertMens
     setIsLoading(true);
     if (formulario.usuario === null || formulario.usuario === '' || formulario.usuario === undefined) {
       setIsLoading(false);
-      console.log("entrei ativo usuario ")
       setAlertMensagem({ severity: "warning", title: "ATENÇÃO!", message: "Usuario não pode ser cadastrado inativado!!!" });
       return;
     }
