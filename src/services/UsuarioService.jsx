@@ -1,6 +1,6 @@
 import axios from './BaseService';
 
-const API_URL = 'https://geresportes.azurewebsites.net';
+const API_URL = 'http://192.168.3.20:1010';
 
 export const listarTodosUsuarios = (codigoUsuarioLogado) => {
   return axios.get(`${API_URL}/usuario/listarTodosUsuarios/${codigoUsuarioLogado}`);
