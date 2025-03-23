@@ -18,7 +18,7 @@ axios.interceptors.response.use(
             originalRequest._retry = true;
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshToken');
-            return axios.put('http://192.168.3.20:1010/login/refresh', { token, refreshToken })
+            return axios.put('https://geresportes-backend.onrender.com/login/refresh', { token, refreshToken })
                 .then(response => {
                     if (response.status === 200) {
                         localStorage.setItem('token', response.data.token);
